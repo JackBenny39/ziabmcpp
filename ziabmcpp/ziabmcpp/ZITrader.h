@@ -20,24 +20,13 @@ class ZITrader
 {
 public:
 	ZITrader(const std::string &, const int);
-	//	std::string getTraderId() const;
-	//	std::string getTraderType() const;
+	int orderSize;
 	std::string traderType;
 	std::string traderId;
-	std::vector<int> defaultVec;
-	int orderSize;
-	void setQuantity(int);
-	int getQuantity() const;
 	quote_t makeAddQuote(int, char, int);
 	std::list<quote_t> quoteCollector;
 private:
-	//	std::string traderId;
-	//	int orderSize;
 	int quoteSequence;
-	std::random_device random_device;
-	typedef std::mt19937 Mers;
-	Mers eng;
-	std::uniform_int_distribution<int> dist;
 };
 
 #endif

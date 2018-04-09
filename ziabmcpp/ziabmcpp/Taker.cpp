@@ -13,16 +13,12 @@ Taker::Taker(const std::string &name, const int maxq)
 	traderType = "Taker";
 }
 
-void Taker::processSignal(int step, float qTake)
+void Taker::processSignal(int step, double qTake, double buyP)
 {
 	int price;
 	char side;
 
-	std::random_device random_device;
-	std::mt19937 engine{ random_device() };
-	std::uniform_real_distribution<> dist(0, 1);
-
-	if (dist(engine) < qTake)
+	if (buyP < qTake)
 	{
 		price = 2000000;
 		side = 'B';
@@ -33,4 +29,5 @@ void Taker::processSignal(int step, float qTake)
 		side = 'S';
 	}
 	quote_t q = makeAddQuote(step, side, price);
+	quoteCollector.push_back(q);
 }

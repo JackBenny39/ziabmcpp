@@ -15,7 +15,7 @@ class Taker : public ZITrader
 {
 public:
 	Taker(const std::string &, const int);
-	void processSignal(int, float);
+	void processSignal(int, double, double);
 };
 
 #endif
