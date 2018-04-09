@@ -3,8 +3,6 @@
 
 #include "stdafx.h"
 
-#include <random>
-
 #include "Taker.h"
 
 Taker::Taker(const std::string &name, const int maxq)

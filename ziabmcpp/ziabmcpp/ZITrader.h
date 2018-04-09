@@ -8,10 +8,8 @@
 #include "stdafx.h"
 
 #include <list>			// std::list
-#include <random>		// std::random_device
 #include <string>		// std::string
 #include <tuple>        // std::tuple
-#include <vector>		// std::vector
 
 using quote_t = std::tuple<std::string, int, char, int, char, int>;
 

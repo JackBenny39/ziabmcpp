@@ -3,9 +3,7 @@
 
 #include "stdafx.h"
 
-#include <random>
 #include <string>
-#include <vector>
 
 #include "ZITrader.h"
 
