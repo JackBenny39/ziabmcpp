@@ -12,7 +12,22 @@ Orderbook::Orderbook()
 
 void Orderbook::add(Id id, Side side, Prc prc, Qty qty)
 {
-
+	if (side == Side::BUY)
+		if (bids.count(prc) > 0)
+		{
+			bids.at(prc).qty += qty;
+			bids.at(prc).quotes.emplace_back(Quote{ id, qty });
+		}
+		else
+			bids.emplace(prc, Level{ qty, Quotes{ Quote{ id, qty } } });
+	else
+		if (asks.count(prc) > 0)
+		{
+			asks.at(prc).qty += qty;
+			asks.at(prc).quotes.emplace_back(Quote{ id, qty });
+		}
+		else
+			asks.emplace(prc, Level{ qty, Quotes{ Quote{ id, qty } } });
 }
 
 void Orderbook::modify(Id id, Qty qty)
