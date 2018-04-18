@@ -7,7 +7,7 @@
 
 #include "stdafx.h"
 
-#include <list>			// std::list
+#include <vector>		// std::vector
 #include <string>		// std::string
 #include <tuple>        // std::tuple
 
@@ -22,7 +22,7 @@ public:
 	std::string traderType;
 	std::string traderId;
 	quote_t makeAddQuote(int, char, int);
-	std::list<quote_t> quoteCollector;
+	std::vector<quote_t> quoteCollector;
 private:
 	int quoteSequence;
 };

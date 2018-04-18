@@ -12,22 +12,17 @@ Orderbook::Orderbook()
 
 void Orderbook::add(Id id, Side side, Prc prc, Qty qty)
 {
-	if (side == Side::BUY)
-		if (bids.count(prc) > 0)
-		{
-			bids.at(prc).qty += qty;
-			bids.at(prc).quotes.emplace_back(Quote{ id, qty });
-		}
-		else
-			bids.emplace(prc, Level{ qty, Quotes{ Quote{ id, qty } } });
+	auto b = side == Side::BUY ? &bids : &asks;
+	if (b->count(prc) > 0)
+	{
+		b->at(prc).qty += qty;
+		b->at(prc).quotes.emplace_back(Quote{ id, qty });
+	}
 	else
-		if (asks.count(prc) > 0)
-		{
-			asks.at(prc).qty += qty;
-			asks.at(prc).quotes.emplace_back(Quote{ id, qty });
-		}
-		else
-			asks.emplace(prc, Level{ qty, Quotes{ Quote{ id, qty } } });
+		b->emplace(prc, Level{ qty, Quotes{ Quote{ id, qty } } });
+	auto l = b->find(prc);
+	auto q = l->second.quotes.rbegin();
+	lookup[id] = std::make_tuple(b, l, q);
 }
 
 void Orderbook::modify(Id id, Qty qty)

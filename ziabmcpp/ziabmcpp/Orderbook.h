@@ -1,4 +1,4 @@
-
+// Orderbook.h
 
 #pragma once
 
@@ -22,10 +22,9 @@ struct Quote { Id id; Qty qty; };
 using Quotes = std::list<Quote>;
 
 struct Level {Qty qty; Quotes quotes;};
-using Levels = std::list<Level>;
 using BookSide = std::map<Prc, Level>;
 
-using BLQ = std::tuple<BookSide*, Levels::iterator, Quotes::iterator>;
+using BLQ = std::tuple<BookSide*, BookSide::iterator, Quotes::reverse_iterator>;
 using Lookup = std::unordered_map<Id, BLQ>;
 
 struct Execution {Id id; Prc prc; Qty executed; Qty remaining;};
