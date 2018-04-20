@@ -5,10 +5,11 @@
 
 #include "Taker.h"
 
-Taker::Taker(const std::string &name, const int maxq)
-	: ZITrader(name, maxq)
+Taker::Taker(const int tnum, const int maxq)
+	: ZITrader(tnum, maxq)
 {
-	traderType = "Taker";
+	traderType = 'T';
+	tId = traderId{ traderType, tnum };
 }
 
 void Taker::processSignal(int step, double qTake, double buyP)
@@ -26,6 +27,6 @@ void Taker::processSignal(int step, double qTake, double buyP)
 		price = 0;
 		side = 'S';
 	}
-	quote_t q = makeAddQuote(step, side, price);
+	Order q = makeAddQuote(step, side, price);
 	quoteCollector.push_back(q);
 }

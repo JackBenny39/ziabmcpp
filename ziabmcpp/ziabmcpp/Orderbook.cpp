@@ -7,7 +7,12 @@
 
 Orderbook::Orderbook()
 {
+	orderSequence = 0;
+}
 
+void Orderbook::addHistory(Order &q)
+{
+	history.emplace_back(ExOrder{ ++orderSequence, q.id, q.oid, q.step, q.otype, q.qty, q.side, q.price });
 }
 
 void Orderbook::add(Id id, Side side, Prc prc, Qty qty)

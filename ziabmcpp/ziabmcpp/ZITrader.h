@@ -7,22 +7,20 @@
 
 #include "stdafx.h"
 
-#include <vector>		// std::vector
-#include <string>		// std::string
-#include <tuple>        // std::tuple
+#include "Sharedstx.h"
 
-using quote_t = std::tuple<std::string, int, char, int, char, int>;
+#include <vector>		// std::vector
 
 
 class ZITrader
 {
 public:
-	ZITrader(const std::string &, const int);
+	ZITrader(const int, const int);
 	int orderSize;
-	std::string traderType;
-	std::string traderId;
-	quote_t makeAddQuote(int, char, int);
-	std::vector<quote_t> quoteCollector;
+	char traderType;
+	traderId tId;
+	Order makeAddQuote(int, char, int);
+	std::vector<Order> quoteCollector;
 private:
 	int quoteSequence;
 };

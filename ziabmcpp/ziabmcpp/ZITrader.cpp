@@ -7,16 +7,15 @@
 
 #include "ZITrader.h"
 
-ZITrader::ZITrader(const std::string &name, const int maxq)
+ZITrader::ZITrader(const int tnum, const int maxq)
 {
-	traderId = name;
+	traderType = 'Z'; 
+	tId = traderId{ traderType, tnum };
 	orderSize = maxq;
 	quoteSequence = 0;
-	traderType = "ZITrader";
 }
 
-quote_t ZITrader::makeAddQuote(int timestamp, char side, int price)
+Order ZITrader::makeAddQuote(int timestamp, char side, int price)
 {
-	std::string orderId = traderId + "_" + std::to_string(++quoteSequence);
-	return std::make_tuple(orderId, timestamp, 'A', orderSize, side, price);
+	return Order{ tId, ++quoteSequence, timestamp, 'A', orderSize, side, price };
 }

@@ -5,6 +5,8 @@
 #ifndef ORDERBOOK_H
 #define ORDERBOOK_H
 
+#include "Sharedstx.h"
+
 #include <list>			// std::list
 #include <map>			// std::map
 #include <string>		// std::string
@@ -15,6 +17,8 @@
 using Id = std::string;
 using Qty = unsigned;
 using Prc = unsigned;
+
+struct ExOrder { int exid; traderId id; int oid; int step; char otype; int qty; char side; int price; };
 
 enum struct Side { BUY, SELL };
 
@@ -34,13 +38,17 @@ class Orderbook
 {
 public:
 	Orderbook();
+	std::vector<ExOrder> history;
 	Lookup lookup;
 	BookSide bids, asks;
+	void addHistory(Order &);
 	void add(Id, Side, Prc, Qty);
 	void modify(Id, Qty);
 	std::vector<Execution> cross(Side, Prc, Qty);
 	auto bid();
 	auto ask();
+private:
+	int orderSequence;
 };
 
 #endif
