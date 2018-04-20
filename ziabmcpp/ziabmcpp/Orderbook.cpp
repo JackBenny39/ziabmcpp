@@ -15,16 +15,16 @@ void Orderbook::addHistory(Order &q)
 	history.emplace_back(ExOrder{ ++orderSequence, q.id, q.oid, q.step, q.otype, q.qty, q.side, q.price });
 }
 
-void Orderbook::add(Id id, Side side, Prc prc, Qty qty)
+void Orderbook::addBook(traderId tid, Id id, Side side, Prc prc, Qty qty)
 {
 	auto b = side == Side::BUY ? &bids : &asks;
 	if (b->count(prc) > 0)
 	{
 		b->at(prc).qty += qty;
-		b->at(prc).quotes.emplace_back(Quote{ id, qty });
+		b->at(prc).quotes.emplace_back(Quote{ tid, id, qty, prc, side });
 	}
 	else
-		b->emplace(prc, Level{ qty, Quotes{ Quote{ id, qty } } });
+		b->emplace(prc, Level{ qty, Quotes{ Quote{ tid, id, qty, prc, side } } });
 	auto l = b->find(prc);
 	auto q = l->second.quotes.rbegin();
 	lookup[id] = std::make_tuple(b, l, q);

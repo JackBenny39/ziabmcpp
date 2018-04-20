@@ -16,13 +16,13 @@ class ZITrader
 {
 public:
 	ZITrader(const int, const int);
-	int orderSize;
+	Qty orderSize;
 	char traderType;
 	traderId tId;
-	Order makeAddQuote(int, char, int);
+	Order makeAddQuote(Step, Side, Prc);
 	std::vector<Order> quoteCollector;
 private:
-	int quoteSequence;
+	Id quoteSequence;
 };
 
 #endif

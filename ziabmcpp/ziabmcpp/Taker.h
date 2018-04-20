@@ -13,7 +13,7 @@ class Taker : public ZITrader
 {
 public:
 	Taker(const int, const int);
-	void processSignal(int, double, double);
+	void processSignal(Step, double, double);
 };
 
 #endif

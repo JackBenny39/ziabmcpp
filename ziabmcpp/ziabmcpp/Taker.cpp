@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 
+
 #include "Taker.h"
 
 Taker::Taker(const int tnum, const int maxq)
@@ -12,20 +13,20 @@ Taker::Taker(const int tnum, const int maxq)
 	tId = traderId{ traderType, tnum };
 }
 
-void Taker::processSignal(int step, double qTake, double buyP)
+void Taker::processSignal(Step step, double qTake, double buyP)
 {
-	int price;
-	char side;
+	Prc price;
+	Side side;
 
 	if (buyP < qTake)
 	{
 		price = 2000000;
-		side = 'B';
+		side = Side::BUY;
 	}
 	else
 	{
 		price = 0;
-		side = 'S';
+		side = Side::SELL;
 	}
 	Order q = makeAddQuote(step, side, price);
 	quoteCollector.push_back(q);

@@ -14,15 +14,9 @@
 #include <unordered_map>        // std::unordered_map
 #include <vector>        // std::vector
 
-using Id = std::string;
-using Qty = unsigned;
-using Prc = unsigned;
+struct ExOrder { int exid; traderId id; Id oid; Step step; char otype; Qty qty; Side side; Prc price; };
 
-struct ExOrder { int exid; traderId id; int oid; int step; char otype; int qty; char side; int price; };
-
-enum struct Side { BUY, SELL };
-
-struct Quote { Id id; Qty qty; };
+struct Quote { traderId id; Id oid; Qty qty; Prc prc; Side side; };
 using Quotes = std::list<Quote>;
 
 struct Level {Qty qty; Quotes quotes;};
@@ -39,10 +33,13 @@ class Orderbook
 public:
 	Orderbook();
 	std::vector<ExOrder> history;
-	Lookup lookup;
+
 	BookSide bids, asks;
+
+	Lookup lookup;
+	
 	void addHistory(Order &);
-	void add(Id, Side, Prc, Qty);
+	void addBook(traderId, Id, Side, Prc, Qty);
 	void modify(Id, Qty);
 	std::vector<Execution> cross(Side, Prc, Qty);
 	auto bid();
