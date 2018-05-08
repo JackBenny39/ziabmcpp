@@ -22,7 +22,7 @@ using Quotes = std::list<Quote>;
 struct Level {Qty qty; int ocnt; Quotes quotes; };
 using BookSide = std::map<Prc, Level>;
 
-using BLQ = std::tuple<BookSide*, BookSide::iterator, Quotes::reverse_iterator>;
+using BLQ = std::tuple<BookSide*, BookSide::iterator, Quotes::iterator>;
 using Lookup = std::map<std::pair<traderId, Id>, BLQ>;
 
 struct Execution {Id id; Prc prc; Qty executed; Qty remaining;};
@@ -40,6 +40,7 @@ public:
 	
 	void addHistory(Order &);
 	void addBook(traderId, Id, Side, Prc, Qty);
+	void addBook2(traderId, Id, Side, Prc, Qty);
 	void remove(traderId, Id, Qty);
 	void modify(traderId, Id, Qty);
 	std::vector<Execution> cross(Side, Prc, Qty);

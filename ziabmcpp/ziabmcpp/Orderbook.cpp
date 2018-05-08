@@ -29,9 +29,21 @@ void Orderbook::addBook(traderId tid, Id id, Side side, Prc prc, Qty qty)
 	else
 		b->emplace(prc, Level{ qty, 1, Quotes{ Quote{ tid, id, qty, prc, side } } });
 	auto l = b->find(prc);
-	auto q = l->second.quotes.rbegin();
+	auto q = l->second.quotes.begin();
 	lookup[std::make_pair(tid, id)] = std::make_tuple(b, l, q);
 	std::cout << "Trader: " << tid << ", Order: " << id << ", Quote info:" << q->oid << std::endl;
+}
+
+void Orderbook::addBook2(traderId tid, Id id, Side side, Prc prc, Qty qty)
+{
+	auto b = side == Side::BUY ? &bids : &asks;
+	auto l = b->find(prc);
+	if (l == b->end())
+		l = b->emplace(std::make_pair(prc, Level{ 0, 0, Quotes{ } })).first;
+	l->second.ocnt++;
+	l->second.qty += qty;
+	auto q = l->second.quotes.emplace(l->second.quotes.end(), Quote{ tid, id, qty, prc, side });
+	lookup[std::make_pair(tid, id)] = std::make_tuple(b, l, q);
 }
 
 void Orderbook::remove(traderId tid, Id id, Qty qty)
@@ -42,7 +54,7 @@ void Orderbook::remove(traderId tid, Id id, Qty qty)
 	auto& q = std::get<2>(blq);
 	l->second.qty -= qty;
 	l->second.ocnt--;
-//	l->second.quotes.erase(q);
+	l->second.quotes.erase(q);
 }
 
 void Orderbook::modify(traderId tid, Id id, Qty qty)
@@ -53,8 +65,8 @@ void Orderbook::modify(traderId tid, Id id, Qty qty)
 	auto& q = std::get<2>(blq);
 	l->second.qty -= qty;
 	l->second.ocnt--;
-//	if (!(l->second.qty))
-//		l->second.quotes.erase(q);
+	if (!(l->second.qty))
+		l->second.quotes.erase(q);
 }
 
 //std::vector<Execution> Orderbook::cross(Side side, Prc price, Qty qty)
