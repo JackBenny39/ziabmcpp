@@ -10,7 +10,7 @@
 ZITrader::ZITrader(const int tnum, const int maxq)
 {
 	traderType = 'Z'; 
-	tId = traderId{ traderType, tnum };
+	tId = tnum;
 	orderSize = maxq;
 	quoteSequence = 0;
 }

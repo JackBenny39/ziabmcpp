@@ -14,16 +14,16 @@
 #include <unordered_map>        // std::unordered_map
 #include <vector>        // std::vector
 
-struct ExOrder { int exid; traderId id; Id oid; Step step; char otype; Qty qty; Side side; Prc price; };
+struct ExOrder { exId exid; traderId id; Id oid; Step step; char otype; Qty qty; Side side; Prc price; };
 
 struct Quote { traderId id; Id oid; Qty qty; Prc prc; Side side; };
 using Quotes = std::list<Quote>;
 
-struct Level {Qty qty; Quotes quotes;};
+struct Level {Qty qty; int ocnt; Quotes quotes; };
 using BookSide = std::map<Prc, Level>;
 
 using BLQ = std::tuple<BookSide*, BookSide::iterator, Quotes::reverse_iterator>;
-using Lookup = std::unordered_map<Id, BLQ>;
+using Lookup = std::map<std::pair<traderId, Id>, BLQ>;
 
 struct Execution {Id id; Prc prc; Qty executed; Qty remaining;};
 
@@ -40,12 +40,13 @@ public:
 	
 	void addHistory(Order &);
 	void addBook(traderId, Id, Side, Prc, Qty);
-	void modify(Id, Qty);
+	void remove(traderId, Id, Qty);
+	void modify(traderId, Id, Qty);
 	std::vector<Execution> cross(Side, Prc, Qty);
 	auto bid();
 	auto ask();
 private:
-	int orderSequence;
+	exId orderSequence;
 };
 
 #endif

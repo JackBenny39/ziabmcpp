@@ -10,7 +10,7 @@ Taker::Taker(const int tnum, const int maxq)
 	: ZITrader(tnum, maxq)
 {
 	traderType = 'T';
-	tId = traderId{ traderType, tnum };
+	tId = tnum;
 }
 
 void Taker::processSignal(Step step, double qTake, double buyP)
