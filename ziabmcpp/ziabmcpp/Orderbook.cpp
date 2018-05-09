@@ -55,6 +55,8 @@ void Orderbook::remove(traderId tid, Id id, Qty qty)
 	l->second.qty -= qty;
 	l->second.ocnt--;
 	l->second.quotes.erase(q);
+	if (!(l->second.ocnt))
+		b->erase(l);
 }
 
 void Orderbook::modify(traderId tid, Id id, Qty qty)
@@ -63,10 +65,15 @@ void Orderbook::modify(traderId tid, Id id, Qty qty)
 	auto& b = std::get<0>(blq);
 	auto& l = std::get<1>(blq);
 	auto& q = std::get<2>(blq);
+	q->qty -= qty;
 	l->second.qty -= qty;
-	l->second.ocnt--;
-	if (!(l->second.qty))
+	if (!(q->qty))
+	{
 		l->second.quotes.erase(q);
+		l->second.ocnt--;
+		if (!(l->second.ocnt)) { b->erase(l); }
+//		if (!(--l->second.ocnt)) { b->erase(l); }
+	}
 }
 
 //std::vector<Execution> Orderbook::cross(Side side, Prc price, Qty qty)

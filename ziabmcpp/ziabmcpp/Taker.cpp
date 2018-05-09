@@ -6,11 +6,9 @@
 
 #include "Taker.h"
 
-Taker::Taker(const int tnum, const int maxq)
-	: ZITrader(tnum, maxq)
+Taker::Taker(const int tnum, const int maxq, const char ttype)
+	: ZITrader(tnum, maxq, ttype)
 {
-	traderType = 'T';
-	tId = tnum;
 }
 
 void Taker::processSignal(Step step, double qTake, double buyP)
