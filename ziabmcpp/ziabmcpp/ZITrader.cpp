@@ -7,9 +7,10 @@
 
 #include "ZITrader.h"
 
-ZITrader::ZITrader(const int tnum, const int maxq, const char ttype)
-	: tId(tnum), orderSize(maxq), quoteSequence(0), traderType(ttype)
+ZITrader::ZITrader(const int tnum, const int maxq)
+	: tId(tnum), orderSize(maxq), quoteSequence(0)
 {
+	traderType = 'Z';
 }
 
 Order ZITrader::makeAddQuote(Step timestamp, Side side, Prc price)

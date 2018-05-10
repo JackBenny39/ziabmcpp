@@ -23,7 +23,8 @@ struct Level {Qty qty; int ocnt; Quotes quotes; };
 using BookSide = std::map<Prc, Level>;
 
 using BLQ = std::tuple<BookSide*, BookSide::iterator, Quotes::iterator>;
-using Lookup = std::map<std::pair<traderId, Id>, BLQ>;
+using OrderId = std::pair<traderId, Id>;
+using Lookup = std::map<OrderId, BLQ>;
 
 struct Execution {Id id; Prc prc; Qty executed; Qty remaining;};
 

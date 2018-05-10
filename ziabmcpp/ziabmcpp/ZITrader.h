@@ -15,7 +15,7 @@
 class ZITrader
 {
 public:
-	ZITrader(const int, const int, const char);
+	ZITrader(const int, const int);
 	Qty orderSize;
 	char traderType;
 	traderId tId;

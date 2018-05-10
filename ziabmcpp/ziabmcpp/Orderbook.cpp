@@ -48,31 +48,31 @@ void Orderbook::addBook2(traderId tid, Id id, Side side, Prc prc, Qty qty)
 
 void Orderbook::remove(traderId tid, Id id, Qty qty)
 {
-	auto& blq = lookup[std::make_pair(tid, id)];
+	OrderId oid = std::make_pair(tid, id);
+	auto& blq = lookup[oid];
 	auto& b = std::get<0>(blq);
 	auto& l = std::get<1>(blq);
 	auto& q = std::get<2>(blq);
 	l->second.qty -= qty;
-	l->second.ocnt--;
 	l->second.quotes.erase(q);
-	if (!(l->second.ocnt))
+	if (!(--l->second.ocnt))
 		b->erase(l);
+	lookup.erase(oid);
 }
 
 void Orderbook::modify(traderId tid, Id id, Qty qty)
 {
-	auto& blq = lookup[std::make_pair(tid, id)];
+	OrderId oid = std::make_pair(tid, id);
+	auto& blq = lookup[oid];
 	auto& b = std::get<0>(blq);
 	auto& l = std::get<1>(blq);
 	auto& q = std::get<2>(blq);
-	q->qty -= qty;
 	l->second.qty -= qty;
-	if (!(q->qty))
+	if (!(q->qty -= qty))
 	{
 		l->second.quotes.erase(q);
-		l->second.ocnt--;
-		if (!(l->second.ocnt)) { b->erase(l); }
-//		if (!(--l->second.ocnt)) { b->erase(l); }
+		if (!(--l->second.ocnt)) { b->erase(l); }
+		lookup.erase(oid);
 	}
 }
 
