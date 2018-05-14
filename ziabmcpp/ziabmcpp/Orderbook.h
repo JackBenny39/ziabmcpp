@@ -15,6 +15,9 @@
 #include <vector>        // std::vector
 
 struct ExOrder { exId exid; traderId id; Id oid; Step step; char otype; Qty qty; Side side; Prc price; };
+struct ExTrade { traderId restid; Id restoid; Step reststep; traderId incid; Id incoid; Step incstep; Qty qty; Side side; Prc price; };
+struct TConfirm { traderId restid; Id restoid; Step reststep; Qty qty; Side side; Prc price; };
+struct MConfirm { traderId restid; Id restoid; Step reststep; Qty qty; Side side; };
 
 struct Quote { traderId id; Id oid; Qty qty; Prc prc; Side side; };
 using Quotes = std::list<Quote>;
@@ -34,12 +37,19 @@ class Orderbook
 public:
 	Orderbook();
 	std::vector<ExOrder> history;
+	std::vector<ExTrade> trades;
+	std::vector<TConfirm> tradeconfirms;
+	std::vector<MConfirm> modifyconfirms;
+	std::vector<TopOfBook> tob;
 
 	BookSide bids, asks;
 
 	Lookup lookup;
 	
 	void addHistory(Order &);
+	void addTrade(traderId, Id, Step, traderId, Id, Step, Qty, Side, Prc);
+	void confirmTrade(traderId, Id, Step, Qty, Side, Prc);
+	void confirmModify(traderId, Id, Step, Qty, Side);
 	void addBook(traderId, Id, Side, Prc, Qty);
 	void addBook2(traderId, Id, Side, Prc, Qty);
 	void remove(traderId, Id, Qty);
@@ -47,6 +57,8 @@ public:
 	std::vector<Execution> cross(Side, Prc, Qty);
 	auto bid();
 	auto ask();
+	std::vector<TopOfBook>::iterator bookTop(Step);
+
 private:
 	exId orderSequence;
 };

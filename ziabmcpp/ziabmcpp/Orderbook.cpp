@@ -55,7 +55,8 @@ void Orderbook::remove(traderId tid, Id id, Qty qty)
 	auto& q = std::get<2>(blq);
 	l->second.qty -= qty;
 	l->second.quotes.erase(q);
-	if (!(--l->second.ocnt))
+	l->second.ocnt--;
+	if (!(l->second.ocnt))
 		b->erase(l);
 	lookup.erase(oid);
 }
@@ -68,12 +69,29 @@ void Orderbook::modify(traderId tid, Id id, Qty qty)
 	auto& l = std::get<1>(blq);
 	auto& q = std::get<2>(blq);
 	l->second.qty -= qty;
-	if (!(q->qty -= qty))
+	q->qty -= qty;
+	if (!(q->qty))
 	{
 		l->second.quotes.erase(q);
-		if (!(--l->second.ocnt)) { b->erase(l); }
+		l->second.ocnt--;
+		if (!(l->second.ocnt)) { b->erase(l); }
 		lookup.erase(oid);
 	}
+}
+
+void Orderbook::addTrade(traderId restid, Id restoid, Step reststep, traderId incid, Id incoid, Step incstep, Qty qty, Side side, Prc price)
+{
+	trades.emplace_back(ExTrade{ restid, restoid, reststep, incid, incoid, incstep, qty, side, price });
+}
+
+void Orderbook::confirmTrade(traderId restid, Id restoid, Step reststep, Qty qty, Side side, Prc price)
+{
+	tradeconfirms.emplace_back(TConfirm{ restid, restoid, reststep, qty, side, price });
+}
+
+void Orderbook::confirmModify(traderId restid, Id restoid, Step reststep, Qty qty, Side side)
+{
+	modifyconfirms.emplace_back(MConfirm{ restid, restoid, reststep, qty, side});
 }
 
 //std::vector<Execution> Orderbook::cross(Side side, Prc price, Qty qty)
@@ -83,3 +101,10 @@ void Orderbook::modify(traderId tid, Id id, Qty qty)
 
 auto Orderbook::bid() { return bids.empty() ? std::make_tuple(Prc(0), Qty(0)) : std::make_tuple(bids.rbegin()->first, bids.rbegin()->second.qty); }
 auto Orderbook::ask() { return asks.empty() ? std::make_tuple(Prc(0), Qty(0)) : std::make_tuple(asks.begin()->first, asks.begin()->second.qty); }
+
+std::vector<TopOfBook>::iterator Orderbook::bookTop(Step step)
+{
+	auto bestbid = bid();
+	auto bestask = ask();
+	return tob.emplace(tob.end(), TopOfBook{ step, std::get<0>(bestbid), std::get<1>(bestbid), std::get<0>(bestask), std::get<1>(bestask) });
+}
