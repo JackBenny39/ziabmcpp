@@ -108,3 +108,10 @@ std::vector<TopOfBook>::iterator Orderbook::bookTop(Step step)
 	auto bestask = ask();
 	return tob.emplace(tob.end(), TopOfBook{ step, std::get<0>(bestbid), std::get<1>(bestbid), std::get<0>(bestask), std::get<1>(bestask) });
 }
+
+void Orderbook::bookTop2(Step step)
+{
+	auto bestbid = bid();
+	auto bestask = ask();
+	tob.emplace_back(TopOfBook{ step, std::get<0>(bestbid), std::get<1>(bestbid), std::get<0>(bestask), std::get<1>(bestask) });
+}

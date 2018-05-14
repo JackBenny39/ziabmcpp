@@ -58,6 +58,7 @@ public:
 	auto bid();
 	auto ask();
 	std::vector<TopOfBook>::iterator bookTop(Step);
+	void bookTop2(Step step);
 
 private:
 	exId orderSequence;
