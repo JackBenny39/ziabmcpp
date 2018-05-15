@@ -94,13 +94,54 @@ void Orderbook::confirmModify(traderId restid, Id restoid, Step reststep, Qty qt
 	modifyconfirms.emplace_back(MConfirm{ restid, restoid, reststep, qty, side});
 }
 
+auto Orderbook::bid() { return bids.empty() ? std::make_tuple(Prc(0), Qty(0)) : std::make_tuple(bids.rbegin()->first, bids.rbegin()->second.qty); }
+auto Orderbook::ask() { return asks.empty() ? std::make_tuple(Prc(0), Qty(0)) : std::make_tuple(asks.begin()->first, asks.begin()->second.qty); }
+
+void Orderbook::process(Order &q)
+{
+	if (q.otype == 'A')
+	{
+		if (q.side == Side::BUY)
+		{
+			if (q.price >= std::get<0>(ask()))
+				cross(q);
+			else
+				addBook2(q.id, q.oid, q.side, q.price, q.qty);
+		}
+		else
+		{
+			if (q.price <= std::get<0>(bid()))
+				cross(q);
+			else
+				addBook2(q.id, q.oid, q.side, q.price, q.qty);
+		}
+	}
+	else
+	{
+		confirmModify(q.id, q.oid, q.step, q.qty, q.side);
+		if (q.otype == 'C')
+			remove(q.id, q.oid, q.qty);
+		else
+			modify(q.id, q.oid, q.qty);
+	}
+}
+
+void Orderbook::cross(Order &q)
+{
+	if (q.side == Side::BUY)
+	{
+		std::cout << "Match Trade Ask\n" << std::endl;
+	}
+	else
+	{
+		std::cout << "Match Trade Bid\n" << std::endl;
+	}
+}
+
 //std::vector<Execution> Orderbook::cross(Side side, Prc price, Qty qty)
 //{
 //	
 //}
-
-auto Orderbook::bid() { return bids.empty() ? std::make_tuple(Prc(0), Qty(0)) : std::make_tuple(bids.rbegin()->first, bids.rbegin()->second.qty); }
-auto Orderbook::ask() { return asks.empty() ? std::make_tuple(Prc(0), Qty(0)) : std::make_tuple(asks.begin()->first, asks.begin()->second.qty); }
 
 std::vector<TopOfBook>::iterator Orderbook::bookTop(Step step)
 {

@@ -54,7 +54,9 @@ public:
 	void addBook2(traderId, Id, Side, Prc, Qty);
 	void remove(traderId, Id, Qty);
 	void modify(traderId, Id, Qty);
-	std::vector<Execution> cross(Side, Prc, Qty);
+	void process(Order &);
+	void cross(Order &);
+//	std::vector<Execution> cross(Side, Prc, Qty);
 	auto bid();
 	auto ask();
 	std::vector<TopOfBook>::iterator bookTop(Step);
