@@ -17,24 +17,24 @@ void Orderbook::addHistory(Order &q)
 	history.emplace_back(ExOrder{ ++orderSequence, q.id, q.oid, q.step, q.otype, q.qty, q.side, q.price });
 }
 
-void Orderbook::addBook(traderId tid, Id id, Side side, Prc prc, Qty qty)
+void Orderbook::addBook(traderId tid, Id id, Side side, Prc prc, Qty qty, Step step)
 {
 	auto b = side == Side::BUY ? &bids : &asks;
 	if (b->count(prc) > 0)
 	{
 		b->at(prc).qty += qty;
 		b->at(prc).ocnt++;
-		b->at(prc).quotes.emplace_back(Quote{ tid, id, qty, prc, side });
+		b->at(prc).quotes.emplace_back(Quote{ tid, id, qty, prc, side, step });
 	}
 	else
-		b->emplace(prc, Level{ qty, 1, Quotes{ Quote{ tid, id, qty, prc, side } } });
+		b->emplace(prc, Level{ qty, 1, Quotes{ Quote{ tid, id, qty, prc, side, step } } });
 	auto l = b->find(prc);
 	auto q = l->second.quotes.begin();
 	lookup[std::make_pair(tid, id)] = std::make_tuple(b, l, q);
 	std::cout << "Trader: " << tid << ", Order: " << id << ", Quote info:" << q->oid << std::endl;
 }
 
-void Orderbook::addBook2(traderId tid, Id id, Side side, Prc prc, Qty qty)
+void Orderbook::addBook2(traderId tid, Id id, Side side, Prc prc, Qty qty, Step step)
 {
 	auto b = side == Side::BUY ? &bids : &asks;
 	auto l = b->find(prc);
@@ -42,7 +42,7 @@ void Orderbook::addBook2(traderId tid, Id id, Side side, Prc prc, Qty qty)
 		l = b->emplace(std::make_pair(prc, Level{ 0, 0, Quotes{ } })).first;
 	l->second.ocnt++;
 	l->second.qty += qty;
-	auto q = l->second.quotes.emplace(l->second.quotes.end(), Quote{ tid, id, qty, prc, side });
+	auto q = l->second.quotes.emplace(l->second.quotes.end(), Quote{ tid, id, qty, prc, side, step });
 	lookup[std::make_pair(tid, id)] = std::make_tuple(b, l, q);
 }
 
@@ -106,14 +106,14 @@ void Orderbook::process(Order &q)
 			if (q.price >= std::get<0>(ask()))
 				cross(q);
 			else
-				addBook2(q.id, q.oid, q.side, q.price, q.qty);
+				addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
 		}
 		else
 		{
 			if (q.price <= std::get<0>(bid()))
 				cross(q);
 			else
-				addBook2(q.id, q.oid, q.side, q.price, q.qty);
+				addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
 		}
 	}
 	else
@@ -128,20 +128,87 @@ void Orderbook::process(Order &q)
 
 void Orderbook::cross(Order &q)
 {
+	Prc best;
 	if (q.side == Side::BUY)
 	{
-		std::cout << "Match Trade Ask\n" << std::endl;
+		while (q.qty > 0)
+		{
+			if ((best = std::get<0>(ask())))
+			{
+				if (q.price >= best)
+				{
+					if (q.qty >= asks[best].quotes.front().qty)
+					{
+						confirmTrade(asks[best].quotes.front().id, asks[best].quotes.front().oid, q.step,
+							asks[best].quotes.front().qty, asks[best].quotes.front().side, asks[best].quotes.front().prc);
+						addTrade(asks[best].quotes.front().id, asks[best].quotes.front().oid, asks[best].quotes.front().step,
+							q.id, q.oid, q.step, asks[best].quotes.front().qty, q.side, asks[best].quotes.front().prc);
+						q.qty -= asks[best].quotes.front().qty;
+						remove(asks[best].quotes.front().id, asks[best].quotes.front().oid, asks[best].quotes.front().qty);
+					}
+					else
+					{
+						confirmTrade(asks[best].quotes.front().id, asks[best].quotes.front().oid, q.step,
+							q.qty, asks[best].quotes.front().side, asks[best].quotes.front().prc);
+						addTrade(asks[best].quotes.front().id, asks[best].quotes.front().oid, asks[best].quotes.front().step,
+							q.id, q.oid, q.step, q.qty, q.side, asks[best].quotes.front().prc);
+						modify(asks[best].quotes.front().id, asks[best].quotes.front().oid, q.qty);
+						break;
+					}
+				}
+				else
+				{
+					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					break;
+				}
+			}
+			else
+			{
+				std::cout << "Ask Market Collapse with order: " << q.id << ":" << q.oid << "\n" << std::endl;
+			}
+		}
+		
 	}
 	else
 	{
-		std::cout << "Match Trade Bid\n" << std::endl;
+		while (q.qty > 0)
+		{
+			if ((best = std::get<0>(bid())))
+			{
+				if (q.price <= best)
+				{
+					if (q.qty >= bids[best].quotes.front().qty)
+					{
+						confirmTrade(bids[best].quotes.front().id, bids[best].quotes.front().oid, q.step,
+							bids[best].quotes.front().qty, bids[best].quotes.front().side, bids[best].quotes.front().prc);
+						addTrade(bids[best].quotes.front().id, bids[best].quotes.front().oid, bids[best].quotes.front().step,
+							q.id, q.oid, q.step, bids[best].quotes.front().qty, q.side, bids[best].quotes.front().prc);
+						q.qty -= bids[best].quotes.front().qty;
+						remove(bids[best].quotes.front().id, bids[best].quotes.front().oid, bids[best].quotes.front().qty);
+					}
+					else
+					{
+						confirmTrade(bids[best].quotes.front().id, bids[best].quotes.front().oid, q.step,
+							q.qty, bids[best].quotes.front().side, bids[best].quotes.front().prc);
+						addTrade(bids[best].quotes.front().id, bids[best].quotes.front().oid, bids[best].quotes.front().step,
+							q.id, q.oid, q.step, q.qty, q.side, bids[best].quotes.front().prc);
+						modify(bids[best].quotes.front().id, bids[best].quotes.front().oid, q.qty);
+						break;
+					}
+				}
+				else
+				{
+					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					break;
+				}
+			}
+			else
+			{
+				std::cout << "Bid Market Collapse with order: " << q.id << ":" << q.oid << "\n" << std::endl;
+			}
+		}
 	}
 }
-
-//std::vector<Execution> Orderbook::cross(Side side, Prc price, Qty qty)
-//{
-//	
-//}
 
 std::vector<TopOfBook>::iterator Orderbook::bookTop(Step step)
 {
