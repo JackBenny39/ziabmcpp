@@ -7,9 +7,9 @@
 
 #include "Orderbook.h"
 
-Orderbook::Orderbook()
+Orderbook::Orderbook() :
+	orderSequence(0)
 {
-	orderSequence = 0;
 }
 
 void Orderbook::addHistory(Order &q)
@@ -31,7 +31,6 @@ void Orderbook::addBook(traderId tid, Id id, Side side, Prc prc, Qty qty, Step s
 	auto l = b->find(prc);
 	auto q = l->second.quotes.begin();
 	lookup[std::make_pair(tid, id)] = std::make_tuple(b, l, q);
-	std::cout << "Trader: " << tid << ", Order: " << id << ", Quote info:" << q->oid << std::endl;
 }
 
 void Orderbook::addBook2(traderId tid, Id id, Side side, Prc prc, Qty qty, Step step)
@@ -165,6 +164,7 @@ void Orderbook::cross(Order &q)
 			else
 			{
 				std::cout << "Ask Market Collapse with order: " << q.id << ":" << q.oid << "\n" << std::endl;
+				break;
 			}
 		}
 		
@@ -205,6 +205,7 @@ void Orderbook::cross(Order &q)
 			else
 			{
 				std::cout << "Bid Market Collapse with order: " << q.id << ":" << q.oid << "\n" << std::endl;
+				break;
 			}
 		}
 	}
