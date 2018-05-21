@@ -61,6 +61,9 @@ public:
 	auto ask();
 	std::vector<TopOfBook>::iterator bookTop(Step);
 	void bookTop2(Step step);
+	void ordersToCsv(std::string);
+	void tradesToCsv(std::string);
+	void sipToCsv(std::string);
 
 private:
 	exId orderSequence;

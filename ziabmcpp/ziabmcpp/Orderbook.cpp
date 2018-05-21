@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 
+#include <fstream>
 #include <iostream>
 
 #include "Orderbook.h"
@@ -223,4 +224,46 @@ void Orderbook::bookTop2(Step step)
 	auto bestbid = bid();
 	auto bestask = ask();
 	tob.emplace_back(TopOfBook{ step, std::get<0>(bestbid), std::get<1>(bestbid), std::get<0>(bestask), std::get<1>(bestask) });
+}
+
+void Orderbook::ordersToCsv(std::string filename)
+{
+	char csd;
+	std::ofstream csvfile;
+	csvfile.open(filename);
+	csvfile << "Sequence," << "TraderId," << "OrderId," << "Step," << "OrderType,"
+			<< "Quantity," << "Side," << "Price\n";
+	for (auto& x : history)
+	{
+		csd = x.side == Side::BUY ? 'B' : 'S';
+		csvfile << x.exid << "," << x.id << "," << x.oid << "," << x.step << ","
+				<< x.otype << "," << x.qty << "," << csd << "," << x.price << "\n";
+	}
+	csvfile.close();
+}
+
+void Orderbook::tradesToCsv(std::string filename)
+{
+	char csd;
+	std::ofstream csvfile;
+	csvfile.open(filename);
+	csvfile << "RestTraderId," << "RestOrderId," << "RestStep," << "IncTraderId," << "IncOrderId,"
+		<< "IncStep," << "Quantity," << "Side," << "Price\n";
+	for (auto& x : trades)
+	{
+		csd = x.side == Side::BUY ? 'B' : 'S';
+		csvfile << x.restid << "," << x.restoid << "," << x.reststep << "," << x.incid << ","
+				<< x.incoid << "," << x.incstep << "," << x.qty << "," << csd << "," << x.price << "\n";
+	}
+	csvfile.close();
+}
+
+void Orderbook::sipToCsv(std::string filename)
+{
+	std::ofstream csvfile;
+	csvfile.open(filename);
+	csvfile << "Step," << "BestBidPrice," << "BestBidSize," << "BestAskPrice," << "BestAskSize\n";
+	for (auto& x : tob)
+		csvfile << x.step << "," << x.bestbid << "," << x.bestbidsz << "," << x.bestask << "," << x.bestasksz << "\n";
+	csvfile.close();
 }
