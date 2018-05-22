@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="Informed.h" />
     <ClInclude Include="Orderbook.h" />
+    <ClInclude Include="Provider.h" />
     <ClInclude Include="Sharedstx.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Taker.h" />
@@ -158,6 +159,7 @@
   <ItemGroup>
     <ClCompile Include="Informed.cpp" />
     <ClCompile Include="Orderbook.cpp" />
+    <ClCompile Include="Provider.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

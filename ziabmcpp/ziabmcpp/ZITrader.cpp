@@ -7,6 +7,7 @@
 
 #include "ZITrader.h"
 
+
 ZITrader::ZITrader(const int tnum, const int maxq)
 	: tId(tnum), orderSize(maxq), quoteSequence(0)
 {

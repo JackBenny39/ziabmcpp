@@ -16,7 +16,7 @@
 
 struct ExOrder { exId exid; traderId id; Id oid; Step step; char otype; Qty qty; Side side; Prc price; };
 struct ExTrade { traderId restid; Id restoid; Step reststep; traderId incid; Id incoid; Step incstep; Qty qty; Side side; Prc price; };
-struct TConfirm { traderId restid; Id restoid; Step reststep; Qty qty; Side side; Prc price; };
+
 struct MConfirm { traderId restid; Id restoid; Step reststep; Qty qty; Side side; };
 
 struct Quote { traderId id; Id oid; Qty qty; Prc prc; Side side; Step step; };
