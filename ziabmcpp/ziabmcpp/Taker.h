@@ -13,7 +13,7 @@ class Taker : public ZITrader
 {
 public:
 	Taker(const int, const int);
-	void processSignal(Step, double, double);
+	void processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 };
 
 #endif

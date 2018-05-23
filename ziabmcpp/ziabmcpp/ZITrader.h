@@ -9,6 +9,7 @@
 
 #include "Sharedstx.h"
 
+#include <random>
 #include <vector>		// std::vector
 
 

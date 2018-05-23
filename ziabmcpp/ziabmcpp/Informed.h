@@ -13,7 +13,7 @@ class Informed : public ZITrader
 {
 public:
 	Informed(const int, const int, Side);
-	void processSignal(Step, double, double);
+	void processSignal(Step);
 	Side side;
 	Prc price;
 };

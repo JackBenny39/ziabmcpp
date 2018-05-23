@@ -13,7 +13,7 @@ Informed::Informed(const int tnum, const int maxq, Side side)
 	price = side == Side::BUY ? 2000000 : 0;
 }
 
-void Informed::processSignal(Step step, double qTake, double buyP)
+void Informed::processSignal(Step step)
 {
 	Order q = makeAddQuote(step, side, price);
 	quoteCollector.push_back(q);
