@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 
-
 #include "Provider.h"
 
 Provider::Provider(const int tnum, const int maxq, const double delta)
@@ -35,7 +34,7 @@ void Provider::bulkCancel(Step step, std::mt19937 &engine, std::uniform_real_dis
 	for (auto &x : localBook)
 	{
 		if (dist(engine) < delta)
-			cancelCollector.push_back(makeCancelQuote(x.second, step));
+			cancelCollector.emplace_back(makeCancelQuote(x.second, step));
 	}
 }
 
