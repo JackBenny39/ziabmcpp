@@ -15,6 +15,5 @@ Informed::Informed(const int tnum, const int maxq, Side side)
 
 void Informed::processSignal(Step step)
 {
-	Order q = makeAddQuote(step, side, price);
-	quoteCollector.push_back(q);
+	quoteCollector.emplace_back(makeAddQuote(step, side, price));
 }

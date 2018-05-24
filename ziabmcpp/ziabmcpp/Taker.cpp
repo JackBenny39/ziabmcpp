@@ -16,7 +16,6 @@ void Taker::processSignal(Step step, double qTake, std::mt19937 &engine, std::un
 {
 	Prc price;
 	Side side;
-	std::uniform_real_distribution<> distUreal(0, 1);
 
 	if (dist(engine) < qTake)
 	{
@@ -28,6 +27,5 @@ void Taker::processSignal(Step step, double qTake, std::mt19937 &engine, std::un
 		price = 0;
 		side = Side::SELL;
 	}
-	Order q = makeAddQuote(step, side, price);
-	quoteCollector.push_back(q);
+	quoteCollector.emplace_back(makeAddQuote(step, side, price));
 }
