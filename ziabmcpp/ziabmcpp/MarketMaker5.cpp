@@ -10,8 +10,6 @@ MarketMaker5::MarketMaker5(const int tnum, const int maxq, const double delta, c
 {
 }
 
-
-
 void MarketMaker5::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
 	Prc maxBid, minAsk;
