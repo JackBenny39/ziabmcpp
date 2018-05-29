@@ -1,4 +1,4 @@
-// Provider.h
+// MarketMaker.h
 
 #pragma once
 
@@ -6,8 +6,6 @@
 #define MARKETMAKER_H
 
 #include "stdafx.h"
-
-#include <unordered_map>
 
 #include "Provider.h"
 
