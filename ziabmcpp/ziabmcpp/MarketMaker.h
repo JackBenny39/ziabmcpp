@@ -9,7 +9,7 @@
 
 #include "Provider.h"
 
-struct CFlow { traderId id; Step step; uint64_t cashFlow; unsigned position; };
+struct CFlow { traderId id; Step step; int64_t cashFlow; unsigned position; };
 
 class MarketMaker : public Provider
 {
@@ -21,7 +21,7 @@ public:
 	int numQuotes;
 	int quoteRange;
 	unsigned position;
-	uint64_t cashFlow;
+	int64_t cashFlow;
 };
 
 #endif
