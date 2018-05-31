@@ -14,11 +14,10 @@ class PennyJumper : public ZITrader
 public:
 	PennyJumper(const int, const int, const Prc);
 	Order makeCancelQuote(Order &, Step);
-	std::vector<Order> cancelCollector;
+	std::vector<Order> cancelCollector, askBook, bidBook;
 	void confirmTrade(TConfirm &);
 	void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	Prc mpi;
-	Order askQuote, bidQuote, nullAsk, nullBid;
 };
 
 #endif
