@@ -20,7 +20,7 @@ void MarketMaker5::processSignal(TopOfBook &tob, Step step, double qProvide, dou
 		std::uniform_int_distribution<Prc> distU(maxBid - quoteRange + 1, maxBid);
 		for (int i = 1; i < numQuotes; i++)
 		{
-			q = makeAddQuote(step, Side::BUY, 5 * nearbyint(distU(engine) / 5));
+			q = makeAddQuote(step, Side::BUY, static_cast<Prc>(5 * nearbyint(distU(engine) / 5.0)));
 			quoteCollector.push_back(q);
 			localBook[q.oid] = q;
 		}
@@ -31,7 +31,7 @@ void MarketMaker5::processSignal(TopOfBook &tob, Step step, double qProvide, dou
 		std::uniform_int_distribution<Prc> distU(minAsk, minAsk + quoteRange - 1);
 		for (int i = 1; i < numQuotes; i++)
 		{
-			q = makeAddQuote(step, Side::SELL, 5 * nearbyint(distU(engine) / 5));
+			q = makeAddQuote(step, Side::SELL, static_cast<Prc>(5 * nearbyint(distU(engine) / 5.0)));
 			quoteCollector.push_back(q);
 			localBook[q.oid] = q;
 		}

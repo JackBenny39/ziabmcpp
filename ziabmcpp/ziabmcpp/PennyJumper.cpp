@@ -2,7 +2,6 @@
 // PennyJumper class
 
 #include "stdafx.h"
-#include <iostream>
 
 #include "PennyJumper.h"
 
