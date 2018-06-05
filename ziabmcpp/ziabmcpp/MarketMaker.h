@@ -15,13 +15,9 @@ class MarketMaker : public Provider
 {
 public:
 	MarketMaker(const int, const int, const double, const int, const int);
-	void confirmTrade(TConfirm &);
+	void confirmTrade(TConfirm &); // need this? declared in Provider
 	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	std::vector<CFlow> cashFlowCollector;
-	int numQuotes;
-	int quoteRange;
-	unsigned position;
-	int64_t cashFlow;
 };
 
 #endif

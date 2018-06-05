@@ -19,7 +19,15 @@ public:
 	ZITrader(const int, const int);
 	Qty orderSize;
 	char traderType;
+	Side side;
 	traderId tId;
+	Prc price;
+	double delta;
+	int numQuotes;
+	int quoteRange;
+	unsigned position;
+	int64_t cashFlow;
+	Prc mpi;
 	Order makeAddQuote(Step, Side, Prc);
 	std::vector<Order> quoteCollector;
 private:

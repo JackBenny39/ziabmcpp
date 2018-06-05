@@ -6,10 +6,11 @@
 
 #include "Informed.h"
 
-Informed::Informed(const int tnum, const int maxq, Side side)
-	: ZITrader(tnum, maxq), side(side)
+Informed::Informed(const int tnum, const int maxq, Side sidein)
+	: ZITrader(tnum, maxq)
 {
 	traderType = 'I';
+	side = sidein;
 	price = side == Side::BUY ? 2000000 : 0;
 }
 

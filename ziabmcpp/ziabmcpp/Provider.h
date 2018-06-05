@@ -23,7 +23,6 @@ public:
 	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	Prc chooseP(Side, Prc, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
-	double delta;
 };
 
 #endif

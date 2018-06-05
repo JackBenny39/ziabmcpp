@@ -6,9 +6,13 @@
 #include "MarketMaker.h"
 
 MarketMaker::MarketMaker(const int tnum, const int maxq, const double delta, const int qRange, const int numQ)
-	: Provider(tnum, maxq, delta), quoteRange(qRange), numQuotes(numQ + 1), position(0), cashFlow(0)
+	: Provider(tnum, maxq, delta)
 {
 	traderType = 'M';
+	quoteRange = qRange;
+	numQuotes = numQ + 1;
+	position = 0;
+	cashFlow = 0;
 }
 
 void MarketMaker::confirmTrade(TConfirm &c)
