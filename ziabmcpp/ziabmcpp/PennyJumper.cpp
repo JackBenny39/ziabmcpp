@@ -5,12 +5,8 @@
 
 #include "PennyJumper.h"
 
-PennyJumper::PennyJumper(const int tnum, const int maxq, Prc mpiin)
-	: ZITrader(tnum, maxq)
-{
-	traderType = 'J';
-	mpi = mpiin;
-}
+PennyJumper::PennyJumper(const int tnum, const int maxq, Prc mpi)
+	: ZITrader(tnum, maxq, mpi) { traderType = 'J'; }
 
 Order PennyJumper::makeCancelQuote(Order &q, Step timestamp)
 {

@@ -15,6 +15,7 @@ class Provider : public ZITrader
 {
 public:
 	Provider(const int, const int, const double);
+	Provider(const int, const int, const double, const int, const int);
 	std::unordered_map<Id, Order> localBook;
 	Order makeCancelQuote(Order &, Step);
 	std::vector<Order> cancelCollector;

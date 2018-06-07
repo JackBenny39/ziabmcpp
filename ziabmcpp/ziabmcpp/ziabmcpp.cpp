@@ -1,9 +1,9 @@
 // ziabmcpp.cpp : Defines the entry point for the console application.
 //
 
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
 
 #include "stdafx.h"
 
@@ -194,6 +194,162 @@ void testInformed()
 	std::cout << std::endl;
 }
 
+void testProvider()
+{
+	cSide cSide1;
+	Provider p1(3001, setMaxQ(50), 0.85);
+
+	// Test constructor
+	std::cout << "Trader Type: " << p1.traderType << "\n";
+	std::cout << "Max Quantity: " << p1.orderSize << "\n";
+	std::cout << "Trader ID: " << p1.tId << "\n";
+	std::cout << "Delta: " << p1.delta << "\n";
+	std::cout << "Quote Collector Before: " << p1.quoteCollector.size() << "\n";
+
+	// Test makeCancelQuote
+	Order o3{ 3001, 2, 3, 'A', 100, Side::SELL, 1005 };
+	Order c1 = p1.makeCancelQuote(o3, 132);
+	cSide1 = c1.side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nTest makeCancelQuote: \n";
+	std::cout << "First Cancel: \n";
+	std::cout << "Trader ID: " << c1.id << "\n";
+	std::cout << "Order ID: " << c1.oid << "\n";
+	std::cout << "Timestamp: " << c1.step << "\n";
+	std::cout << "Type: " << c1.otype << "\n";
+	std::cout << "Quantity: " << c1.qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << c1.price << "\n";
+
+	// Test processSignal and chooseP (seed = 39)
+	Step step1;
+	TopOfBook tob;
+
+	step1 = 27;
+	tob = { step1, 999, 250, 1008, 300 };
+	//	simpleTest(engine, distUreal);
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "First Order (Sell @ 1019): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[0].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[0].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[0].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[0].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[0].price << "\n";
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[1].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "Second Order (Buy @ 957): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[1].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[1].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[1].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[1].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[1].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[1].price << "\n";
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[2].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "Third Order (Sell @ 1076): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[2].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[2].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[2].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[2].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[2].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[2].price << "\n";
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[3].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "Fourth Order (Buy @ 962): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[3].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[3].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[3].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[3].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[3].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[3].price << "\n";
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[4].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "Fifth Order (Sell @ 1020): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[4].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[4].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[4].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[4].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[4].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[4].price << "\n";
+
+	std::cout << "\nOrder Book:" << "\n";
+	for (auto &x : p1.localBook)
+		std::cout << "TraderId: " << x.second.id
+		<< " Order Id: " << x.second.oid
+		<< " Order Type: " << x.second.otype
+		<< " Order Price: " << x.second.price
+		<< " Order Qty: " << x.second.qty
+		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
+		<< " Order Step: " << x.second.step << "\n";
+
+	// Test bulkCancel with delta = 0.85
+	p1.bulkCancel(45, engine, distUreal);
+	std::cout << "\nCancel Collector should have two orders: 3&4" << "\n";
+	for (auto &x : p1.cancelCollector)
+		std::cout << "TraderId: " << x.id
+		<< " Order Id: " << x.oid
+		<< " Order Type: " << x.otype
+		<< " Order Price: " << x.price
+		<< " Order Qty: " << x.qty
+		<< " Order Side: " << (x.side == Side::BUY ? 'B' : 'S')
+		<< " Order Step: " << x.step << "\n";
+
+	// Test confirm Cancel by removing #5 from localBook
+	p1.confirmCancel(5);
+	std::cout << "\nOrder Book should be missing #5:" << "\n";
+	for (auto &x : p1.localBook)
+		std::cout << "TraderId: " << x.second.id
+		<< " Order Id: " << x.second.oid
+		<< " Order Type: " << x.second.otype
+		<< " Order Price: " << x.second.price
+		<< " Order Qty: " << x.second.qty
+		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
+		<< " Order Step: " << x.second.step << "\n";
+
+	//Test confirmTrade by removing 30 shares, then the remaining 20
+	TConfirm t1{ 3001, 4, 89, 30, Side::BUY, 962 };
+	p1.confirmTrade(t1);
+	std::cout << "\nOrder Book #4 should have quantity = 20:" << "\n";
+	for (auto &x : p1.localBook)
+		std::cout << "TraderId: " << x.second.id
+		<< " Order Id: " << x.second.oid
+		<< " Order Type: " << x.second.otype
+		<< " Order Price: " << x.second.price
+		<< " Order Qty: " << x.second.qty
+		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
+		<< " Order Step: " << x.second.step << "\n";
+
+	TConfirm t2{ 3001, 4, 92, 20, Side::BUY, 962 };
+	p1.confirmTrade(t2);
+	std::cout << "\nOrder Book should be missing #4:" << "\n";
+	for (auto &x : p1.localBook)
+		std::cout << "TraderId: " << x.second.id
+		<< " Order Id: " << x.second.oid
+		<< " Order Type: " << x.second.otype
+		<< " Order Price: " << x.second.price
+		<< " Order Qty: " << x.second.qty
+		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
+		<< " Order Step: " << x.second.step << "\n";
+
+	std::cout << std::endl;
+}
+
 void testExchangeAddHistory()
 {
 	Orderbook exchange1 = Orderbook();
@@ -217,6 +373,218 @@ void testExchangeAddHistory()
 	std::cout << "Quantity: " << exchange1.history[0].qty << "\n";
 	std::cout << "Side: " << cSide4 << "\n";
 	std::cout << "Price: " << exchange1.history[0].price << "\n";
+	std::cout << std::endl;
+}
+
+void testProvider5()
+{
+	cSide cSide1;
+	Provider5 p1(3001, setMaxQ(50), 0.05);
+
+	// Test constructor
+	std::cout << "Trader Type: " << p1.traderType << "\n";
+	std::cout << "Max Quantity: " << p1.orderSize << "\n";
+	std::cout << "Trader ID: " << p1.tId << "\n";
+	std::cout << "Delta: " << p1.delta << "\n";
+	std::cout << "Quote Collector Before: " << p1.quoteCollector.size() << "\n";
+
+	// Test processSignal and chooseP (seed = 39)
+	Step step1;
+	TopOfBook tob;
+
+	step1 = 27;
+	tob = { step1, 995, 250, 1010, 300 };
+	//	simpleTest(engine, distUreal);
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "First Order (Sell @ 1020): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[0].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[0].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[0].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[0].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[0].price << "\n";
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[1].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "Second Order (Buy @ 955): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[1].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[1].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[1].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[1].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[1].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[1].price << "\n";
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[2].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "Third Order (Sell @ 1075): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[2].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[2].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[2].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[2].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[2].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[2].price << "\n";
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[3].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "Fourth Order (Buy @ 960): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[3].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[3].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[3].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[3].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[3].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[3].price << "\n";
+
+	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	cSide1 = p1.quoteCollector[4].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
+	std::cout << "Fifth Order (Sell @ 1020): \n";
+	std::cout << "Trader ID: " << p1.quoteCollector[4].id << "\n";
+	std::cout << "Order ID: " << p1.quoteCollector[4].oid << "\n";
+	std::cout << "Timestamp: " << p1.quoteCollector[4].step << "\n";
+	std::cout << "Type: " << p1.quoteCollector[4].otype << "\n";
+	std::cout << "Quantity: " << p1.quoteCollector[4].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << p1.quoteCollector[4].price << "\n";
+
+	std::cout << "\nOrder Book:" << "\n";
+	for (auto &x : p1.localBook)
+		std::cout << "TraderId: " << x.second.id
+		<< " Order Id: " << x.second.oid
+		<< " Order Type: " << x.second.otype
+		<< " Order Price: " << x.second.price
+		<< " Order Qty: " << x.second.qty
+		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
+		<< " Order Step: " << x.second.step << "\n";
+	std::cout << std::endl;
+}
+
+void testMarketMaker()
+{
+	cSide cSide1;
+	MarketMaker m1(7001, setMaxQ(50), 0.05, 60, 12);
+
+	// Test constructor
+	std::cout << "Trader Type: " << m1.traderType << "\n";
+	std::cout << "Max Quantity: " << m1.orderSize << "\n";
+	std::cout << "Trader ID: " << m1.tId << "\n";
+	std::cout << "Delta: " << m1.delta << "\n";
+	std::cout << "Quote Interval: " << m1.quoteRange << "\n";
+	std::cout << "Number of Quotes: " << m1.numQuotes << "\n";
+	std::cout << "Quote Collector Before: " << m1.quoteCollector.size() << "\n";
+
+	// Test confirmTrade
+	std::cout << "\n\nBefore Trade Confirm:" << "\n";
+	std::cout << "Cash Flow Before: " << m1.cashFlow << "\n";
+	std::cout << "Position Before: " << m1.position << "\n";
+	TConfirm t1{ 7001, 4, 89, 30, Side::BUY, 962 };
+	m1.confirmTrade(t1);
+	std::cout << "\nAfter Trade Confirm 1:" << "\n";
+	std::cout << "Cash Flow After 1: " << m1.cashFlow << "\n";
+	std::cout << "Position After 1: " << m1.position << "\n";
+	TConfirm t2{ 7001, 7, 95, 30, Side::SELL, 963 };
+	m1.confirmTrade(t2);
+	std::cout << "\nAfter Trade Confirm 2:" << "\n";
+	std::cout << "Cash Flow After 2: " << m1.cashFlow << "\n";
+	std::cout << "Position After 2: " << m1.position << "\n";
+
+	// Test processSignal
+	Step step1;
+	TopOfBook tob;
+
+	step1 = 27;
+	tob = { step1, 995, 1, 1010, 1 };
+	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	for (auto& x : m1.quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	m1.quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
+
+	step1 = 35;
+	tob = { step1, 995, 1, 1010, 1 };
+	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	for (auto& x : m1.quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	m1.quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
+
+	std::cout << std::endl;
+}
+
+void testMarketMaker5()
+{
+	cSide cSide1;
+	MarketMaker5 m1(7001, setMaxQ(50), 0.05, 60, 12);
+
+	// Test constructor
+	std::cout << "Trader Type: " << m1.traderType << "\n";
+	std::cout << "Max Quantity: " << m1.orderSize << "\n";
+	std::cout << "Trader ID: " << m1.tId << "\n";
+	std::cout << "Delta: " << m1.delta << "\n";
+	std::cout << "Quote Interval: " << m1.quoteRange << "\n";
+	std::cout << "Number of Quotes: " << m1.numQuotes << "\n";
+	std::cout << "Quote Collector Before: " << m1.quoteCollector.size() << "\n";
+
+	// Test confirmTrade
+	std::cout << "\n\nBefore Trade Confirm:" << "\n";
+	std::cout << "Cash Flow Before: " << m1.cashFlow << "\n";
+	std::cout << "Position Before: " << m1.position << "\n";
+	TConfirm t1{ 7001, 4, 89, 30, Side::BUY, 962 };
+	m1.confirmTrade(t1);
+	std::cout << "\nAfter Trade Confirm 1:" << "\n";
+	std::cout << "Cash Flow After 1: " << m1.cashFlow << "\n";
+	std::cout << "Position After 1: " << m1.position << "\n";
+	TConfirm t2{ 7001, 7, 95, 30, Side::SELL, 963 };
+	m1.confirmTrade(t2);
+	std::cout << "\nAfter Trade Confirm 2:" << "\n";
+	std::cout << "Cash Flow After 2: " << m1.cashFlow << "\n";
+	std::cout << "Position After 2: " << m1.position << "\n";
+
+	// Test processSignal
+	Step step1;
+	TopOfBook tob;
+
+	step1 = 27;
+	tob = { step1, 995, 1, 1010, 1 };
+	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	for (auto& x : m1.quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	m1.quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
+
+	step1 = 35;
+	tob = { step1, 995, 1, 1010, 1 };
+	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	for (auto& x : m1.quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	m1.quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
+
 	std::cout << std::endl;
 }
 
@@ -1074,254 +1442,6 @@ void testExchangeSipToCsv()
 	exchange1.sipToCsv(filer);
 }
 
-void testProvider()
-{
-	cSide cSide1;
-	Provider p1(3001, setMaxQ(50), 0.85);
-	
-	// Test constructor
-	std::cout << "Trader Type: " << p1.traderType << "\n";
-	std::cout << "Max Quantity: " << p1.orderSize << "\n";
-	std::cout << "Trader ID: " << p1.tId << "\n";
-	std::cout << "Delta: " << p1.delta << "\n";
-	std::cout << "Quote Collector Before: " << p1.quoteCollector.size() << "\n";
-
-	// Test makeCancelQuote
-	Order o3{ 3001, 2, 3, 'A', 100, Side::SELL, 1005 };
-	Order c1 = p1.makeCancelQuote(o3, 132);
-	cSide1 = c1.side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nTest makeCancelQuote: \n";
-	std::cout << "First Cancel: \n";
-	std::cout << "Trader ID: " << c1.id << "\n";
-	std::cout << "Order ID: " << c1.oid << "\n";
-	std::cout << "Timestamp: " << c1.step << "\n";
-	std::cout << "Type: " << c1.otype << "\n";
-	std::cout << "Quantity: " << c1.qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << c1.price << "\n";
-
-	// Test processSignal and chooseP (seed = 39)
-	Step step1;
-	TopOfBook tob;
-
-	step1 = 27;
-	tob = { step1, 999, 250, 1008, 300 };
-//	simpleTest(engine, distUreal);
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[0].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "First Order (Sell @ 1019): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[0].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[0].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[0].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[0].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[0].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[0].price << "\n";
-	
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[1].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "Second Order (Buy @ 957): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[1].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[1].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[1].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[1].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[1].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[1].price << "\n";
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[2].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "Third Order (Sell @ 1076): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[2].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[2].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[2].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[2].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[2].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[2].price << "\n";
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[3].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "Fourth Order (Buy @ 962): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[3].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[3].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[3].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[3].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[3].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[3].price << "\n";
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[4].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "Fifth Order (Sell @ 1020): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[4].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[4].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[4].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[4].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[4].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[4].price << "\n";
-
-	std::cout << "\nOrder Book:" << "\n";
-	for (auto &x : p1.localBook)
-		std::cout << "TraderId: " << x.second.id 
-					<< " Order Id: " << x.second.oid
-					<< " Order Type: " << x.second.otype
-					<< " Order Price: " << x.second.price
-					<< " Order Qty: " << x.second.qty
-					<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
-					<< " Order Step: " << x.second.step << "\n";
-
-	// Test bulkCancel with delta = 0.85
-	p1.bulkCancel(45, engine, distUreal);
-	std::cout << "\nCancel Collector should have two orders: 3&4" << "\n";
-	for (auto &x : p1.cancelCollector)
-		std::cout << "TraderId: " << x.id
-		<< " Order Id: " << x.oid
-		<< " Order Type: " << x.otype
-		<< " Order Price: " << x.price
-		<< " Order Qty: " << x.qty
-		<< " Order Side: " << (x.side == Side::BUY ? 'B' : 'S')
-		<< " Order Step: " << x.step << "\n";
-
-	// Test confirm Cancel by removing #5 from localBook
-	p1.confirmCancel(5);
-	std::cout << "\nOrder Book should be missing #5:" << "\n";
-	for (auto &x : p1.localBook)
-		std::cout << "TraderId: " << x.second.id
-		<< " Order Id: " << x.second.oid
-		<< " Order Type: " << x.second.otype
-		<< " Order Price: " << x.second.price
-		<< " Order Qty: " << x.second.qty
-		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
-		<< " Order Step: " << x.second.step << "\n";
-
-	//Test confirmTrade by removing 30 shares, then the remaining 20
-	TConfirm t1 { 3001, 4, 89, 30, Side::BUY, 962 };
-	p1.confirmTrade(t1);
-	std::cout << "\nOrder Book #4 should have quantity = 20:" << "\n";
-	for (auto &x : p1.localBook)
-		std::cout << "TraderId: " << x.second.id
-		<< " Order Id: " << x.second.oid
-		<< " Order Type: " << x.second.otype
-		<< " Order Price: " << x.second.price
-		<< " Order Qty: " << x.second.qty
-		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
-		<< " Order Step: " << x.second.step << "\n";
-	
-	TConfirm t2{ 3001, 4, 92, 20, Side::BUY, 962 };
-	p1.confirmTrade(t2);
-	std::cout << "\nOrder Book should be missing #4:" << "\n";
-	for (auto &x : p1.localBook)
-		std::cout << "TraderId: " << x.second.id
-		<< " Order Id: " << x.second.oid
-		<< " Order Type: " << x.second.otype
-		<< " Order Price: " << x.second.price
-		<< " Order Qty: " << x.second.qty
-		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
-		<< " Order Step: " << x.second.step << "\n";
-
-	std::cout << std::endl;
-}
-
-void testProvider5()
-{
-	cSide cSide1;
-	Provider5 p1(3001, setMaxQ(50), 0.05);
-
-	// Test constructor
-	std::cout << "Trader Type: " << p1.traderType << "\n";
-	std::cout << "Max Quantity: " << p1.orderSize << "\n";
-	std::cout << "Trader ID: " << p1.tId << "\n";
-	std::cout << "Delta: " << p1.delta << "\n";
-	std::cout << "Quote Collector Before: " << p1.quoteCollector.size() << "\n";
-
-	// Test processSignal and chooseP (seed = 39)
-	Step step1;
-	TopOfBook tob;
-
-	step1 = 27;
-	tob = { step1, 995, 250, 1010, 300 };
-	//	simpleTest(engine, distUreal);
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[0].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "First Order (Sell @ 1020): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[0].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[0].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[0].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[0].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[0].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[0].price << "\n";
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[1].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "Second Order (Buy @ 955): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[1].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[1].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[1].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[1].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[1].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[1].price << "\n";
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[2].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "Third Order (Sell @ 1075): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[2].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[2].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[2].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[2].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[2].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[2].price << "\n";
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[3].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "Fourth Order (Buy @ 960): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[3].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[3].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[3].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[3].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[3].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[3].price << "\n";
-
-	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	cSide1 = p1.quoteCollector[4].side == Side::BUY ? 'B' : 'S';
-	std::cout << "\n\nQuote Collector After: " << p1.quoteCollector.size() << "\n";
-	std::cout << "Fifth Order (Sell @ 1020): \n";
-	std::cout << "Trader ID: " << p1.quoteCollector[4].id << "\n";
-	std::cout << "Order ID: " << p1.quoteCollector[4].oid << "\n";
-	std::cout << "Timestamp: " << p1.quoteCollector[4].step << "\n";
-	std::cout << "Type: " << p1.quoteCollector[4].otype << "\n";
-	std::cout << "Quantity: " << p1.quoteCollector[4].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << p1.quoteCollector[4].price << "\n";
-
-	std::cout << "\nOrder Book:" << "\n";
-	for (auto &x : p1.localBook)
-		std::cout << "TraderId: " << x.second.id
-		<< " Order Id: " << x.second.oid
-		<< " Order Type: " << x.second.otype
-		<< " Order Price: " << x.second.price
-		<< " Order Qty: " << x.second.qty
-		<< " Order Side: " << (x.second.side == Side::BUY ? 'B' : 'S')
-		<< " Order Step: " << x.second.step << "\n";
-	std::cout << std::endl;
-}
-
 void testExp()
 {
 	std::exponential_distribution<double> distribution(1.0);
@@ -1348,126 +1468,6 @@ void testFromUnifrom(std::mt19937 &engine, std::uniform_real_distribution<> &dis
 		expfile << uni << "\n";
 	}
 	expfile.close();
-}
-
-void testMarketMaker()
-{
-	cSide cSide1;
-	MarketMaker m1(7001, setMaxQ(50), 0.05, 60, 12);
-
-	// Test constructor
-	std::cout << "Trader Type: " << m1.traderType << "\n";
-	std::cout << "Max Quantity: " << m1.orderSize << "\n";
-	std::cout << "Trader ID: " << m1.tId << "\n";
-	std::cout << "Delta: " << m1.delta << "\n";
-	std::cout << "Quote Interval: " << m1.quoteRange << "\n";
-	std::cout << "Number of Quotes: " << m1.numQuotes << "\n";
-	std::cout << "Quote Collector Before: " << m1.quoteCollector.size() << "\n";
-
-	// Test confirmTrade
-	std::cout << "\n\nBefore Trade Confirm:" << "\n";
-	std::cout << "Cash Flow Before: " << m1.cashFlow << "\n";
-	std::cout << "Position Before: " << m1.position << "\n";
-	TConfirm t1{ 7001, 4, 89, 30, Side::BUY, 962 };
-	m1.confirmTrade(t1);
-	std::cout << "\nAfter Trade Confirm 1:" << "\n";
-	std::cout << "Cash Flow After 1: " << m1.cashFlow << "\n";
-	std::cout << "Position After 1: " << m1.position << "\n";
-	TConfirm t2{ 7001, 7, 95, 30, Side::SELL, 963 };
-	m1.confirmTrade(t2);
-	std::cout << "\nAfter Trade Confirm 2:" << "\n";
-	std::cout << "Cash Flow After 2: " << m1.cashFlow << "\n";
-	std::cout << "Position After 2: " << m1.position << "\n";
-
-	// Test processSignal
-	Step step1;
-	TopOfBook tob;
-
-	step1 = 27;
-	tob = { step1, 995, 1, 1010, 1 };
-	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	std::cout << "\n\nProcess signal: \n";
-	for (auto& x : m1.quoteCollector)
-	{
-		cSide1 = x.side == Side::BUY ? 'B' : 'S';
-		std::cout << cSide1 << ":" << x.price << "\n";
-	}
-	m1.quoteCollector.clear();
-	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
-
-	step1 = 35;
-	tob = { step1, 995, 1, 1010, 1 };
-	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	std::cout << "\n\nProcess signal: \n";
-	for (auto& x : m1.quoteCollector)
-	{
-		cSide1 = x.side == Side::BUY ? 'B' : 'S';
-		std::cout << cSide1 << ":" << x.price << "\n";
-	}
-	m1.quoteCollector.clear();
-	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
-
-	std::cout << std::endl;
-}
-
-void testMarketMaker5()
-{
-	cSide cSide1;
-	MarketMaker5 m1(7001, setMaxQ(50), 0.05, 60, 12);
-
-	// Test constructor
-	std::cout << "Trader Type: " << m1.traderType << "\n";
-	std::cout << "Max Quantity: " << m1.orderSize << "\n";
-	std::cout << "Trader ID: " << m1.tId << "\n";
-	std::cout << "Delta: " << m1.delta << "\n";
-	std::cout << "Quote Interval: " << m1.quoteRange << "\n";
-	std::cout << "Number of Quotes: " << m1.numQuotes << "\n";
-	std::cout << "Quote Collector Before: " << m1.quoteCollector.size() << "\n";
-
-	// Test confirmTrade
-	std::cout << "\n\nBefore Trade Confirm:" << "\n";
-	std::cout << "Cash Flow Before: " << m1.cashFlow << "\n";
-	std::cout << "Position Before: " << m1.position << "\n";
-	TConfirm t1{ 7001, 4, 89, 30, Side::BUY, 962 };
-	m1.confirmTrade(t1);
-	std::cout << "\nAfter Trade Confirm 1:" << "\n";
-	std::cout << "Cash Flow After 1: " << m1.cashFlow << "\n";
-	std::cout << "Position After 1: " << m1.position << "\n";
-	TConfirm t2{ 7001, 7, 95, 30, Side::SELL, 963 };
-	m1.confirmTrade(t2);
-	std::cout << "\nAfter Trade Confirm 2:" << "\n";
-	std::cout << "Cash Flow After 2: " << m1.cashFlow << "\n";
-	std::cout << "Position After 2: " << m1.position << "\n";
-
-	// Test processSignal
-	Step step1;
-	TopOfBook tob;
-
-	step1 = 27;
-	tob = { step1, 995, 1, 1010, 1 };
-	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	std::cout << "\n\nProcess signal: \n";
-	for (auto& x : m1.quoteCollector)
-	{
-		cSide1 = x.side == Side::BUY ? 'B' : 'S';
-		std::cout << cSide1 << ":" << x.price << "\n";
-	}
-	m1.quoteCollector.clear();
-	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
-
-	step1 = 35;
-	tob = { step1, 995, 1, 1010, 1 };
-	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
-	std::cout << "\n\nProcess signal: \n";
-	for (auto& x : m1.quoteCollector)
-	{
-		cSide1 = x.side == Side::BUY ? 'B' : 'S';
-		std::cout << cSide1 << ":" << x.price << "\n";
-	}
-	m1.quoteCollector.clear();
-	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
-
-	std::cout << std::endl;
 }
 
 void testMM5PS()
@@ -1779,6 +1779,13 @@ int main()
 
 //	testZITrader();
 //	testTaker();
+//	testInformed();
+//	testProvider();
+//	testProvider5();
+//	testMarketMaker();
+//	testMarketMaker5();
+//	testPJ();
+
 //	testOrderbookQuote();
 //	testExchangeAddHistory();
 //	testExchangeAddBook2();
@@ -1796,19 +1803,14 @@ int main()
 //	testExchangeOrdersToCsv();
 //	testExchangeTradesToCsv();
 //	testExchangeSipToCsv();
-//	testInformed();
-//	testProvider();
-//	simpleTest(engine, distUreal);
-//	simpleTest(engine, distUreal);
-//	testProvider5();
 
+//	simpleTest(engine, distUreal);
+//	simpleTest(engine, distUreal);
 //	testMM5PS();
-//	testPJ();
 
-//	testMarketMaker();
-//	testMarketMaker5();
-	testBucket();
 //	_CrtDumpMemoryLeaks();
+
+	testBucket();
 
 	return 0;
 }

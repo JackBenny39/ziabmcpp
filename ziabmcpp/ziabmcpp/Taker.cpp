@@ -14,18 +14,8 @@ Taker::Taker(const int tnum, const int maxq)
 
 void Taker::processSignal(Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
-	Prc price;
-	Side side;
-
 	if (dist(engine) < qTake)
-	{
-		price = 2000000;
-		side = Side::BUY;
-	}
+		quoteCollector.emplace_back(makeAddQuote(step, Side::BUY, 2000000));
 	else
-	{
-		price = 0;
-		side = Side::SELL;
-	}
-	quoteCollector.emplace_back(makeAddQuote(step, side, price));
+		quoteCollector.emplace_back(makeAddQuote(step, Side::SELL, 0));
 }

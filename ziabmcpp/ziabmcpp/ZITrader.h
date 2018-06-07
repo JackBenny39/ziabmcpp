@@ -17,17 +17,19 @@ class ZITrader
 {
 public:
 	ZITrader(const int, const int);
+	ZITrader(const int, const int, Side);
+	ZITrader(const int, const int, const double);
+	ZITrader(const int, const int, const double, const int, const int);
+	ZITrader(const int, const int, const Prc);
+	traderId tId;
 	Qty orderSize;
 	char traderType;
-	Side side;
-	traderId tId;
-	Prc price;
+	Side side; // must precede price
+	Prc price, mpi;
 	double delta;
-	int numQuotes;
-	int quoteRange;
+	int numQuotes, quoteRange;
 	unsigned position;
 	int64_t cashFlow;
-	Prc mpi;
 	Order makeAddQuote(Step, Side, Prc);
 	std::vector<Order> quoteCollector;
 private:

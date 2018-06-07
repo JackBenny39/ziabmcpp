@@ -6,11 +6,10 @@
 #include "Provider.h"
 
 Provider::Provider(const int tnum, const int maxq, const double dlt)
-	: ZITrader(tnum, maxq)
-{
-	traderType = 'P';
-	delta = dlt;
-}
+	: ZITrader(tnum, maxq, dlt) { traderType = 'P'; }
+
+Provider::Provider(const int tnum, const int maxq, const double dlt, const int qRange, const int numQ)
+	: ZITrader(tnum, maxq, dlt, qRange, numQ) { }
 
 Order Provider::makeCancelQuote(Order &q, Step timestamp)
 {
@@ -52,7 +51,7 @@ void Provider::processSignal(TopOfBook &tob, Step step, double qProvide, double 
 
 Prc Provider::chooseP(Side side, Prc inside, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
-	Prc plug = (int)(lambdaT * log(dist(engine)));
+	Prc plug = static_cast<int>(lambdaT * log(dist(engine)));
 	if (side == Side::BUY)
 		return inside - 1 - plug;
 	else
