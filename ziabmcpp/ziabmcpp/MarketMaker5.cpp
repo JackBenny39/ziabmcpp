@@ -5,8 +5,8 @@
 
 #include "MarketMaker5.h"
 
-MarketMaker5::MarketMaker5(const int tnum, const int maxq, const double delta, const int qRange, const int numQ)
-	: MarketMaker(tnum, maxq, delta, qRange, numQ) { }
+MarketMaker5::MarketMaker5(const Step arr, const int tnum, const int maxq, const double delta, const int qRange, const int numQ)
+	: MarketMaker(arr, tnum, maxq, delta, qRange, numQ) { }
 
 void MarketMaker5::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {

@@ -5,8 +5,8 @@
 
 #include "MarketMaker.h"
 
-MarketMaker::MarketMaker(const int tnum, const int maxq, const double delta, const int qRange, const int numQ)
-	: Provider(tnum, maxq, delta, qRange, numQ) { traderType = 'M'; }
+MarketMaker::MarketMaker(const Step arr, const int tnum, const int maxq, const double delta, const int qRange, const int numQ)
+	: Provider(arr, tnum, maxq, delta, qRange, numQ) { traderType = 'M'; }
 
 void MarketMaker::confirmTrade(TConfirm &c)
 {

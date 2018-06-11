@@ -5,11 +5,11 @@
 
 #include "Provider.h"
 
-Provider::Provider(const int tnum, const int maxq, const double dlt)
-	: ZITrader(tnum, maxq, dlt) { traderType = 'P'; }
+Provider::Provider(const Step arr, const int tnum, const int maxq, const double dlt, const Prc mpi)
+	: ZITrader(arr, tnum, maxq, dlt, mpi) { traderType = 'P'; }
 
-Provider::Provider(const int tnum, const int maxq, const double dlt, const int qRange, const int numQ)
-	: ZITrader(tnum, maxq, dlt, qRange, numQ) { }
+Provider::Provider(const Step arr, const int tnum, const int maxq, const double dlt, const int qRange, const int numQ)
+	: ZITrader(arr, tnum, maxq, dlt, qRange, numQ) { }
 
 Order Provider::makeCancelQuote(Order &q, Step timestamp)
 {

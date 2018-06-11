@@ -5,8 +5,8 @@
 
 #include "Provider5.h"
 
-Provider5::Provider5(const int tnum, const int maxq, const double delta)
-	: Provider(tnum, maxq, delta) { }
+Provider5::Provider5(const Step arr, const int tnum, const int maxq, const double delta, const Prc mpi)
+	: Provider(arr, tnum, maxq, delta, mpi) { }
 
 void Provider5::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {

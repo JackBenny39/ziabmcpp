@@ -12,7 +12,7 @@
 class Provider5 : public Provider
 {
 public:
-	Provider5(const int, const int, const double);
+	Provider5(const Step, const int, const int, const double, const Prc);
 	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	Prc chooseP(Side, Prc, double, std::mt19937 &, std::uniform_real_distribution<> &);
 };

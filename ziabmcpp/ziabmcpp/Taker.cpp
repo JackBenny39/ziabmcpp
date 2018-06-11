@@ -6,8 +6,8 @@
 
 #include "Taker.h"
 
-Taker::Taker(const int tnum, const int maxq)
-	: ZITrader(tnum, maxq)
+Taker::Taker(const Step arr, const int tnum, const int maxq, const Prc mpi)
+	: ZITrader(arr, tnum, maxq, mpi)
 {
 	traderType = 'T';
 }

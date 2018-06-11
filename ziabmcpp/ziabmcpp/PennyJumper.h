@@ -12,7 +12,7 @@
 class PennyJumper : public ZITrader
 {
 public:
-	PennyJumper(const int, const int, const Prc);
+	PennyJumper(const Step, const int, const int, const Prc);
 	Order makeCancelQuote(Order &, Step);
 	std::vector<Order> cancelCollector, askBook, bidBook;
 	void confirmTrade(TConfirm &);

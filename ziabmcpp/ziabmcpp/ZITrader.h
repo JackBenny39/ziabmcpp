@@ -16,11 +16,11 @@
 class ZITrader
 {
 public:
-	ZITrader(const int, const int);
-	ZITrader(const int, const int, Side);
-	ZITrader(const int, const int, const double);
-	ZITrader(const int, const int, const double, const int, const int);
-	ZITrader(const int, const int, const Prc);
+	ZITrader(const Step, const int, const int, const Prc); // ZITrader, Taker, PennyJumper
+	ZITrader(const int, const int, Side); // Informed
+	ZITrader(const Step, const int, const int, const double, const Prc); // Provider, Provider5
+	ZITrader(const Step, const int, const int, const double, const int, const int); // Provider, MarketMaker, MarketMaker5
+	Step arrInt;
 	traderId tId;
 	Qty orderSize;
 	char traderType;

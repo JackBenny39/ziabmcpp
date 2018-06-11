@@ -16,6 +16,9 @@
 #include <vector>		// std::vector
 #include <fstream>
 #include <memory>
+#include <unordered_set>
+#include <set>
+#include <algorithm>
 
 #include "Sharedstx.h"
 #include "ZITrader.h"
@@ -60,10 +63,12 @@ void testZITrader()
 /* Instantiate a ZITrader; test makeAddQuote
 */
 {
-	ZITrader z1(1, setMaxQ(50));
+	ZITrader z1(7, 1, setMaxQ(50), 1);
 	std::cout << "Trader Type: " << z1.traderType << "\n";
+	std::cout << "Arrival Interval: " << z1.arrInt << "\n";
 	std::cout << "Max Quantity: " << z1.orderSize << "\n";
 	std::cout << "Trader ID: " << z1.tId << "\n";
+	std::cout << "MPI: " << z1.mpi << "\n";
 	std::cout << "Quote Collector Before: " << z1.quoteCollector.size() << "\n";
 	std::cout << std::endl;
 
@@ -99,10 +104,12 @@ void testZITrader()
 	std::cout << "Price: " << q2.price << "\n";
 	std::cout << std::endl;
 
-	ZITrader z2(2, setMaxQ(50));
+	ZITrader z2(11, 2, setMaxQ(50), 1);
 	std::cout << "Trader Type: " << z2.traderType << "\n";
+	std::cout << "Arrival Interval: " << z2.arrInt << "\n";
 	std::cout << "Max Quantity: " << z2.orderSize << "\n";
 	std::cout << "Trader ID: " << z2.tId << "\n";
+	std::cout << "MPI: " << z2.mpi << "\n";
 	std::cout << "Quote Collector Before: " << z2.quoteCollector.size() << "\n";
 	std::cout << std::endl;
 }
@@ -111,10 +118,12 @@ void testTaker()
 /* Instantiate a Taker; test processSignal
 */
 {
-	Taker t1(1, setMaxQ(50));
+	Taker t1(9, 1, setMaxQ(50), 1);
 	std::cout << "Trader Type: " << t1.traderType << "\n";
+	std::cout << "Arrival Interval: " << t1.arrInt << "\n";
 	std::cout << "Max Quantity: " << t1.orderSize << "\n";
 	std::cout << "Trader ID: " << t1.tId << "\n";
+	std::cout << "MPI: " << t1.mpi << "\n";
 	std::cout << "Quote Collector Before: " << t1.quoteCollector.size() << "\n";
 	std::cout << std::endl;
 
@@ -134,11 +143,13 @@ void testTaker()
 	std::cout << "Price: " << t1.quoteCollector[0].price << "\n";
 	std::cout << std::endl;
 
-	Taker t2(2, setMaxQ(50));
-	Taker t3(27, setMaxQ(50));
+	Taker t2(11, 2, setMaxQ(50), 1);
+	Taker t3(17, 27, setMaxQ(50), 1);
 	std::cout << "Trader Type: " << t2.traderType << "\n";
+	std::cout << "Arrival Interval: " << t2.arrInt << "\n";
 	std::cout << "Max Quantity: " << t2.orderSize << "\n";
 	std::cout << "Trader ID: " << t2.tId << "\n";
+	std::cout << "MPI: " << t2.mpi << "\n";
 	std::cout << "Quote Collector Before: " << t2.quoteCollector.size() << "\n";
 	std::cout << std::endl;
 }
@@ -197,13 +208,14 @@ void testInformed()
 void testProvider()
 {
 	cSide cSide1;
-	Provider p1(3001, setMaxQ(50), 0.85);
+	Provider p1(17, 3001, setMaxQ(50), 0.85, 1);
 
 	// Test constructor
 	std::cout << "Trader Type: " << p1.traderType << "\n";
 	std::cout << "Max Quantity: " << p1.orderSize << "\n";
 	std::cout << "Trader ID: " << p1.tId << "\n";
 	std::cout << "Delta: " << p1.delta << "\n";
+	std::cout << "MPI: " << p1.mpi << "\n";
 	std::cout << "Quote Collector Before: " << p1.quoteCollector.size() << "\n";
 
 	// Test makeCancelQuote
@@ -353,7 +365,7 @@ void testProvider()
 void testExchangeAddHistory()
 {
 	Orderbook exchange1 = Orderbook();
-	ZITrader z1(1, setMaxQ(50));
+	ZITrader z1(7, 1, setMaxQ(50), 1);
 
 	Step step1 = 23;
 	Side side1 = Side::SELL;
@@ -379,7 +391,7 @@ void testExchangeAddHistory()
 void testProvider5()
 {
 	cSide cSide1;
-	Provider5 p1(3001, setMaxQ(50), 0.05);
+	Provider5 p1(22, 3001, setMaxQ(50), 0.05, 5);
 
 	// Test constructor
 	std::cout << "Trader Type: " << p1.traderType << "\n";
@@ -471,7 +483,7 @@ void testProvider5()
 void testMarketMaker()
 {
 	cSide cSide1;
-	MarketMaker m1(7001, setMaxQ(50), 0.05, 60, 12);
+	MarketMaker m1(1, 7001, setMaxQ(50), 0.05, 60, 12);
 
 	// Test constructor
 	std::cout << "Trader Type: " << m1.traderType << "\n";
@@ -531,7 +543,7 @@ void testMarketMaker()
 void testMarketMaker5()
 {
 	cSide cSide1;
-	MarketMaker5 m1(7001, setMaxQ(50), 0.05, 60, 12);
+	MarketMaker5 m1(1, 7001, setMaxQ(50), 0.05, 60, 12);
 
 	// Test constructor
 	std::cout << "Trader Type: " << m1.traderType << "\n";
@@ -1495,10 +1507,11 @@ void testPJ()
 {
 	TopOfBook tob;
 	cSide cSide1; 
-	PennyJumper j1(1, setMaxQ(50), 1);
+	PennyJumper j1(1, 1, setMaxQ(50), 1);
 	std::cout << "Trader Type: " << j1.traderType << "\n";
 	std::cout << "Max Quantity: " << j1.orderSize << "\n";
 	std::cout << "Trader ID: " << j1.tId << "\n";
+	std::cout << "MPI: " << j1.mpi << "\n";
 	std::cout << "Quote Collector Before: " << j1.quoteCollector.size() << "\n";
 
 	// seed == 17 generates first > 0.5 and second < 0.5
@@ -1689,7 +1702,7 @@ void testPJ()
 
 	// Spread at MPI, PJ not at inside: PJ cancels
 	engine.seed(17);
-	PennyJumper j2(1, setMaxQ(50), 1);
+	PennyJumper j2(1, 1, setMaxQ(50), 1);
 	tob = { 27, 1000, 10, 1010, 10 };
 	j2.processSignal(tob, 28, 0.5, engine, distUreal);
 	j2.processSignal(tob, 29, 0.5, engine, distUreal);
@@ -1732,35 +1745,37 @@ void testBucket()
 {
 	cSide cSide1;
 
-	ZITrader z1(1, setMaxQ(50));
-	Taker t1(1001, setMaxQ(50));
+	ZITrader z1(7, 1, setMaxQ(50), 1);
+	Taker t1(11, 1001, setMaxQ(50), 1);
 	Informed i1(2001, setMaxQ(50), Side::BUY);
-	Provider p1(3001, setMaxQ(50), 0.85);
-	Provider5 p5(3005, setMaxQ(50), 0.05);
-	MarketMaker m1(7001, setMaxQ(50), 0.05, 60, 12);
-	MarketMaker5 m5(7005, setMaxQ(50), 0.05, 60, 12);
-	PennyJumper j1(4001, setMaxQ(50), 1);
+	Provider p1(17, 3001, setMaxQ(50), 0.85, 1);
+	Provider5 p5(22, 3005, setMaxQ(50), 0.05, 5);
+	MarketMaker m1(1, 7001, setMaxQ(50), 0.05, 60, 12);
+	MarketMaker5 m5(1, 7005, setMaxQ(50), 0.05, 60, 12);
+	PennyJumper j1(1, 4001, setMaxQ(50), 1);
 
 	std::vector<std::shared_ptr<ZITrader>> bucket;
 
-	bucket.push_back(std::make_shared<ZITrader>(1, setMaxQ(50)));
-	bucket.push_back(std::make_shared<Taker>(1001, setMaxQ(50)));
+	bucket.push_back(std::make_shared<ZITrader>(7, 1, setMaxQ(50), 1));
+	bucket.push_back(std::make_shared<Taker>(11, 1001, setMaxQ(50), 1));
 	bucket.push_back(std::make_shared<Informed>(2001, setMaxQ(50), Side::SELL));
-	bucket.push_back(std::make_shared<Provider>(3001, setMaxQ(50), 0.85));
-	bucket.push_back(std::make_shared<Provider5>(3005, setMaxQ(50), 0.05));
-	bucket.push_back(std::make_shared<MarketMaker>(7001, setMaxQ(50), 0.05, 60, 12));
-	bucket.push_back(std::make_shared<MarketMaker5>(7005, setMaxQ(50), 0.05, 60, 12));
-	bucket.push_back(std::make_shared<PennyJumper>(4001, setMaxQ(50), 1));
+	bucket.push_back(std::make_shared<Provider>(17, 3001, setMaxQ(50), 0.85, 1));
+	bucket.push_back(std::make_shared<Provider5>(22, 3005, setMaxQ(50), 0.05, 5));
+	bucket.push_back(std::make_shared<MarketMaker>(1, 7001, setMaxQ(50), 0.05, 60, 12));
+	bucket.push_back(std::make_shared<MarketMaker5>(1, 7005, setMaxQ(50), 0.05, 60, 12));
+	bucket.push_back(std::make_shared<PennyJumper>(1, 4001, setMaxQ(50), 1));
 
-	std::cout << "Trader Type: " << bucket[0]->traderType << "; Max Quantity: " << bucket[0]->orderSize << "; Trader ID: " << bucket[0]->tId << "\n";
-	std::cout << "Trader Type: " << bucket[1]->traderType << "; Max Quantity: " << bucket[1]->orderSize << "; Trader ID: " << bucket[1]->tId << "\n";
+	std::cout << "Trader Type: " << bucket[0]->traderType << "; Max Quantity: " << bucket[0]->orderSize << "; Trader ID: " << bucket[0]->tId << "; MPI: "
+		<< bucket[0]->mpi << "\n";
+	std::cout << "Trader Type: " << bucket[1]->traderType << "; Max Quantity: " << bucket[1]->orderSize << "; Trader ID: " << bucket[1]->tId << "; MPI: "
+		<< bucket[1]->mpi << "\n";
 	cSide1 = bucket[2]->side == Side::BUY ? 'B' : 'S';
 	std::cout << "Trader Type: " << bucket[2]->traderType << "; Max Quantity: " << bucket[2]->orderSize << "; Trader ID: " << bucket[2]->tId << "; Price:" 
 		<< bucket[2]->price << "; Side:" << cSide1 << "\n";
-	std::cout << "Trader Type: " << bucket[3]->traderType << "; Max Quantity: " << bucket[3]->orderSize << "; Trader ID: " << bucket[3]->tId << "; Delta: "
-		<< bucket[3]->delta << "\n";
-	std::cout << "Trader Type: " << bucket[4]->traderType << "; Max Quantity: " << bucket[4]->orderSize << "; Trader ID: " << bucket[4]->tId << "; Delta: "
-		<< bucket[4]->delta << "\n";
+	std::cout << "Trader Type: " << bucket[3]->traderType << "; Max Quantity: " << bucket[3]->orderSize << "; Trader ID: " << bucket[3]->tId << "; MPI: "
+		<< bucket[3]->mpi << "; Delta: " << bucket[3]->delta << "\n";
+	std::cout << "Trader Type: " << bucket[4]->traderType << "; Max Quantity: " << bucket[4]->orderSize << "; Trader ID: " << bucket[4]->tId << "; MPI: "
+		<< bucket[4]->mpi << "; Delta: " << bucket[4]->delta << "\n";
 	std::cout << "Trader Type: " << bucket[5]->traderType << "; Max Quantity: " << bucket[5]->orderSize << "; Trader ID: " << bucket[5]->tId << "; NumQuotes: "
 		<< bucket[5]->numQuotes << "; Quote Range: " << bucket[5]->quoteRange << "; Position: " << bucket[5]->position << "; Cash Flow: " 
 		<< bucket[5]->cashFlow << "\n";
@@ -1769,6 +1784,40 @@ void testBucket()
 		<< bucket[6]->cashFlow << "\n";
 	std::cout << "Trader Type: " << bucket[7]->traderType << "; Max Quantity: " << bucket[7]->orderSize << "; Trader ID: " << bucket[7]->tId << "; MPI: "
 		<< bucket[7]->mpi << "\n";
+
+	std::cout << std::endl;
+}
+
+void testInformedSteps()
+{
+	std::unordered_set<unsigned> steps;
+	unsigned maxQ, runL, numT, numChoices, count;
+	maxQ = 1;
+	runL = 5;
+	numT = 100;
+	Step j;
+
+	numChoices = (numT / (runL*maxQ)) + 1;
+	std::cout << "Number of Choices: " << numChoices << "\n";
+
+	std::uniform_int_distribution<Prc> distA(1, 100000);
+	for (int i = 1; i != numChoices; ++i)
+	{
+		j = distA(engine);
+		count = 0;
+		while (count < runL)
+		{
+			while (steps.count(j) > 0)
+				j++;
+			steps.insert(j);
+			count++;
+		}
+	}
+	int counter = 0;
+	std::set<int> srtd(steps.begin(), steps.end());
+	for (auto &x : srtd)
+		std::cout << "Choice " << ++counter << ": " << x << "\n";
+
 
 	std::cout << std::endl;
 }
@@ -1807,10 +1856,11 @@ int main()
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
 //	testMM5PS();
+	testInformedSteps();
 
 //	_CrtDumpMemoryLeaks();
 
-	testBucket();
+//	testBucket();
 
 	return 0;
 }
