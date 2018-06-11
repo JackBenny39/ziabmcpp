@@ -38,6 +38,7 @@ std::mt19937 engine{ random_device() };
 std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
 std::uniform_real_distribution<> distUreal(0, 1);
 std::exponential_distribution<double> distExp(1.0);
+std::uniform_int_distribution<> distA(1, 100000);
 
 int setMaxQ(int maxq)
 {
@@ -158,12 +159,24 @@ void testInformed()
 {
 	cSide cSide1;
 	Step step1;
-	Informed i1(1, setMaxQ(50), Side::BUY);
+	Qty maxQ = 1;
+	unsigned runL, numT, numChoices;
+	runL = 1;
+	numT = 100;
+	numChoices = (numT / (runL*maxQ)) + 1;
+	Informed i1(1, maxQ, Side::BUY, runL, numChoices, engine, distA);
 
 	std::cout << "Trader Type: " << i1.traderType << "\n";
 	std::cout << "Max Quantity: " << i1.orderSize << "\n";
 	std::cout << "Trader ID: " << i1.tId << "\n";
-	std::cout << "Quote Collector Before: " << i1.quoteCollector.size() << "\n";
+
+	int counter = 0;
+	std::set<int> srtd1(i1.steps.begin(), i1.steps.end());
+	std::cout << "\n\nArrival steps: \n";
+	for (auto &x : srtd1)
+		std::cout << "Choice " << ++counter << ": " << x << "\n";
+
+	std::cout << "\n\nQuote Collector Before: " << i1.quoteCollector.size() << "\n";
 
 	step1 = 27;
 
@@ -180,19 +193,29 @@ void testInformed()
 	std::cout << "Side: " << cSide1 << "\n";
 	std::cout << "Price: " << i1.quoteCollector[0].price << "\n";
 
-	Informed i2(2, setMaxQ(50), Side::SELL);
+	maxQ = 5;
+	runL = 3;
+	numT = 100;
+	numChoices = (numT / (runL*maxQ)) + 1;
+	Informed i2(2, maxQ, Side::SELL, runL, numChoices, engine, distA);
 
 	std::cout << "\n\nTrader Type: " << i2.traderType << "\n";
 	std::cout << "Max Quantity: " << i2.orderSize << "\n";
 	std::cout << "Trader ID: " << i2.tId << "\n";
 	std::cout << "Quote Collector Before: " << i2.quoteCollector.size() << "\n";
 
+	counter = 0;
+	std::set<int> srtd2(i2.steps.begin(), i2.steps.end());
+	std::cout << "\n\nArrival steps: \n";
+	for (auto &x : srtd2)
+		std::cout << "Choice " << ++counter << ": " << x << "\n";
+
 	step1 = 29;
 
 	i2.processSignal(step1);
 	cSide1 = i2.quoteCollector[0].side == Side::BUY ? 'B' : 'S';
 
-	std::cout << "Quote Collector After: " << i2.quoteCollector.size() << "\n";
+	std::cout << "\n\nQuote Collector After: " << i2.quoteCollector.size() << "\n";
 	std::cout << "First Order: \n";
 	std::cout << "Trader ID: " << i2.quoteCollector[0].id << "\n";
 	std::cout << "Order ID: " << i2.quoteCollector[0].oid << "\n";
@@ -1747,7 +1770,7 @@ void testBucket()
 
 	ZITrader z1(7, 1, setMaxQ(50), 1);
 	Taker t1(11, 1001, setMaxQ(50), 1);
-	Informed i1(2001, setMaxQ(50), Side::BUY);
+	Informed i1(2001, setMaxQ(50), Side::BUY, 1, 100, engine, distA);
 	Provider p1(17, 3001, setMaxQ(50), 0.85, 1);
 	Provider5 p5(22, 3005, setMaxQ(50), 0.05, 5);
 	MarketMaker m1(1, 7001, setMaxQ(50), 0.05, 60, 12);
@@ -1758,7 +1781,7 @@ void testBucket()
 
 	bucket.push_back(std::make_shared<ZITrader>(7, 1, setMaxQ(50), 1));
 	bucket.push_back(std::make_shared<Taker>(11, 1001, setMaxQ(50), 1));
-	bucket.push_back(std::make_shared<Informed>(2001, setMaxQ(50), Side::SELL));
+	bucket.push_back(std::make_shared<Informed>(2001, 1, Side::SELL, 1, 100, engine, distA));
 	bucket.push_back(std::make_shared<Provider>(17, 3001, setMaxQ(50), 0.85, 1));
 	bucket.push_back(std::make_shared<Provider5>(22, 3005, setMaxQ(50), 0.05, 5));
 	bucket.push_back(std::make_shared<MarketMaker>(1, 7001, setMaxQ(50), 0.05, 60, 12));
@@ -1814,8 +1837,8 @@ void testInformedSteps()
 		}
 	}
 	int counter = 0;
-	std::set<int> srtd(steps.begin(), steps.end());
-	for (auto &x : srtd)
+	std::set<int> srtd1(steps.begin(), steps.end());
+	for (auto &x : srtd1)
 		std::cout << "Choice " << ++counter << ": " << x << "\n";
 
 
@@ -1828,7 +1851,7 @@ int main()
 
 //	testZITrader();
 //	testTaker();
-//	testInformed();
+	testInformed();
 //	testProvider();
 //	testProvider5();
 //	testMarketMaker();
@@ -1856,7 +1879,7 @@ int main()
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
 //	testMM5PS();
-	testInformedSteps();
+//	testInformedSteps();
 
 //	_CrtDumpMemoryLeaks();
 

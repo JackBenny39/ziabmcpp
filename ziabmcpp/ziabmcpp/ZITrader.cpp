@@ -11,7 +11,7 @@
 ZITrader::ZITrader(const Step arr, const int tnum, const int maxq, const Prc mpi)
 	: arrInt(arr), tId(tnum), orderSize(maxq), mpi(mpi), quoteSequence(0) { traderType = 'Z'; }
 
-ZITrader::ZITrader(const int tnum, const int maxq, Side side)
+ZITrader::ZITrader(const int tnum, const int maxq, Side side, const unsigned runL, const unsigned numChoices, std::mt19937 &engine, std::uniform_int_distribution<> &distA)
 	: tId(tnum), orderSize(maxq), side(side), price(side == Side::BUY ? 2000000 : 0), quoteSequence(0) { }
 
 ZITrader::ZITrader(const Step arr, const int tnum, const int maxq, const double dlt, const Prc mpi)
