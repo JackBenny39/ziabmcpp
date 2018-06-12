@@ -21,10 +21,12 @@
 #include <algorithm>
 
 #include "Sharedstx.h"
-#include "Orderbook.h"
+
 #include "TraderTests.h"
 #include "OrderbookTests.h"
-/*#include "ZITrader.h"
+#include "BucketTests.h"
+/*
+#include "ZITrader.h"
 #include "Taker.h"
 #include "Informed.h"
 #include "Provider.h"
@@ -32,6 +34,7 @@
 #include "MarketMaker.h"
 #include "MarketMaker5.h"
 #include "PennyJumper.h"
+#include "Orderbook.h"
 */
 
 using cSide = char;
@@ -42,14 +45,6 @@ std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
 std::uniform_real_distribution<> distUreal(0, 1);
 std::exponential_distribution<double> distExp(1.0);
 std::uniform_int_distribution<> distA(1, 100000);
-
-int setMaxQ(int maxq)
-{
-	std::vector<int> actualVec(0);
-	std::copy_if(defaultVec.begin(), defaultVec.end(), std::back_inserter(actualVec), [&maxq](int i) { return i <= maxq; });
-	std::uniform_int_distribution<int> distUint(0, actualVec.size() - 1);
-	return actualVec[distUint(engine)];
-}
 
 double buySellP()
 {
@@ -91,6 +86,39 @@ void testFromUnifrom(std::mt19937 &engine, std::uniform_real_distribution<> &dis
 	expfile.close();
 }
 
+void testInformedSteps()
+{
+	std::unordered_set<unsigned> steps;
+	unsigned maxQ, runL, numT, numChoices, count;
+	maxQ = 1;
+	runL = 5;
+	numT = 100;
+	Step j;
+
+	numChoices = (numT / (runL*maxQ)) + 1;
+	std::cout << "Number of Choices: " << numChoices << "\n";
+
+	std::uniform_int_distribution<Prc> distA(1, 100000);
+	for (int i = 1; i != numChoices; ++i)
+	{
+		j = distA(engine);
+		count = 0;
+		while (count < runL)
+		{
+			while (steps.count(j) > 0)
+				j++;
+			steps.insert(j);
+			count++;
+		}
+	}
+	int counter = 0;
+	std::set<int> srtd1(steps.begin(), steps.end());
+	for (auto &x : srtd1)
+		std::cout << "Choice " << ++counter << ": " << x << "\n";
+
+	std::cout << std::endl;
+}
+
 void testMM5PS()
 {
 	Prc maxBid = 90;
@@ -111,7 +139,7 @@ void testMM5PS()
 		std::cout << "From Collector Bid: " << x << "\n";
 	std::cout << std::endl;
 }
-
+/*
 void testBucket()
 {
 	cSide cSide1;
@@ -158,44 +186,13 @@ void testBucket()
 
 	std::cout << std::endl;
 }
+*/
 
-void testInformedSteps()
-{
-	std::unordered_set<unsigned> steps;
-	unsigned maxQ, runL, numT, numChoices, count;
-	maxQ = 1;
-	runL = 5;
-	numT = 100;
-	Step j;
-
-	numChoices = (numT / (runL*maxQ)) + 1;
-	std::cout << "Number of Choices: " << numChoices << "\n";
-
-	std::uniform_int_distribution<Prc> distA(1, 100000);
-	for (int i = 1; i != numChoices; ++i)
-	{
-		j = distA(engine);
-		count = 0;
-		while (count < runL)
-		{
-			while (steps.count(j) > 0)
-				j++;
-			steps.insert(j);
-			count++;
-		}
-	}
-	int counter = 0;
-	std::set<int> srtd1(steps.begin(), steps.end());
-	for (auto &x : srtd1)
-		std::cout << "Choice " << ++counter << ": " << x << "\n";
-
-	std::cout << std::endl;
-}
 
 int main()
 {
-	engine.seed(44);
-//	engine.seed(39);
+//	engine.seed(44);
+	engine.seed(39);
 //	TraderTests tTests(defaultVec, distA, engine);
 
 //	tTests.testZITrader();
@@ -230,14 +227,15 @@ int main()
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\sip_1.csv";
 //	bTests.testExchangeSipToCsv(file1);
 
+//	BucketTests kTests(defaultVec, distA, engine);
+//	kTests.testInstances();
+
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
 //	testMM5PS();
 //	testInformedSteps();
-
-//	_CrtDumpMemoryLeaks();
-
 //	testBucket();
+//	_CrtDumpMemoryLeaks();
 
 	return 0;
 }

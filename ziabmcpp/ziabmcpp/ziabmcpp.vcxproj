@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BucketTests.h" />
     <ClInclude Include="Informed.h" />
     <ClInclude Include="MarketMaker.h" />
     <ClInclude Include="MarketMaker5.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="ZITrader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BucketTests.cpp" />
     <ClCompile Include="Informed.cpp" />
     <ClCompile Include="MarketMaker.cpp" />
     <ClCompile Include="MarketMaker5.cpp" />
