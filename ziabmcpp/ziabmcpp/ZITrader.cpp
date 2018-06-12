@@ -24,3 +24,8 @@ Order ZITrader::makeAddQuote(Step timestamp, Side side, Prc price)
 {
 	return Order{ tId, ++quoteSequence, timestamp, 'A', orderSize, side, price };
 }
+
+void ZITrader::processSignal(Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist) {}
+void ZITrader::processSignal(Step step) {}
+
+void ZITrader::makeSteps(const unsigned runL, const unsigned numChoices, std::mt19937 &engine, std::uniform_int_distribution<> &distA) {}

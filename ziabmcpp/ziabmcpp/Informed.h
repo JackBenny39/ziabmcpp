@@ -13,9 +13,8 @@ class Informed : public ZITrader
 {
 public:
 	Informed(const int, const int, Side, const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
-	void processSignal(Step);
-	void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
-	stepset steps;
+	void processSignal(Step) override;
+	void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &) override;
 };
 
 #endif
