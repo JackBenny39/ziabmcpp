@@ -39,6 +39,9 @@ public:
 	void testInformed();
 	void testProvider();
 	void testProvider5();
+	void testMarketMaker();
+	void testMarketMaker5();
+	void testPJ();
 };
 
 #endif

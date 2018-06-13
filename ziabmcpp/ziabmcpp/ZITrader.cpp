@@ -28,6 +28,7 @@ Order ZITrader::makeAddQuote(Step timestamp, Side side, Prc price)
 void ZITrader::processSignal(Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist) { }
 void ZITrader::processSignal(Step step) {}
 void ZITrader::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist) { }
+void ZITrader::processSignal(TopOfBook &tob, Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist) { }
 
 void ZITrader::makeSteps(const unsigned runL, const unsigned numChoices, std::mt19937 &engine, std::uniform_int_distribution<> &distA) { }
 

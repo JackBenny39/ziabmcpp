@@ -1,5 +1,5 @@
-// MarketMaker.cpp
-// MarketMaker class
+// MarketMaker5.cpp
+// MarketMaker5 class
 
 #include "stdafx.h"
 

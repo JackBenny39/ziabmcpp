@@ -451,3 +451,365 @@ void BucketTests::testProvider5()
 		<< " Order Step: " << x.second.step << "\n";
 	std::cout << std::endl;
 }
+
+void BucketTests::testMarketMaker()
+{
+	engine.seed(39);
+	cSide cSide1;
+	bucket.push_back(std::make_shared<MarketMaker>(1, 7001, setMaxQ(50), 0.05, 60, 12));
+
+	// Test constructor
+	std::cout << "Trader Type: " << bucket[8]->traderType << "\n";
+	std::cout << "Max Quantity: " << bucket[8]->orderSize << "\n";
+	std::cout << "Trader ID: " << bucket[8]->tId << "\n";
+	std::cout << "Delta: " << bucket[8]->delta << "\n";
+	std::cout << "Quote Interval: " << bucket[8]->quoteRange << "\n";
+	std::cout << "Number of Quotes: " << bucket[8]->numQuotes << "\n";
+	std::cout << "Quote Collector Before: " << bucket[8]->quoteCollector.size() << "\n";
+
+	// Test confirmTrade
+	std::cout << "\n\nBefore Trade Confirm:" << "\n";
+	std::cout << "Cash Flow Before: " << bucket[8]->cashFlow << "\n";
+	std::cout << "Position Before: " << bucket[8]->position << "\n";
+	TConfirm t1{ 7001, 4, 89, 30, Side::BUY, 962 };
+	bucket[8]->confirmTrade(t1);
+	std::cout << "\nAfter Trade Confirm 1:" << "\n";
+	std::cout << "Cash Flow After 1: " << bucket[8]->cashFlow << "\n";
+	std::cout << "Position After 1: " << bucket[8]->position << "\n";
+	TConfirm t2{ 7001, 7, 95, 30, Side::SELL, 963 };
+	bucket[8]->confirmTrade(t2);
+	std::cout << "\nAfter Trade Confirm 2:" << "\n";
+	std::cout << "Cash Flow After 2: " << bucket[8]->cashFlow << "\n";
+	std::cout << "Position After 2: " << bucket[8]->position << "\n";
+
+	// Test processSignal
+	Step step1;
+	TopOfBook tob;
+
+	step1 = 27;
+	tob = { step1, 995, 1, 1010, 1 };
+	bucket[8]->processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	for (auto& x : bucket[8]->quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	bucket[8]->quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << bucket[8]->quoteCollector.size() << "\n";
+
+	step1 = 35;
+	tob = { step1, 995, 1, 1010, 1 };
+	bucket[8]->processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	for (auto& x : bucket[8]->quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	bucket[8]->quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << bucket[8]->quoteCollector.size() << "\n";
+	std::cout << std::endl;
+}
+
+void BucketTests::testMarketMaker5()
+{
+	engine.seed(39); 
+	cSide cSide1;
+	bucket.push_back(std::make_shared<MarketMaker5>(1, 7005, setMaxQ(50), 0.05, 60, 12));
+
+	// Test constructor
+	std::cout << "Trader Type: " << bucket[8]->traderType << "\n";
+	std::cout << "Max Quantity: " << bucket[8]->orderSize << "\n";
+	std::cout << "Trader ID: " << bucket[8]->tId << "\n";
+	std::cout << "Delta: " << bucket[8]->delta << "\n";
+	std::cout << "Quote Interval: " << bucket[8]->quoteRange << "\n";
+	std::cout << "Number of Quotes: " << bucket[8]->numQuotes << "\n";
+	std::cout << "Quote Collector Before: " << bucket[8]->quoteCollector.size() << "\n";
+
+	// Test confirmTrade
+	std::cout << "\n\nBefore Trade Confirm:" << "\n";
+	std::cout << "Cash Flow Before: " << bucket[8]->cashFlow << "\n";
+	std::cout << "Position Before: " << bucket[8]->position << "\n";
+	TConfirm t1{ 7001, 4, 89, 30, Side::BUY, 962 };
+	bucket[8]->confirmTrade(t1);
+	std::cout << "\nAfter Trade Confirm 1:" << "\n";
+	std::cout << "Cash Flow After 1: " << bucket[8]->cashFlow << "\n";
+	std::cout << "Position After 1: " << bucket[8]->position << "\n";
+	TConfirm t2{ 7001, 7, 95, 30, Side::SELL, 963 };
+	bucket[8]->confirmTrade(t2);
+	std::cout << "\nAfter Trade Confirm 2:" << "\n";
+	std::cout << "Cash Flow After 2: " << bucket[8]->cashFlow << "\n";
+	std::cout << "Position After 2: " << bucket[8]->position << "\n";
+
+	// Test processSignal
+	Step step1;
+	TopOfBook tob;
+
+	step1 = 27;
+	tob = { step1, 995, 1, 1010, 1 };
+	bucket[8]->processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	for (auto& x : bucket[8]->quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	bucket[8]->quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << bucket[8]->quoteCollector.size() << "\n";
+
+	step1 = 35;
+	tob = { step1, 995, 1, 1010, 1 };
+	bucket[8]->processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	for (auto& x : bucket[8]->quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	bucket[8]->quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << bucket[8]->quoteCollector.size() << "\n";
+
+	std::cout << std::endl;
+}
+
+void BucketTests::testPJ()
+{
+	engine.seed(44);
+	 
+	TopOfBook tob;
+	cSide cSide1;
+
+	bucket.push_back(std::make_shared<PennyJumper>(1, 4001, setMaxQ(50), 1));
+	std::cout << "Trader Type: " << bucket[8]->traderType << "\n";
+	std::cout << "Max Quantity: " << bucket[8]->orderSize << "\n";
+	std::cout << "Trader ID: " << bucket[8]->tId << "\n";
+	std::cout << "MPI: " << bucket[8]->mpi << "\n";
+	std::cout << "Quote Collector Before: " << bucket[8]->quoteCollector.size() << "\n";
+
+	// seed == 17 generates first > 0.5 and second < 0.5
+	engine.seed(17);
+
+	// Spread > mpi
+	std::cout << "\nQuote books should be empty" << "\n";
+	std::cout << "Ask Quote Book empty: \n";
+	std::cout << "Size: " << bucket[8]->askBook.size() << "\n";
+	std::cout << "Bid Quote Book empty: \n";
+	std::cout << "Size: " << bucket[8]->bidBook.size() << "\n";
+
+	// PJ jumps bid and ask by 1
+	tob = { 27, 999, 5, 1008, 5 };
+	bucket[8]->processSignal(tob, 28, 0.5, engine, distUreal);
+	bucket[8]->processSignal(tob, 29, 0.5, engine, distUreal);
+	std::cout << "\nPJ takes the inside" << "\n";
+	cSide1 = bucket[8]->askBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Ask Quote 1007: \n";
+	std::cout << "Trader ID: " << bucket[8]->askBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->askBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->askBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->askBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->askBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->askBook[0].price << "\n";
+	cSide1 = bucket[8]->bidBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Bid Quote 1000: \n";
+	std::cout << "Trader ID: " << bucket[8]->bidBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->bidBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->bidBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->bidBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->bidBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->bidBook[0].price << "\n";
+
+	// PJ behind the best prices: cancels then jumps bid and ask by 1
+	engine.seed(17);
+	tob = { 27, 1001, 5, 1006, 5 };
+	bucket[8]->processSignal(tob, 28, 0.5, engine, distUreal);
+	bucket[8]->processSignal(tob, 29, 0.5, engine, distUreal);
+
+	std::cout << "\nPJ Cancels Old Quotes" << "\n";
+	cSide1 = bucket[8]->cancelCollector[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Cancel Bid Quote 1000: \n";
+	std::cout << "Trader ID: " << bucket[8]->cancelCollector[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->cancelCollector[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->cancelCollector[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->cancelCollector[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->cancelCollector[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->cancelCollector[0].price << "\n";
+	cSide1 = bucket[8]->cancelCollector[1].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Cancel Ask Quote 1007: \n";
+	std::cout << "Trader ID: " << bucket[8]->cancelCollector[1].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->cancelCollector[1].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->cancelCollector[1].step << "\n";
+	std::cout << "Type: " << bucket[8]->cancelCollector[1].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->bidBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->cancelCollector[1].price << "\n";
+
+	std::cout << "\nPJ takes the inside" << "\n";
+	cSide1 = bucket[8]->askBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Ask Quote 1005: \n";
+	std::cout << "Trader ID: " << bucket[8]->askBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->askBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->askBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->askBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->askBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->askBook[0].price << "\n";
+	cSide1 = bucket[8]->bidBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Bid Quote 1002: \n";
+	std::cout << "Trader ID: " << bucket[8]->bidBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->bidBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->bidBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->bidBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->bidBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->bidBook[0].price << "\n";
+	bucket[8]->cancelCollector.clear();
+
+	// PJ alone at the inside: nothing happens
+	engine.seed(17);
+	tob = { 27, 1002, 10, 1005, 10 };
+	bucket[8]->processSignal(tob, 28, 0.5, engine, distUreal);
+	bucket[8]->processSignal(tob, 29, 0.5, engine, distUreal);
+
+	std::cout << "\nPJ cancelCollector is empty" << "\n";
+	std::cout << bucket[8]->cancelCollector.size();
+
+	std::cout << "\nPJ quotes unchanged" << "\n";
+	cSide1 = bucket[8]->askBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Ask Quote 1005: \n";
+	std::cout << "Trader ID: " << bucket[8]->askBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->askBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->askBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->askBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->askBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->askBook[0].price << "\n";
+	cSide1 = bucket[8]->bidBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Bid Quote 1002: \n";
+	std::cout << "Trader ID: " << bucket[8]->bidBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->bidBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->bidBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->bidBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->bidBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->bidBook[0].price << "\n";
+
+	// PJ not alone at inside: cancels then jumps bid and ask by 1
+	engine.seed(17);
+	tob = { 27, 1002, 20, 1005, 20 };
+	bucket[8]->processSignal(tob, 28, 0.5, engine, distUreal);
+	bucket[8]->processSignal(tob, 29, 0.5, engine, distUreal);
+
+	std::cout << "\nPJ Cancels Old Quotes" << "\n";
+	cSide1 = bucket[8]->cancelCollector[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Cancel Bid Quote 1002: \n";
+	std::cout << "Trader ID: " << bucket[8]->cancelCollector[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->cancelCollector[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->cancelCollector[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->cancelCollector[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->cancelCollector[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->cancelCollector[0].price << "\n";
+	cSide1 = bucket[8]->cancelCollector[1].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Cancel Ask Quote 1005: \n";
+	std::cout << "Trader ID: " << bucket[8]->cancelCollector[1].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->cancelCollector[1].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->cancelCollector[1].step << "\n";
+	std::cout << "Type: " << bucket[8]->cancelCollector[1].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->bidBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->cancelCollector[1].price << "\n";
+
+	std::cout << "\nPJ takes the inside" << "\n";
+	cSide1 = bucket[8]->askBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Ask Quote 1004: \n";
+	std::cout << "Trader ID: " << bucket[8]->askBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->askBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->askBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->askBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->askBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->askBook[0].price << "\n";
+	cSide1 = bucket[8]->bidBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Bid Quote 1003: \n";
+	std::cout << "Trader ID: " << bucket[8]->bidBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->bidBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->bidBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->bidBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->bidBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->bidBook[0].price << "\n";
+	bucket[8]->cancelCollector.clear();
+
+	// Spread at MPI, PJ alone at inside: nothing happens
+	engine.seed(17);
+	tob = { 27, 1003, 10, 1004, 10 };
+	bucket[8]->processSignal(tob, 28, 0.5, engine, distUreal);
+	bucket[8]->processSignal(tob, 29, 0.5, engine, distUreal);
+
+	std::cout << "\nPJ cancelCollector is empty" << "\n";
+	std::cout << bucket[8]->cancelCollector.size();
+
+	std::cout << "\nPJ at the inside; spread == 1" << "\n";
+	cSide1 = bucket[8]->askBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Ask Quote 1004: \n";
+	std::cout << "Trader ID: " << bucket[8]->askBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->askBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->askBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->askBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->askBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->askBook[0].price << "\n";
+	cSide1 = bucket[8]->bidBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Bid Quote 1003: \n";
+	std::cout << "Trader ID: " << bucket[8]->bidBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[8]->bidBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[8]->bidBook[0].step << "\n";
+	std::cout << "Type: " << bucket[8]->bidBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[8]->bidBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[8]->bidBook[0].price << "\n";
+
+	// Spread at MPI, PJ not at inside: PJ cancels
+	engine.seed(17);
+	bucket.push_back(std::make_shared<PennyJumper>(1, 1, setMaxQ(50), 1));
+	tob = { 27, 1000, 10, 1010, 10 };
+	bucket[9]->processSignal(tob, 28, 0.5, engine, distUreal);
+	bucket[9]->processSignal(tob, 29, 0.5, engine, distUreal);
+
+	std::cout << "\nPJ spread == 8" << "\n";
+	cSide1 = bucket[9]->askBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Ask Quote 1009: \n";
+	std::cout << "Trader ID: " << bucket[9]->askBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[9]->askBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[9]->askBook[0].step << "\n";
+	std::cout << "Type: " << bucket[9]->askBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[9]->askBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[9]->askBook[0].price << "\n";
+	cSide1 = bucket[9]->bidBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Bid Quote 1001: \n";
+	std::cout << "Trader ID: " << bucket[9]->bidBook[0].id << "\n";
+	std::cout << "Order ID: " << bucket[9]->bidBook[0].oid << "\n";
+	std::cout << "Timestamp: " << bucket[9]->bidBook[0].step << "\n";
+	std::cout << "Type: " << bucket[9]->bidBook[0].otype << "\n";
+	std::cout << "Quantity: " << bucket[9]->bidBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << bucket[9]->bidBook[0].price << "\n";
+
+	engine.seed(17);
+	tob = { 27, 1005, 10, 1006, 10 };
+	bucket[9]->processSignal(tob, 28, 0.5, engine, distUreal);
+	bucket[9]->processSignal(tob, 29, 0.5, engine, distUreal);
+
+	std::cout << "\nQuote books should be empty" << "\n";
+	std::cout << "Ask Quote Book empty: \n";
+	std::cout << "Size: " << bucket[9]->askBook.size() << "\n";
+	std::cout << "Bid Quote Book empty: \n";
+	std::cout << "Size: " << bucket[9]->bidBook.size() << "\n";
+	std::cout << std::endl;
+}
+

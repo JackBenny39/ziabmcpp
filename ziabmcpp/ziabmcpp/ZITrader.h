@@ -15,6 +15,7 @@
 #include <vector>
 
 using stepset = std::unordered_set<Step>;
+struct CFlow { traderId id; Step step; int64_t cashFlow; unsigned position; };
 
 
 class ZITrader
@@ -28,6 +29,7 @@ public:
 	virtual void processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	virtual void processSignal(Step);
 	virtual void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
+	virtual void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 
 	virtual void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
 
@@ -51,7 +53,8 @@ public:
 	Order makeAddQuote(Step, Side, Prc);
 	std::vector<Order> quoteCollector;
 	std::unordered_map<Id, Order> localBook;
-	std::vector<Order> cancelCollector;
+	std::vector<Order> cancelCollector, askBook, bidBook;
+	std::vector<CFlow> cashFlowCollector;
 private:
 	Id quoteSequence;
 };
