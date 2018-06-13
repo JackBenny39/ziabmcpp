@@ -11,7 +11,8 @@
 
 #include <random>
 #include <unordered_set>
-#include <vector>		// std::vector
+#include <unordered_map>
+#include <vector>
 
 using stepset = std::unordered_set<Step>;
 
@@ -26,8 +27,15 @@ public:
 
 	virtual void processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	virtual void processSignal(Step);
+	virtual void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
 
 	virtual void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
+
+	virtual Order makeCancelQuote(Order &, Step);
+	virtual void confirmCancel(Id);
+	virtual void confirmTrade(TConfirm &);
+	virtual Prc chooseP(Side, Prc, double, std::mt19937 &, std::uniform_real_distribution<> &);
+	virtual void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
 
 	Step arrInt;
 	traderId tId;
@@ -42,6 +50,8 @@ public:
 	stepset steps;
 	Order makeAddQuote(Step, Side, Prc);
 	std::vector<Order> quoteCollector;
+	std::unordered_map<Id, Order> localBook;
+	std::vector<Order> cancelCollector;
 private:
 	Id quoteSequence;
 };

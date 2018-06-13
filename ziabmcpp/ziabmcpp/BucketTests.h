@@ -8,6 +8,7 @@
 #include "stdafx.h"
 
 #include <memory>
+#include <set>
 
 #include "Sharedstx.h"
 
@@ -28,10 +29,16 @@ public:
 	BucketTests(std::vector<int> &, std::uniform_int_distribution<> &, std::mt19937 &);
 	std::mt19937 engine;
 	std::uniform_int_distribution<> distUint;
+	std::uniform_real_distribution<> distUreal;
 	std::vector<int> defaultVec;
 	std::vector<std::shared_ptr<ZITrader>> bucket;
 	int setMaxQ(int);
 	void testInstances();
+	void testZITrader();
+	void testTaker();
+	void testInformed();
+	void testProvider();
+	void testProvider5();
 };
 
 #endif

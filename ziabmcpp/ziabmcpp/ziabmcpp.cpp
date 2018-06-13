@@ -227,8 +227,13 @@ int main()
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\sip_1.csv";
 //	bTests.testExchangeSipToCsv(file1);
 
-//	BucketTests kTests(defaultVec, distA, engine);
+	BucketTests kTests(defaultVec, distA, engine);
 //	kTests.testInstances();
+//	kTests.testZITrader();
+//	kTests.testTaker();
+//	kTests.testInformed();
+//	kTests.testProvider();
+	kTests.testProvider5();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

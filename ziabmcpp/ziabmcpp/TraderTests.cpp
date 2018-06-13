@@ -218,7 +218,6 @@ void TraderTests::testProvider()
 
 	step1 = 27;
 	tob = { step1, 999, 250, 1008, 300 };
-	//	simpleTest(engine, distUreal);
 
 	p1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
 	cSide1 = p1.quoteCollector[0].side == Side::BUY ? 'B' : 'S';
