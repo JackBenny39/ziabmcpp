@@ -42,6 +42,7 @@ public:
 	void testMarketMaker();
 	void testMarketMaker5();
 	void testPJ();
+	void testShuffle();
 };
 
 #endif

@@ -233,10 +233,11 @@ int main()
 //	kTests.testTaker();
 //	kTests.testInformed();
 //	kTests.testProvider();
-	kTests.testProvider5();
+//	kTests.testProvider5();
 //	kTests.testMarketMaker();
 //	kTests.testMarketMaker5();
 //	kTests.testPJ();
+	kTests.testShuffle();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

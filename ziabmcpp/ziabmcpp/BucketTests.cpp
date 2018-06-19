@@ -819,3 +819,32 @@ void BucketTests::testPJ()
 	std::cout << std::endl;
 }
 
+void BucketTests::testShuffle()
+{
+	std::cout << "Order should be PJ, ZI, Taker, Informed, P1, P5, MM1, MM5" << "\n";
+	for (auto &x : bucket)
+		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " <<x->tId << "\n";
+
+	shuffle(bucket.begin(), bucket.end(), engine);
+
+	std::cout << "Shuffled\n";
+	for (auto &x : bucket)
+		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "\n";
+
+	engine.seed(44);
+	bucket.push_back(std::make_shared<PennyJumper>(1, 4002, setMaxQ(50), 1));
+	engine.seed(39);
+	bucket.push_back(std::make_shared<ZITrader>(7, 2, setMaxQ(50), 1));
+	bucket.push_back(std::make_shared<Taker>(11, 1002, setMaxQ(50), 1));
+	bucket.push_back(std::make_shared<Informed>(2002, 1, Side::SELL, 1, 100, engine, distUint));
+	bucket.push_back(std::make_shared<Provider>(17, 3002, setMaxQ(50), 0.85, 1));
+	bucket.push_back(std::make_shared<Provider5>(22, 3015, setMaxQ(50), 0.05, 5));
+	bucket.push_back(std::make_shared<MarketMaker>(1, 7002, setMaxQ(50), 0.05, 60, 12));
+	bucket.push_back(std::make_shared<MarketMaker5>(1, 7015, setMaxQ(50), 0.05, 60, 12));
+
+	std::cout << "Shuffled with more traders\n";
+	for (auto &x : bucket)
+		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "\n";
+
+	std::cout << std::endl;
+}
