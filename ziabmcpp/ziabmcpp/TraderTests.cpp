@@ -128,17 +128,20 @@ void TraderTests::testInformed()
 	std::cout << "Trader ID: " << i1.tId << "\n";
 
 	int counter = 0;
-	std::set<int> srtd1(i1.steps.begin(), i1.steps.end());
 	std::cout << "\n\nArrival steps: \n";
-	for (auto &x : srtd1)
+	for (auto &x : i1.steps)
 		std::cout << "Choice " << ++counter << ": " << x << "\n";
 
 	std::cout << "\n\nQuote Collector Before: " << i1.quoteCollector.size() << "\n";
 
-	step1 = 27;
+	step1 = i1.arrInt;
+
+	std::cout << "First step from arrival interval = " << i1.arrInt << "\n";
 
 	i1.processSignal(step1);
 	cSide1 = i1.quoteCollector[0].side == Side::BUY ? 'B' : 'S';
+
+	std::cout << "Second step from arrival interval = " << i1.arrInt << "\n";
 
 	std::cout << "Quote Collector After: " << i1.quoteCollector.size() << "\n";
 	std::cout << "First Order: \n";
@@ -162,15 +165,18 @@ void TraderTests::testInformed()
 	std::cout << "Quote Collector Before: " << i2.quoteCollector.size() << "\n";
 
 	counter = 0;
-	std::set<int> srtd2(i2.steps.begin(), i2.steps.end());
 	std::cout << "\n\nArrival steps: \n";
-	for (auto &x : srtd2)
+	for (auto &x : i2.steps)
 		std::cout << "Choice " << ++counter << ": " << x << "\n";
 
-	step1 = 29;
+	step1 = i2.arrInt;
+
+	std::cout << "First step from arrival interval = " << i2.arrInt << "\n";
 
 	i2.processSignal(step1);
 	cSide1 = i2.quoteCollector[0].side == Side::BUY ? 'B' : 'S';
+
+	std::cout << "Second step from arrival interval = " << i2.arrInt << "\n";
 
 	std::cout << "\n\nQuote Collector After: " << i2.quoteCollector.size() << "\n";
 	std::cout << "First Order: \n";

@@ -10,11 +10,11 @@
 #include "Sharedstx.h"
 
 #include <random>
-#include <unordered_set>
+#include <set>
 #include <unordered_map>
 #include <vector>
 
-using stepset = std::unordered_set<Step>;
+using stepset = std::set<Step>;
 struct CFlow { traderId id; Step step; int64_t cashFlow; unsigned position; };
 
 
@@ -50,6 +50,7 @@ public:
 	unsigned position;
 	int64_t cashFlow;
 	stepset steps;
+	std::set<Step>::iterator it;
 	Order makeAddQuote(Step, Side, Prc);
 	std::vector<Order> quoteCollector;
 	std::unordered_map<Id, Order> localBook;

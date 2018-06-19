@@ -145,17 +145,20 @@ void BucketTests::testInformed()
 	std::cout << "Trader ID: " << bucket[3]->tId << "\n";
 
 	int counter = 0;
-	std::set<int> srtd1(bucket[3]->steps.begin(), bucket[3]->steps.end());
 	std::cout << "\n\nArrival steps: \n";
-	for (auto &x : srtd1)
+	for (auto &x : bucket[3]->steps)
 		std::cout << "Choice " << ++counter << ": " << x << "\n";
 
 	std::cout << "\n\nQuote Collector Before: " << bucket[3]->quoteCollector.size() << "\n";
 
-	step1 = 27;
+	step1 = bucket[3]->arrInt;
+
+	std::cout << "First step from arrival interval = " << bucket[3]->arrInt << "\n";
 
 	bucket[3]->processSignal(step1);
 	cSide1 = bucket[3]->quoteCollector[0].side == Side::BUY ? 'B' : 'S';
+
+	std::cout << "Second step from arrival interval = " << bucket[3]->arrInt << "\n";
 
 	std::cout << "Quote Collector After: " << bucket[3]->quoteCollector.size() << "\n";
 	std::cout << "First Order: \n";
@@ -179,15 +182,18 @@ void BucketTests::testInformed()
 	std::cout << "Quote Collector Before: " << bucket[8]->quoteCollector.size() << "\n";
 
 	counter = 0;
-	std::set<int> srtd2(bucket[8]->steps.begin(), bucket[8]->steps.end());
 	std::cout << "\n\nArrival steps: \n";
-	for (auto &x : srtd2)
+	for (auto &x : bucket[8]->steps)
 		std::cout << "Choice " << ++counter << ": " << x << "\n";
 
-	step1 = 29;
+	step1 = bucket[8]->arrInt;
+
+	std::cout << "First step from arrival interval = " << bucket[8]->arrInt << "\n";
 
 	bucket[8]->processSignal(step1);
 	cSide1 = bucket[8]->quoteCollector[0].side == Side::BUY ? 'B' : 'S';
+
+	std::cout << "Second step from arrival interval = " << bucket[8]->arrInt << "\n";
 
 	std::cout << "\n\nQuote Collector After: " << bucket[8]->quoteCollector.size() << "\n";
 	std::cout << "First Order: \n";

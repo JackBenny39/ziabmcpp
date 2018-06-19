@@ -29,9 +29,12 @@ void Informed::makeSteps(const unsigned runL, const unsigned numChoices, std::mt
 			count++;
 		}
 	}
+	it = steps.begin();
+	arrInt = *it++;
 }
 
 void Informed::processSignal(Step step)
 {
 	quoteCollector.emplace_back(makeAddQuote(step, side, price));
+	arrInt = *it++;
 }
