@@ -25,15 +25,57 @@ Order ZITrader::makeAddQuote(Step timestamp, Side side, Prc price)
 	return Order{ tId, ++quoteSequence, timestamp, 'A', orderSize, side, price };
 }
 
+Order ZITrader::makeCancelQuote(Order &q, Step timestamp)
+{
+	return Order{ q.id, q.oid, timestamp, 'C', q.qty, q.side, q.price };
+}
+
+void ZITrader::confirmCancel(Id oid)
+{
+	localBook.erase(oid);
+}
+
+void ZITrader::bulkCancel(Step step, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
+{
+	for (auto &x : localBook)
+	{
+		if (dist(engine) < delta)
+			cancelCollector.emplace_back(makeCancelQuote(x.second, step));
+	}
+}
+
+void ZITrader::makeSteps(const unsigned runL, const unsigned numChoices, std::mt19937 &engine, std::uniform_int_distribution<> &distA)
+{
+	unsigned count;
+	Step j;
+	for (int i = 1; i != numChoices; ++i)
+	{
+		j = distA(engine);
+		count = 0;
+		while (count < runL)
+		{
+			while (steps.count(j) > 0)
+				j++;
+			steps.insert(j);
+			count++;
+		}
+	}
+	it = steps.begin();
+	arrInt = *it++;
+}
+
+Prc ZITrader::chooseP(Side side, Prc inside, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
+{
+	Prc plug = static_cast<int>(lambdaT * log(dist(engine)));
+	if (side == Side::BUY)
+		return inside - 1 - plug;
+	else
+		return inside + 1 + plug;
+}
+
 void ZITrader::processSignal(Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist) { }
 void ZITrader::processSignal(Step step) {}
 void ZITrader::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist) { }
 void ZITrader::processSignal(TopOfBook &tob, Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist) { }
 
-void ZITrader::makeSteps(const unsigned runL, const unsigned numChoices, std::mt19937 &engine, std::uniform_int_distribution<> &distA) { }
-
-Order ZITrader::makeCancelQuote(Order &q, Step timestamp) { return Order{ 1, 1, 1, 'C', 1, Side::SELL, 1 }; }
-void ZITrader::confirmCancel(Id oid) { }
 void ZITrader::confirmTrade(TConfirm &c) { }
-Prc ZITrader::chooseP(Side side, Prc inside, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist) { return 1; }
-void ZITrader::bulkCancel(Step step, std::mt19937 &engine, std::uniform_real_distribution<> &dist) { }

@@ -11,31 +11,12 @@ Provider::Provider(const Step arr, const int tnum, const int maxq, const double 
 Provider::Provider(const Step arr, const int tnum, const int maxq, const double dlt, const int qRange, const int numQ)
 	: ZITrader(arr, tnum, maxq, dlt, qRange, numQ) { }
 
-Order Provider::makeCancelQuote(Order &q, Step timestamp)
-{
-	return Order{ q.id, q.oid, timestamp, 'C', q.qty, q.side, q.price };
-}
-
-void Provider::confirmCancel(Id oid)
-{
-	localBook.erase(oid);
-}
-
 void Provider::confirmTrade(TConfirm &c)
 {
 	if (c.qty == localBook[c.restoid].qty)
 		confirmCancel(c.restoid);
 	else
 		localBook[c.restoid].qty -= c.qty;
-}
-
-void Provider::bulkCancel(Step step, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
-{
-	for (auto &x : localBook)
-	{
-		if (dist(engine) < delta)
-			cancelCollector.emplace_back(makeCancelQuote(x.second, step));
-	}
 }
 
 void Provider::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
@@ -47,13 +28,4 @@ void Provider::processSignal(TopOfBook &tob, Step step, double qProvide, double 
 		q = makeAddQuote(step, Side::SELL, chooseP(Side::SELL, tob.bestbid, lambdaT, engine, dist));
 	quoteCollector.push_back(q);
 	localBook[q.oid] = q;
-}
-
-Prc Provider::chooseP(Side side, Prc inside, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
-{
-	Prc plug = static_cast<int>(lambdaT * log(dist(engine)));
-	if (side == Side::BUY)
-		return inside - 1 - plug;
-	else
-		return inside + 1 + plug;
 }

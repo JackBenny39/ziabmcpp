@@ -191,9 +191,9 @@ void testBucket()
 
 int main()
 {
-//	engine.seed(39);
-//	TraderTests tTests(defaultVec, distA, engine);
+	engine.seed(39);
 
+//	TraderTests tTests(defaultVec, distA, engine);
 //	tTests.testZITrader();
 //	tTests.testTaker();
 //	tTests.testInformed();
@@ -201,7 +201,8 @@ int main()
 //	tTests.testProvider5();
 //	tTests.testMarketMaker();
 //	tTests.testMarketMaker5();
-//	engine.seed(44); tTests.testPJ(); // set seed to 44!
+//	engine.seed(44); 
+//	tTests.testPJ();
 
 //	OrderbookTests bTests;
 //	std::string file1;
@@ -230,9 +231,9 @@ int main()
 //	kTests.testInstances();
 //	kTests.testZITrader();
 //	kTests.testTaker();
-	kTests.testInformed();
+//	kTests.testInformed();
 //	kTests.testProvider();
-//	kTests.testProvider5();
+	kTests.testProvider5();
 //	kTests.testMarketMaker();
 //	kTests.testMarketMaker5();
 //	kTests.testPJ();

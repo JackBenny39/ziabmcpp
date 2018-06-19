@@ -31,13 +31,10 @@ public:
 	virtual void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	virtual void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 
-	virtual void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
-
-	virtual Order makeCancelQuote(Order &, Step);
-	virtual void confirmCancel(Id);
 	virtual void confirmTrade(TConfirm &);
 	virtual Prc chooseP(Side, Prc, double, std::mt19937 &, std::uniform_real_distribution<> &);
-	virtual void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
+
+	virtual ~ZITrader() = default;
 
 	Step arrInt;
 	traderId tId;
@@ -52,6 +49,10 @@ public:
 	stepset steps;
 	std::set<Step>::iterator it;
 	Order makeAddQuote(Step, Side, Prc);
+	Order makeCancelQuote(Order &, Step);
+	void confirmCancel(Id);
+	void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
+	void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
 	std::vector<Order> quoteCollector;
 	std::unordered_map<Id, Order> localBook;
 	std::vector<Order> cancelCollector, askBook, bidBook;

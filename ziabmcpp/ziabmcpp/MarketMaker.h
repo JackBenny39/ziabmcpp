@@ -15,7 +15,6 @@ public:
 	MarketMaker(const Step, const int, const int, const double, const int, const int);
 	void confirmTrade(TConfirm &) override;
 	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &) override;
-//	std::vector<CFlow> cashFlowCollector;
 };
 
 #endif

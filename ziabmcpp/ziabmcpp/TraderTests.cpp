@@ -561,6 +561,8 @@ void TraderTests::testMarketMaker5()
 
 void TraderTests::testPJ()
 {
+	engine.seed(44);
+
 	TopOfBook tob;
 	cSide cSide1;
 	PennyJumper j1(1, 1, setMaxQ(50), 1);

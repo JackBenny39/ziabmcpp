@@ -8,11 +8,6 @@
 PennyJumper::PennyJumper(const Step arr, const int tnum, const int maxq, const Prc mpi)
 	: ZITrader(arr, tnum, maxq, mpi) { traderType = 'J'; }
 
-Order PennyJumper::makeCancelQuote(Order &q, Step timestamp)
-{
-	return Order{ q.id, q.oid, timestamp, 'C', q.qty, q.side, q.price };
-}
-
 void PennyJumper::confirmTrade(TConfirm &c)
 {
 	if (c.side == Side::BUY)

@@ -13,7 +13,6 @@ class PennyJumper : public ZITrader
 {
 public:
 	PennyJumper(const Step, const int, const int, const Prc);
-	Order makeCancelQuote(Order &, Step) override;
 	void confirmTrade(TConfirm &) override;
 	void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &) override;
 };
