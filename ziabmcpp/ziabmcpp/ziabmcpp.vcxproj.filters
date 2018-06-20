@@ -60,6 +60,9 @@
     <ClInclude Include="BucketTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Runner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BucketTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Runner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

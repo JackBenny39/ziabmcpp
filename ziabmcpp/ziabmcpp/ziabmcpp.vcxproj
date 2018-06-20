@@ -156,6 +156,7 @@
     <ClInclude Include="PennyJumper.h" />
     <ClInclude Include="Provider.h" />
     <ClInclude Include="Provider5.h" />
+    <ClInclude Include="Runner.h" />
     <ClInclude Include="Sharedstx.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Taker.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="PennyJumper.cpp" />
     <ClCompile Include="Provider.cpp" />
     <ClCompile Include="Provider5.cpp" />
+    <ClCompile Include="Runner.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
