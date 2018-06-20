@@ -7,15 +7,13 @@
 
 #include "stdafx.h"
 
-#include <string>		// std::string
-
 #include "ZITrader.h"
 
 class Taker : public ZITrader
 {
 public:
-	Taker(const std::string &, const int);
-	void processSignal(int, double, double);
+	Taker(const Step, const int, const int, const Prc);
+	void processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &) override;
 };
 
 #endif

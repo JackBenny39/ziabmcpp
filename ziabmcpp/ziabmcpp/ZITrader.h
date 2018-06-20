@@ -7,24 +7,58 @@
 
 #include "stdafx.h"
 
-#include <vector>		// std::vector
-#include <string>		// std::string
-#include <tuple>        // std::tuple
+#include "Sharedstx.h"
 
-using quote_t = std::tuple<std::string, int, char, int, char, int>;
+#include <random>
+#include <set>
+#include <unordered_map>
+#include <vector>
+
+using stepset = std::set<Step>;
+struct CFlow { traderId id; Step step; int64_t cashFlow; unsigned position; };
 
 
 class ZITrader
 {
 public:
-	ZITrader(const std::string &, const int);
-	int orderSize;
-	std::string traderType;
-	std::string traderId;
-	quote_t makeAddQuote(int, char, int);
-	std::vector<quote_t> quoteCollector;
+	ZITrader(const Step, const int, const int, const Prc); // ZITrader, Taker, PennyJumper
+	ZITrader(const int, const int, Side, const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &); //Informed
+	ZITrader(const Step, const int, const int, const double, const Prc); // Provider, Provider5
+	ZITrader(const Step, const int, const int, const double, const int, const int); // Provider, MarketMaker, MarketMaker5
+
+	virtual void processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
+	virtual void processSignal(Step);
+	virtual void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
+	virtual void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
+
+	virtual void confirmTrade(TConfirm &);
+	virtual Prc chooseP(Side, Prc, double, std::mt19937 &, std::uniform_real_distribution<> &);
+
+	virtual ~ZITrader() = default;
+
+	Step arrInt;
+	traderId tId;
+	Qty orderSize;
+	char traderType;
+	Side side; // must precede price
+	Prc price, mpi;
+	double delta;
+	int numQuotes, quoteRange;
+	unsigned position;
+	int64_t cashFlow;
+	stepset steps;
+	std::set<Step>::iterator it;
+	Order makeAddQuote(Step, Side, Prc);
+	Order makeCancelQuote(Order &, Step);
+	void confirmCancel(Id);
+	void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
+	void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
+	std::vector<Order> quoteCollector;
+	std::unordered_map<Id, Order> localBook;
+	std::vector<Order> cancelCollector, askBook, bidBook;
+	std::vector<CFlow> cashFlowCollector;
 private:
-	int quoteSequence;
+	Id quoteSequence;
 };
 
 #endif

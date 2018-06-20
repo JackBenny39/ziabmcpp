@@ -3,29 +3,19 @@
 
 #include "stdafx.h"
 
+
 #include "Taker.h"
 
-Taker::Taker(const std::string &name, const int maxq)
-	: ZITrader(name, maxq)
+Taker::Taker(const Step arr, const int tnum, const int maxq, const Prc mpi)
+	: ZITrader(arr, tnum, maxq, mpi)
 {
-	traderType = "Taker";
+	traderType = 'T';
 }
 
-void Taker::processSignal(int step, double qTake, double buyP)
+void Taker::processSignal(Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
-	int price;
-	char side;
-
-	if (buyP < qTake)
-	{
-		price = 2000000;
-		side = 'B';
-	}
+	if (dist(engine) < qTake)
+		quoteCollector.emplace_back(makeAddQuote(step, Side::BUY, 2000000));
 	else
-	{
-		price = 0;
-		side = 'S';
-	}
-	quote_t q = makeAddQuote(step, side, price);
-	quoteCollector.push_back(q);
+		quoteCollector.emplace_back(makeAddQuote(step, Side::SELL, 0));
 }
