@@ -11,8 +11,8 @@ Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 	bool taker, unsigned numTakers, Qty takerMaxQ, double tMu,
 	bool informed, Step informedRun, Qty informedMaxQ, double iMu,
 	bool jumper, double jAlpha,
-	bool maker, unsigned numMMs, Qty mmMaxQ, unsigned mmQuotes, unsigned mmRange, double MMDelta,
-	double qTake, double lambda0, double whiteNoise, double cLambda) :
+	bool maker, unsigned numMMs, Qty mmMaxQ, unsigned mmQuotes, unsigned mmRange, double mmDelta,
+	bool qTake, double lambda0, double whiteNoise, double cLambda) :
 	mpi(mpi), prime1(prime1), runSteps(runSteps), writeInterval(writeInterval), 
 	provider(provider), numProviders(numProviders), providerMaxQ(providerMaxQ), pAlpha(pAlpha), pDelta(pDelta), qProvide(qProvide),
 	taker(taker), numTakers(numTakers), takerMaxQ(takerMaxQ), tMu(tMu),

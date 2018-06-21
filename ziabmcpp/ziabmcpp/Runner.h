@@ -32,17 +32,17 @@ public:
 		bool, Step, Qty, double,
 		bool, double,
 		bool, unsigned, Qty, unsigned, unsigned, double,
-		double, double, double, double);
+		bool, double, double, double);
 
 	std::vector<std::shared_ptr<ZITrader>> bucket;
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
-	bool provider, taker, informed, jumper, maker;
+	bool provider, taker, informed, jumper, maker, qTake;
 	unsigned numProviders, numTakers, numMMs, mmQuotes, mmRange;
 	Qty providerMaxQ, takerMaxQ, informedMaxQ, mmMaxQ;
 	double pAlpha, pDelta, qProvide, tMu, iMu, jAlpha, mmDelta;
-	double qTake, lambda0, whiteNoise, cLambda;
+	double lambda0, whiteNoise, cLambda;
 	Orderbook exchange;
 };
 

@@ -25,6 +25,7 @@
 #include "TraderTests.h"
 #include "OrderbookTests.h"
 #include "BucketTests.h"
+#include "RunnerTests.h"
 /*
 #include "ZITrader.h"
 #include "Taker.h"
@@ -227,7 +228,7 @@ int main()
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\sip_1.csv";
 //	bTests.testExchangeSipToCsv(file1);
 
-	BucketTests kTests(defaultVec, distA, engine);
+//	BucketTests kTests(defaultVec, distA, engine);
 //	kTests.testInstances();
 //	kTests.testZITrader();
 //	kTests.testTaker();
@@ -237,7 +238,10 @@ int main()
 //	kTests.testMarketMaker();
 //	kTests.testMarketMaker5();
 //	kTests.testPJ();
-	kTests.testShuffle();
+//	kTests.testShuffle();
+
+	RunnerTests rTests;
+	rTests.testConstructor();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
