@@ -25,7 +25,7 @@ RunnerTests::RunnerTests()
 	numMMs = 1;
 	mmQuotes = 12;
 	mmRange = 60;
-	providerMaxQ = 1;
+	providerMaxQ = 50;
 	takerMaxQ = 1;
 	informedMaxQ = 1;
 	mmMaxQ = 1;
@@ -40,6 +40,9 @@ RunnerTests::RunnerTests()
 	lambda0 = 100.0;
 	whiteNoise = 0.001;
 	cLambda = 1.0;
+	std::random_device random_device;
+	std::mt19937 engine{ random_device() };
+	seed = 39;
 }
 
 void RunnerTests::testConstructor()
@@ -50,7 +53,7 @@ void RunnerTests::testConstructor()
 		informed, informedRun, informedMaxQ, iMu,
 		jumper, jAlpha,
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
-		qTake, lambda0, whiteNoise, cLambda);
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
 	std::cout << "MPI: " << market1.mpi << "\n";
 	std::cout << "Prime1: " << market1.prime1 << "\n";
@@ -83,5 +86,23 @@ void RunnerTests::testConstructor()
 	std::cout << "White Noise: " << market1.whiteNoise << "\n";
 	std::cout << "C Lambda: " << market1.cLambda << "\n";
 
+	std::cout << std::endl;
+}
+
+void RunnerTests::testBuildProvider()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedMaxQ, iMu,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.buildProviders();
+
+	std::cout << "Provider Alpha: " << market1.pAlpha << "\n";
+	for (auto &x : market1.bucket)
+		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
 	std::cout << std::endl;
 }

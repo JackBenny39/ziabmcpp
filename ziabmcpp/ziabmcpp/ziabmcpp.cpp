@@ -40,13 +40,13 @@
 
 using cSide = char;
 
-std::random_device random_device;
-std::mt19937 engine{ random_device() };
-std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
-std::uniform_real_distribution<> distUreal(0, 1);
-std::exponential_distribution<double> distExp(1.0);
-std::uniform_int_distribution<> distA(1, 100000);
-
+//std::random_device random_device;
+//std::mt19937 engine{ random_device() };
+//std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
+//std::uniform_real_distribution<> distUreal(0, 1);
+//std::exponential_distribution<double> distExp(1.0);
+//std::uniform_int_distribution<> distA(1, 100000);
+/*
 double buySellP()
 {
 	return distUreal(engine);
@@ -63,7 +63,7 @@ void testExp()
 {
 	std::exponential_distribution<double> distribution(1.0);
 	std::ofstream expfile;
-	expfile.open("C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\exp1.csv");
+	expfile.open("C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\exp2.csv");
 
 	for (int i = 1; i != 1000; i++)
 	{
@@ -73,6 +73,21 @@ void testExp()
 	expfile.close();
 		
 }
+
+void testExp2()
+{
+	std::exponential_distribution<double> distribution(1.0);
+	std::ofstream expfile;
+
+	for (int i = 1; i != 1000; i++)
+	{
+		double exp = distribution(engine);
+		std::cout << i << " : " << exp << "\n";
+	}
+	std::cout << std::endl;
+
+}
+
 
 void testFromUnifrom(std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
@@ -140,6 +155,7 @@ void testMM5PS()
 		std::cout << "From Collector Bid: " << x << "\n";
 	std::cout << std::endl;
 }
+*/
 /*
 void testBucket()
 {
@@ -192,7 +208,7 @@ void testBucket()
 
 int main()
 {
-	engine.seed(39);
+//	engine.seed(39);
 
 //	TraderTests tTests(defaultVec, distA, engine);
 //	tTests.testZITrader();
@@ -241,7 +257,8 @@ int main()
 //	kTests.testShuffle();
 
 	RunnerTests rTests;
-	rTests.testConstructor();
+//	rTests.testConstructor();
+	rTests.testBuildProvider();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
@@ -249,6 +266,8 @@ int main()
 //	testInformedSteps();
 //	testBucket();
 //	_CrtDumpMemoryLeaks();
+
+//	testExp2();
 
 	return 0;
 }

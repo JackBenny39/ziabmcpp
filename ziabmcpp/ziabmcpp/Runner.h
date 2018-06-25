@@ -8,6 +8,7 @@
 #include "stdafx.h"
 
 #include <memory>
+#include <random>
 
 #include "Sharedstx.h"
 
@@ -32,14 +33,23 @@ public:
 		bool, Step, Qty, double,
 		bool, double,
 		bool, unsigned, Qty, unsigned, unsigned, double,
-		bool, double, double, double);
+		bool, double, double, double, std::mt19937 &, unsigned);
+
+	std::mt19937 engine;
+	std::vector<int> defaultVec;
+//	std::exponential_distribution<double> distExpP;
+//	std::uniform_int_distribution<> distUint;
+//	std::uniform_real_distribution<> distUreal;
+
+	void buildProviders();
+	int setMaxQ(int);
 
 	std::vector<std::shared_ptr<ZITrader>> bucket;
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
 	bool provider, taker, informed, jumper, maker, qTake;
-	unsigned numProviders, numTakers, numMMs, mmQuotes, mmRange;
+	unsigned numProviders, numTakers, numMMs, mmQuotes, mmRange, seed;
 	Qty providerMaxQ, takerMaxQ, informedMaxQ, mmMaxQ;
 	double pAlpha, pDelta, qProvide, tMu, iMu, jAlpha, mmDelta;
 	double lambda0, whiteNoise, cLambda;
