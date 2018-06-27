@@ -258,7 +258,9 @@ int main()
 
 	RunnerTests rTests;
 //	rTests.testConstructor();
-	rTests.testBuildProvider();
+//	rTests.testBuildProvider();
+//	rTests.testBuildTakers();
+	rTests.testBuildInformed();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

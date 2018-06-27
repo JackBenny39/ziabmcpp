@@ -30,7 +30,7 @@ public:
 	Runner(Prc, Step, Step, Step, 
 		bool, unsigned, Qty, double, double, double,
 		bool, unsigned, Qty, double,
-		bool, Step, Qty, double,
+		bool, Step, Qty, double, Side,
 		bool, double,
 		bool, unsigned, Qty, unsigned, unsigned, double,
 		bool, double, double, double, std::mt19937 &, unsigned);
@@ -41,8 +41,10 @@ public:
 //	std::uniform_int_distribution<> distUint;
 //	std::uniform_real_distribution<> distUreal;
 
-	void buildProviders();
 	int setMaxQ(int);
+	void buildProviders();
+	void buildTakers();
+	void buildInformed();
 
 	std::vector<std::shared_ptr<ZITrader>> bucket;
 
@@ -50,9 +52,10 @@ public:
 	Step prime1, runSteps, writeInterval, informedRun;
 	bool provider, taker, informed, jumper, maker, qTake;
 	unsigned numProviders, numTakers, numMMs, mmQuotes, mmRange, seed;
-	Qty providerMaxQ, takerMaxQ, informedMaxQ, mmMaxQ;
+	Qty providerMaxQ, takerMaxQ, informedQ, mmMaxQ;
 	double pAlpha, pDelta, qProvide, tMu, iMu, jAlpha, mmDelta;
 	double lambda0, whiteNoise, cLambda;
+	Side informedSide;
 	Orderbook exchange;
 };
 

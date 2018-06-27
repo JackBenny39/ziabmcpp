@@ -14,7 +14,7 @@ RunnerTests::RunnerTests()
 	prime1 = 20; 
 	runSteps = 100000;
 	writeInterval = 5000; 
-	informedRun = 1;
+	informedRun = 3;
 	provider = true;
 	taker = true;
 	informed = false;
@@ -27,13 +27,13 @@ RunnerTests::RunnerTests()
 	mmRange = 60;
 	providerMaxQ = 50;
 	takerMaxQ = 1;
-	informedMaxQ = 1;
+	informedQ = 1;
 	mmMaxQ = 1;
 	pAlpha = 0.0375;
 	pDelta = 0.025; 
 	qProvide = 0.05; 
 	tMu = 0.001;
-	iMu = 0.01;
+	iMu = 0.001;
 	jAlpha = 0.05;
 	mmDelta = 0.025;
 	qTake = true;
@@ -42,6 +42,7 @@ RunnerTests::RunnerTests()
 	cLambda = 1.0;
 	std::random_device random_device;
 	std::mt19937 engine{ random_device() };
+	informedSide = Side::BUY;
 	seed = 39;
 }
 
@@ -50,7 +51,7 @@ void RunnerTests::testConstructor()
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
 		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
 		taker, numTakers, takerMaxQ, tMu,
-		informed, informedRun, informedMaxQ, iMu,
+		informed, informedRun, informedQ, iMu, informedSide,
 		jumper, jAlpha,
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
@@ -71,7 +72,7 @@ void RunnerTests::testConstructor()
 	std::cout << "Taker Mu: " << market1.tMu << "\n";
 	std::cout << "Informed: " << market1.informed << "\n";
 	std::cout << "Informed Run Length: " << market1.informedRun << "\n";
-	std::cout << "Informed Max Quantity: " << market1.informedMaxQ << "\n";
+	std::cout << "Informed Max Quantity: " << market1.informedQ << "\n";
 	std::cout << "Informed Mu: " << market1.iMu << "\n";
 	std::cout << "Jumper: " << market1.jumper << "\n";
 	std::cout << "Jumper Alpha: " << market1.jAlpha << "\n";
@@ -94,7 +95,7 @@ void RunnerTests::testBuildProvider()
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
 		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
 		taker, numTakers, takerMaxQ, tMu,
-		informed, informedRun, informedMaxQ, iMu,
+		informed, informedRun, informedQ, iMu, informedSide,
 		jumper, jAlpha,
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
@@ -104,5 +105,43 @@ void RunnerTests::testBuildProvider()
 	std::cout << "Provider Alpha: " << market1.pAlpha << "\n";
 	for (auto &x : market1.bucket)
 		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
+	std::cout << std::endl;
+}
+
+void RunnerTests::testBuildTakers()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.buildTakers();
+
+	std::cout << "Taker Mu: " << market1.tMu << "\n";
+	for (auto &x : market1.bucket)
+		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
+	std::cout << std::endl;
+}
+
+void RunnerTests::testBuildInformed()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.buildTakers(); 
+	market1.buildInformed();
+
+	std::cout << "Trader Type: " << market1.bucket[numTakers]->traderType << "; Trader ID: " << market1.bucket[numTakers]->tId << "; Max Q: " 
+		<< market1.bucket[numTakers]->orderSize << "\n";
+	for (auto &x : market1.bucket[numTakers]->steps)
+		std::cout << "Arrival Interval: " << x << "\n";
 	std::cout << std::endl;
 }

@@ -48,7 +48,7 @@ void ZITrader::makeSteps(const unsigned runL, const unsigned numChoices, std::mt
 {
 	unsigned count;
 	Step j;
-	for (int i = 1; i != numChoices; ++i)
+	for (auto i = 1; i != numChoices; ++i)
 	{
 		j = distA(engine);
 		count = 0;

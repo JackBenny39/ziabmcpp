@@ -11,14 +11,14 @@
 Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 	bool provider, unsigned numProviders, Qty providerMaxQ, double pAlpha, double pDelta, double qProvide,
 	bool taker, unsigned numTakers, Qty takerMaxQ, double tMu,
-	bool informed, Step informedRun, Qty informedMaxQ, double iMu,
+	bool informed, Step informedRun, Qty informedQ, double iMu, Side informedSide,
 	bool jumper, double jAlpha,
 	bool maker, unsigned numMMs, Qty mmMaxQ, unsigned mmQuotes, unsigned mmRange, double mmDelta,
 	bool qTake, double lambda0, double whiteNoise, double cLambda, std::mt19937 &eng, unsigned seed) :
 	mpi(mpi), prime1(prime1), runSteps(runSteps), writeInterval(writeInterval),
 	provider(provider), numProviders(numProviders), providerMaxQ(providerMaxQ), pAlpha(pAlpha), pDelta(pDelta), qProvide(qProvide),
 	taker(taker), numTakers(numTakers), takerMaxQ(takerMaxQ), tMu(tMu),
-	informed(informed), informedRun(informedRun), informedMaxQ(informedMaxQ), iMu(iMu),
+	informed(informed), informedRun(informedRun), informedQ(informedQ), iMu(iMu), informedSide(informedSide),
 	jumper(jumper), jAlpha(jAlpha),
 	maker(maker), numMMs(numMMs), mmMaxQ(mmMaxQ), mmQuotes(mmQuotes), mmRange(mmRange), mmDelta(mmDelta),
 	qTake(qTake), lambda0(lambda0), whiteNoise(whiteNoise), cLambda(cLambda), engine(eng), seed(seed)
@@ -45,8 +45,39 @@ void Runner::buildProviders()
 	{
 		auto size = setMaxQ(providerMaxQ);
 		if (mpi == 1)
-			bucket.push_back(std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (3000 + i), size, pDelta, mpi));
+			bucket.push_back(std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (1000 + i), size, pDelta, mpi));
 		else
-			bucket.push_back(std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (3000 + i), size, pDelta, mpi));
+			bucket.push_back(std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (1000 + i), size, pDelta, mpi));
 	}
+}
+
+void Runner::buildTakers()
+{
+
+	std::exponential_distribution<double> distExpT(tMu);
+	for (auto i = 0; i != numTakers; ++i)
+	{
+		auto size = setMaxQ(takerMaxQ);
+		bucket.push_back(std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, (2000 + i), size, mpi));
+	}
+}
+
+void Runner::buildInformed()
+{
+	int takerTrades = 0;
+	int informedTrades;
+	if (taker)
+	{
+		for (auto &x : bucket)
+		{
+			if (x->traderType == 'T')
+				takerTrades += x->orderSize * runSteps / x->arrInt;
+		}
+		informedTrades = static_cast<int>(floor(takerTrades * iMu));
+	}
+	else
+		informedTrades = static_cast<int>(1 / iMu);
+
+	std::uniform_int_distribution<int> distUintI(prime1, runSteps);
+	bucket.push_back(std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI));
 }

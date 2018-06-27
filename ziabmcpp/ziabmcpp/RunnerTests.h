@@ -18,14 +18,17 @@ public:
 
 	void testConstructor();
 	void testBuildProvider();
+	void testBuildTakers();
+	void testBuildInformed();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
 	bool provider, taker, informed, jumper, maker, qTake;
 	unsigned numProviders, numTakers, numMMs, mmQuotes, mmRange, seed;
-	Qty providerMaxQ, takerMaxQ, informedMaxQ, mmMaxQ;
+	Qty providerMaxQ, takerMaxQ, informedQ, mmMaxQ;
 	double pAlpha, pDelta, qProvide, tMu, iMu, jAlpha, mmDelta;
 	double lambda0, whiteNoise, cLambda;
+	Side informedSide;
 	std::mt19937 engine;
 };
 
