@@ -45,6 +45,7 @@ public:
 	void buildProviders();
 	void buildTakers();
 	void buildInformed();
+	void buildMarketMakers();
 
 	std::vector<std::shared_ptr<ZITrader>> bucket;
 
@@ -57,6 +58,7 @@ public:
 	double lambda0, whiteNoise, cLambda;
 	Side informedSide;
 	Orderbook exchange;
+	PennyJumper* j1;
 };
 
 #endif

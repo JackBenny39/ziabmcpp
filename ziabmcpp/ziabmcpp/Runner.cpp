@@ -28,6 +28,7 @@ Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 	engine.seed(seed);
 
 	exchange = Orderbook();
+	if (jumper) { j1 = new PennyJumper(1, 4000, 1, mpi); }
 }
 
 int Runner::setMaxQ(int maxq)
@@ -80,4 +81,16 @@ void Runner::buildInformed()
 
 	std::uniform_int_distribution<int> distUintI(prime1, runSteps);
 	bucket.push_back(std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI));
+}
+
+void Runner::buildMarketMakers()
+{
+	for (auto i = 0; i != numMMs; ++i)
+	{
+		auto size = setMaxQ(mmMaxQ);
+		if (mpi == 1)
+			bucket.push_back(std::make_shared<MarketMaker>(size, (3000 + i), size, mmDelta, mmRange, mmQuotes));
+		else
+			bucket.push_back(std::make_shared<MarketMaker5>(size, (3000 + i), size, mmDelta, mmRange, mmQuotes));
+	}
 }

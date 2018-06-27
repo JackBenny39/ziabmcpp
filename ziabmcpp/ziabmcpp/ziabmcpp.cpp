@@ -260,7 +260,9 @@ int main()
 //	rTests.testConstructor();
 //	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
-	rTests.testBuildInformed();
+//	rTests.testBuildInformed();
+//	rTests.testBuildPennyJumper();
+	rTests.testBuildMarketMakers();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

@@ -20,6 +20,8 @@ public:
 	void testBuildProvider();
 	void testBuildTakers();
 	void testBuildInformed();
+	void testBuildPennyJumper();
+	void testBuildMarketMakers();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

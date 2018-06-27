@@ -17,8 +17,8 @@ RunnerTests::RunnerTests()
 	informedRun = 3;
 	provider = true;
 	taker = true;
-	informed = false;
-	jumper = false;
+	informed = true;
+	jumper = true;
 	maker = true;
 	numProviders = 38;
 	numTakers = 50;
@@ -100,7 +100,7 @@ void RunnerTests::testBuildProvider()
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
-	market1.buildProviders();
+	if (provider) { market1.buildProviders(); }
 
 	std::cout << "Provider Alpha: " << market1.pAlpha << "\n";
 	for (auto &x : market1.bucket)
@@ -118,7 +118,7 @@ void RunnerTests::testBuildTakers()
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
-	market1.buildTakers();
+	if (taker) { market1.buildTakers(); }
 
 	std::cout << "Taker Mu: " << market1.tMu << "\n";
 	for (auto &x : market1.bucket)
@@ -136,12 +136,44 @@ void RunnerTests::testBuildInformed()
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
-	market1.buildTakers(); 
-	market1.buildInformed();
+	if (taker) { market1.buildTakers(); }
+	if (informed) { market1.buildInformed(); }
 
 	std::cout << "Trader Type: " << market1.bucket[numTakers]->traderType << "; Trader ID: " << market1.bucket[numTakers]->tId << "; Max Q: " 
 		<< market1.bucket[numTakers]->orderSize << "\n";
 	for (auto &x : market1.bucket[numTakers]->steps)
 		std::cout << "Arrival Interval: " << x << "\n";
+	std::cout << std::endl;
+}
+
+void RunnerTests::testBuildPennyJumper()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	std::cout << "Trader Type: " << market1.j1->traderType << "; Trader ID: " << market1.j1->tId << "; Max Q: " << market1.j1->orderSize 
+		<< "; PJ MPI: " << market1.j1->mpi << "\n";
+}
+
+void RunnerTests::testBuildMarketMakers()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	if (maker) { market1.buildMarketMakers(); }
+
+	for (auto &x : market1.bucket)
+		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Order Size: " << x->orderSize 
+			<< "; MM Delta: " << x->delta << ": MM Quote Range" << x->quoteRange << ": MM Quotes: " << x->numQuotes << "\n";
 	std::cout << std::endl;
 }
