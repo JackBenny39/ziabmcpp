@@ -28,7 +28,7 @@ Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 	engine.seed(seed);
 
 	exchange = Orderbook();
-	if (jumper) { j1 = new PennyJumper(1, 4000, 1, mpi); }
+	if (jumper) { j1 = std::make_unique<PennyJumper>(1, 4000, 1, mpi); }
 }
 
 int Runner::setMaxQ(int maxq)

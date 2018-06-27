@@ -58,7 +58,7 @@ public:
 	double lambda0, whiteNoise, cLambda;
 	Side informedSide;
 	Orderbook exchange;
-	PennyJumper* j1;
+	std::unique_ptr<PennyJumper> j1;
 };
 
 #endif
