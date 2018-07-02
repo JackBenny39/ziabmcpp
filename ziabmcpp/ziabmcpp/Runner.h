@@ -7,8 +7,11 @@
 
 #include "stdafx.h"
 
+#include <cmath>
+#include <functional>
 #include <memory>
 #include <random>
+#include <valarray>
 
 #include "Sharedstx.h"
 
@@ -46,6 +49,7 @@ public:
 	void buildTakers();
 	void buildInformed();
 	void buildMarketMakers();
+	double buildLambdaDenom();
 
 	std::vector<std::shared_ptr<ZITrader>> bucket;
 
@@ -55,7 +59,7 @@ public:
 	unsigned numProviders, numTakers, numMMs, mmQuotes, mmRange, seed;
 	Qty providerMaxQ, takerMaxQ, informedQ, mmMaxQ;
 	double pAlpha, pDelta, qProvide, tMu, iMu, jAlpha, mmDelta;
-	double lambda0, whiteNoise, cLambda;
+	double lambda0, whiteNoise, cLambda, lambdaDenom;
 	Side informedSide;
 	Orderbook exchange;
 	std::unique_ptr<PennyJumper> j1;

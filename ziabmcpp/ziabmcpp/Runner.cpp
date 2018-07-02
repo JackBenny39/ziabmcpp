@@ -24,11 +24,11 @@ Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 	qTake(qTake), lambda0(lambda0), whiteNoise(whiteNoise), cLambda(cLambda), engine(eng), seed(seed)
 {
 	defaultVec = { 1, 5, 10, 25, 50 };
-	std::uniform_real_distribution<> distUreal(0, 1); // move when needed!
 	engine.seed(seed);
 
 	exchange = Orderbook();
 	if (jumper) { j1 = std::make_unique<PennyJumper>(1, 4000, 1, mpi); }
+	lambdaDenom = buildLambdaDenom();
 }
 
 int Runner::setMaxQ(int maxq)
@@ -93,4 +93,24 @@ void Runner::buildMarketMakers()
 		else
 			bucket.push_back(std::make_shared<MarketMaker5>(size, (3000 + i), size, mmDelta, mmRange, mmQuotes));
 	}
+}
+
+double Runner::buildLambdaDenom()
+{
+	lambdaDenom = 0.0;
+//	std::valarray<double> qt0(runSteps);
+//	qt0[0] = 0.5;
+	double qt9 = 0.5, qt10, x;
+	std::uniform_real_distribution<> distUreal(0, 1);
+	auto noise = std::bind(distUreal, engine);
+	for (auto i = 1; i != runSteps; ++i)
+	{
+		x = noise();
+		qt10 = (x > qt9) ? qt9 + whiteNoise : qt9 - whiteNoise;
+		qt9 = qt10;
+		lambdaDenom += std::pow(qt10 - 0.5, 2);
+//		qt0[i] = (x > qt0[i - 1]) ? qt0[i - 1] + whiteNoise : qt0[i - 1] - whiteNoise;
+//		lambdaDenom += std::pow(qt0[i] - 0.5, 2);
+	}
+	return std::sqrt(lambdaDenom / runSteps);
 }
