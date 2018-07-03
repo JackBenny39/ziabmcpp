@@ -181,7 +181,7 @@ void RunnerTests::testBuildMarketMakers()
 	std::cout << std::endl;
 }
 
-void RunnerTests::testBuildLambdaDenom()
+void RunnerTests::testBuildLambda()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
 		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
@@ -192,9 +192,10 @@ void RunnerTests::testBuildLambdaDenom()
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
 	auto t0 = high_resolution_clock::now();
-	double test = market1.buildLambdaDenom();
+	std::pair<std::vector<double>, std::vector<double>> test = market1.buildLambda();
 	auto t1 = high_resolution_clock::now();
 	std::cout << duration_cast<milliseconds>(t1 - t0).count() << " ms\n";
-	std::cout << "Lambda Denominator = " << test << "\n";
+	std::cout << "QL position 0 = " << test.first[0] << " : " << test.second[0] << "\n";
+	std::cout << "QL position 100 = " << test.first[100] << " : " << test.second[100] << "\n";
 	std::cout << std::endl;
 }

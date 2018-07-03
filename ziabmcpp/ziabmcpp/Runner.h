@@ -44,14 +44,15 @@ public:
 //	std::uniform_int_distribution<> distUint;
 //	std::uniform_real_distribution<> distUreal;
 
+	std::vector<std::shared_ptr<ZITrader>> bucket;
+	std::pair<std::vector<double>, std::vector<double>> QL;
+
 	int setMaxQ(int);
 	void buildProviders();
 	void buildTakers();
 	void buildInformed();
 	void buildMarketMakers();
-	double buildLambdaDenom();
-
-	std::vector<std::shared_ptr<ZITrader>> bucket;
+	std::pair<std::vector<double>, std::vector<double>> buildLambda();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

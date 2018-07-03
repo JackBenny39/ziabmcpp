@@ -28,7 +28,7 @@ Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 
 	exchange = Orderbook();
 	if (jumper) { j1 = std::make_unique<PennyJumper>(1, 4000, 1, mpi); }
-	lambdaDenom = buildLambdaDenom();
+	QL = buildLambda();
 }
 
 int Runner::setMaxQ(int maxq)
@@ -95,12 +95,14 @@ void Runner::buildMarketMakers()
 	}
 }
 
-double Runner::buildLambdaDenom()
+std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 {
-	lambdaDenom = 0.0;
 //	std::valarray<double> qt0(runSteps);
 //	qt0[0] = 0.5;
-	double qt9 = 0.5, qt10, x;
+	double denom = 0.0, qt9 = 0.5, qt1 = 0.5;
+	double qt10, qt2, x, lambdaDenom, lambda;
+	std::vector<double> qTake;
+	std::vector<double> lambdaT;
 //	double x;
 	std::uniform_real_distribution<> distUreal(0, 1);
 	auto noise = std::bind(distUreal, engine);
@@ -109,9 +111,23 @@ double Runner::buildLambdaDenom()
 		x = noise();
 		qt10 = (x > qt9) ? qt9 + whiteNoise : qt9 - whiteNoise;
 		qt9 = qt10;
-		lambdaDenom += std::pow(qt10 - 0.5, 2);
+//		denom += std::pow(qt10 - 0.5, 2);
+		denom += (qt10 - 0.5) * (qt10 - 0.5);
 //		qt0[i] = (x > qt0[i - 1]) ? qt0[i - 1] + whiteNoise : qt0[i - 1] - whiteNoise;
-//		lambdaDenom += std::pow(qt0[i] - 0.5, 2);
+//		denom += std::pow(qt0[i] - 0.5, 2);
 	}
-	return std::sqrt(lambdaDenom / runSteps);
+	lambdaDenom = std::sqrt(denom / runSteps);
+	
+	qTake.emplace_back(qt1);
+	lambdaT.emplace_back(-lambda0);
+	for (auto i = 1; i != runSteps; ++i)
+	{
+		x = noise();
+		qt2 = (x > qt1) ? qt1 + whiteNoise : qt1 - whiteNoise;
+		qt1 = qt2;
+		qTake.emplace_back(qt2);
+		lambda = -lambda0 * (1 + (abs(qt2 - 0.5) / lambdaDenom) * cLambda);
+		lambdaT.emplace_back(lambda);
+	}
+	return std::make_pair(qTake, lambdaT);
 }
