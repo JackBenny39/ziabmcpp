@@ -101,6 +101,7 @@ double Runner::buildLambdaDenom()
 //	std::valarray<double> qt0(runSteps);
 //	qt0[0] = 0.5;
 	double qt9 = 0.5, qt10, x;
+//	double x;
 	std::uniform_real_distribution<> distUreal(0, 1);
 	auto noise = std::bind(distUreal, engine);
 	for (auto i = 1; i != runSteps; ++i)

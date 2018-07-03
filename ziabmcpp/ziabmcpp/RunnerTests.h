@@ -22,6 +22,7 @@ public:
 	void testBuildInformed();
 	void testBuildPennyJumper();
 	void testBuildMarketMakers();
+	void testBuildLambdaDenom();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

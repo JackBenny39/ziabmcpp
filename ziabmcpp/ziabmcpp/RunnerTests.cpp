@@ -3,9 +3,12 @@
 
 #include "stdafx.h"
 
+#include <chrono>
 #include <iostream>
 
 #include "RunnerTests.h"
+
+using namespace std::chrono;
 
 
 RunnerTests::RunnerTests() 
@@ -175,5 +178,23 @@ void RunnerTests::testBuildMarketMakers()
 	for (auto &x : market1.bucket)
 		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Order Size: " << x->orderSize 
 			<< "; MM Delta: " << x->delta << ": MM Quote Range" << x->quoteRange << ": MM Quotes: " << x->numQuotes << "\n";
+	std::cout << std::endl;
+}
+
+void RunnerTests::testBuildLambdaDenom()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	auto t0 = high_resolution_clock::now();
+	double test = market1.buildLambdaDenom();
+	auto t1 = high_resolution_clock::now();
+	std::cout << duration_cast<milliseconds>(t1 - t0).count() << " ms\n";
+	std::cout << "Lambda Denominator = " << test << "\n";
 	std::cout << std::endl;
 }

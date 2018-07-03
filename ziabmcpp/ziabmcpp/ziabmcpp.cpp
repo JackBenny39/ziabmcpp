@@ -261,8 +261,9 @@ int main()
 //	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
 //	rTests.testBuildInformed();
-	rTests.testBuildPennyJumper();
+//	rTests.testBuildPennyJumper();
 //	rTests.testBuildMarketMakers();
+	rTests.testBuildLambdaDenom();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
