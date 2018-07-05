@@ -46,10 +46,13 @@ void Runner::buildProviders()
 	for (auto i = 0; i != numProviders; ++i)
 	{
 		auto size = setMaxQ(providerMaxQ);
+		traderId tId = 1000 + i;
 		if (mpi == 1)
-			bucket.push_back(std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (1000 + i), size, pDelta, mpi));
+			traderMap[tId] = std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
+//			bucket.push_back(std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (1000 + i), size, pDelta, mpi));
 		else
-			bucket.push_back(std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (1000 + i), size, pDelta, mpi));
+			traderMap[tId] = std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
+//			bucket.push_back(std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (1000 + i), size, pDelta, mpi));
 	}
 }
 
@@ -60,7 +63,9 @@ void Runner::buildTakers()
 	for (auto i = 0; i != numTakers; ++i)
 	{
 		auto size = setMaxQ(takerMaxQ);
-		bucket.push_back(std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, (2000 + i), size, mpi));
+		traderId tId = 2000 + i;
+		traderMap[tId] = std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, tId, size, mpi);
+//		bucket.push_back(std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, (2000 + i), size, mpi));
 	}
 }
 
@@ -70,10 +75,10 @@ void Runner::buildInformed()
 	int informedTrades;
 	if (taker)
 	{
-		for (auto &x : bucket)
+		for (std::pair<traderId, std::shared_ptr<ZITrader>> x : traderMap)
 		{
-			if (x->traderType == 'T')
-				takerTrades += x->orderSize * runSteps / x->arrInt;
+			if (x.second->traderType == 'T')
+				takerTrades += x.second->orderSize * runSteps / x.second->arrInt;
 		}
 		informedTrades = static_cast<int>(floor(takerTrades * iMu));
 	}
@@ -81,7 +86,8 @@ void Runner::buildInformed()
 		informedTrades = static_cast<int>(1 / iMu);
 
 	std::uniform_int_distribution<int> distUintI(prime1, runSteps);
-	bucket.push_back(std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI));
+	traderMap[5000] = std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI);
+//	bucket.push_back(std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI));
 }
 
 void Runner::buildMarketMakers()
@@ -89,10 +95,13 @@ void Runner::buildMarketMakers()
 	for (auto i = 0; i != numMMs; ++i)
 	{
 		auto size = setMaxQ(mmMaxQ);
+		traderId tId = 3000 + i;
 		if (mpi == 1)
-			bucket.push_back(std::make_shared<MarketMaker>(size, (3000 + i), size, mmDelta, mmRange, mmQuotes));
+			traderMap[tId] = std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes);
+//			bucket.push_back(std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes));
 		else
-			bucket.push_back(std::make_shared<MarketMaker5>(size, (3000 + i), size, mmDelta, mmRange, mmQuotes));
+			traderMap[tId] = std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes);
+//			bucket.push_back(std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes));
 	}
 }
 

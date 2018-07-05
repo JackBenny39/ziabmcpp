@@ -44,7 +44,8 @@ public:
 //	std::uniform_int_distribution<> distUint;
 //	std::uniform_real_distribution<> distUreal;
 
-	std::vector<std::shared_ptr<ZITrader>> bucket;
+//	std::vector<std::shared_ptr<ZITrader>> bucket;
+	std::unordered_map<traderId, std::shared_ptr<ZITrader>> traderMap;
 	std::pair<std::vector<double>, std::vector<double>> QL;
 
 	int setMaxQ(int);

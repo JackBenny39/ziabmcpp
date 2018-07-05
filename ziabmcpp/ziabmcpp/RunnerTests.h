@@ -34,6 +34,7 @@ public:
 	double lambda0, whiteNoise, cLambda;
 	Side informedSide;
 	std::mt19937 engine;
+	std::unique_ptr<PennyJumper> j1;
 };
 
 #endif

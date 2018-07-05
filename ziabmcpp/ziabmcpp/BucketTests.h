@@ -32,8 +32,9 @@ public:
 	std::uniform_real_distribution<> distUreal;
 	std::vector<int> defaultVec;
 	std::vector<std::shared_ptr<ZITrader>> bucket;
+	std::unordered_map<traderId, std::shared_ptr<ZITrader>> mappedBucket;
+	std::unique_ptr<PennyJumper> j1, j2;
 	int setMaxQ(int);
-	void testInstances();
 	void testZITrader();
 	void testTaker();
 	void testInformed();
