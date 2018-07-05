@@ -199,3 +199,16 @@ void RunnerTests::testBuildLambda()
 	std::cout << "QL position 100 = " << test.first[100] << " : " << test.second[100] << "\n";
 	std::cout << std::endl;
 }
+
+void RunnerTests::testQTakeToCsv(std::string file1)
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.qTakeToCsv(file1);
+}

@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 
+#include <fstream>
 #include <iostream>
 
 #include "Runner.h"
@@ -130,4 +131,14 @@ std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 		lambdaT.emplace_back(lambda);
 	}
 	return std::make_pair(qTake, lambdaT);
+}
+
+void Runner::qTakeToCsv(std::string filename)
+{
+	std::ofstream csvfile;
+	csvfile.open(filename);
+	csvfile << "QTake,LambdaT\n";
+	for (auto i = 0; i != runSteps ; ++i)
+		csvfile << i << "," << QL.first[i] << "," << QL.second[i] << "\n";
+	csvfile.close();
 }

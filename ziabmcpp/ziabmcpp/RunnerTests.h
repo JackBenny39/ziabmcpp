@@ -23,6 +23,7 @@ public:
 	void testBuildPennyJumper();
 	void testBuildMarketMakers();
 	void testBuildLambda();
+	void testQTakeToCsv(std::string);
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

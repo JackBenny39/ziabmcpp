@@ -231,8 +231,7 @@ void Orderbook::ordersToCsv(std::string filename)
 	char csd;
 	std::ofstream csvfile;
 	csvfile.open(filename);
-	csvfile << "Sequence," << "TraderId," << "OrderId," << "Step," << "OrderType,"
-			<< "Quantity," << "Side," << "Price\n";
+	csvfile << "Sequence,TraderId,OrderId,Step,OrderType,Quantity,Side,Price\n";
 	for (auto& x : history)
 	{
 		csd = x.side == Side::BUY ? 'B' : 'S';
@@ -247,8 +246,7 @@ void Orderbook::tradesToCsv(std::string filename)
 	char csd;
 	std::ofstream csvfile;
 	csvfile.open(filename);
-	csvfile << "RestTraderId," << "RestOrderId," << "RestStep," << "IncTraderId," << "IncOrderId,"
-		<< "IncStep," << "Quantity," << "Side," << "Price\n";
+	csvfile << "RestTraderId,RestOrderId,RestStep,IncTraderId,IncOrderId,IncStep,Quantity,Side,Price\n";
 	for (auto& x : trades)
 	{
 		csd = x.side == Side::BUY ? 'B' : 'S';
@@ -262,7 +260,7 @@ void Orderbook::sipToCsv(std::string filename)
 {
 	std::ofstream csvfile;
 	csvfile.open(filename);
-	csvfile << "Step," << "BestBidPrice," << "BestBidSize," << "BestAskPrice," << "BestAskSize\n";
+	csvfile << "Step,BestBidPrice,BestBidSize,BestAskPrice,BestAskSize\n";
 	for (auto& x : tob)
 		csvfile << x.step << "," << x.bestbid << "," << x.bestbidsz << "," << x.bestask << "," << x.bestasksz << "\n";
 	csvfile.close();

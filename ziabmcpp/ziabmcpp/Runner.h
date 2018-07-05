@@ -53,6 +53,7 @@ public:
 	void buildInformed();
 	void buildMarketMakers();
 	std::pair<std::vector<double>, std::vector<double>> buildLambda();
+	void qTakeToCsv(std::string);
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

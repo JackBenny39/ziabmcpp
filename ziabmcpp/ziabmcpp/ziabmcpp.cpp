@@ -263,7 +263,10 @@ int main()
 //	rTests.testBuildInformed();
 //	rTests.testBuildPennyJumper();
 //	rTests.testBuildMarketMakers();
-	rTests.testBuildLambda();
+//	rTests.testBuildLambda();
+	std::string file1;
+	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
+	rTests.testQTakeToCsv(file1);
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
