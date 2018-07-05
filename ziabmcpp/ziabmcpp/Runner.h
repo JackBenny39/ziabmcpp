@@ -45,7 +45,10 @@ public:
 //	std::uniform_real_distribution<> distUreal;
 
 //	std::vector<std::shared_ptr<ZITrader>> bucket;
+	std::vector<traderId> allTraders;
+	std::vector<traderId> providers;
 	std::unordered_map<traderId, std::shared_ptr<ZITrader>> traderMap;
+	std::unordered_map<traderId, std::shared_ptr<ZITrader>> providerMap;
 	std::pair<std::vector<double>, std::vector<double>> QL;
 
 	int setMaxQ(int);
@@ -53,8 +56,9 @@ public:
 	void buildTakers();
 	void buildInformed();
 	void buildMarketMakers();
+	void buildPennyJumper();
 	std::pair<std::vector<double>, std::vector<double>> buildLambda();
-	void qTakeToCsv(std::string);
+	void qTakeToCsv(std::string &);
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
@@ -65,7 +69,7 @@ public:
 	double lambda0, whiteNoise, cLambda, lambdaDenom;
 	Side informedSide;
 	Orderbook exchange;
-	std::unique_ptr<PennyJumper> j1;
+	std::shared_ptr<PennyJumper> j1;
 };
 
 #endif

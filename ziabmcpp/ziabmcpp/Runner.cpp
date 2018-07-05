@@ -28,7 +28,6 @@ Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 	engine.seed(seed);
 
 	exchange = Orderbook();
-	if (jumper) { j1 = std::make_unique<PennyJumper>(1, 4000, 1, mpi); }
 	QL = buildLambda();
 }
 
@@ -43,29 +42,46 @@ int Runner::setMaxQ(int maxq)
 void Runner::buildProviders()
 {
 	std::exponential_distribution<double> distExpP(pAlpha);
-	for (auto i = 0; i != numProviders; ++i)
+	traderId tId;
+	auto size = setMaxQ(providerMaxQ);
+	if (mpi == 1)
 	{
-		auto size = setMaxQ(providerMaxQ);
-		traderId tId = 1000 + i;
-		if (mpi == 1)
-			traderMap[tId] = std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
-//			bucket.push_back(std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (1000 + i), size, pDelta, mpi));
-		else
-			traderMap[tId] = std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
-//			bucket.push_back(std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, (1000 + i), size, pDelta, mpi));
+		std::shared_ptr<Provider> p;
+		for (auto i = 0; i != numProviders; ++i)
+		{
+			tId = 1000 + i;
+			p = std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
+			traderMap[tId] = p;
+			providerMap[tId] = p;
+			allTraders.push_back(tId);
+			providers.push_back(tId);
+		}
+	}
+	else
+	{
+		std::shared_ptr<Provider5> p;
+		for (auto i = 0; i != numProviders; ++i)
+		{
+			tId = 1000 + i;
+			p = std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
+			traderMap[tId] = p;
+			providerMap[tId] = p;
+			allTraders.push_back(tId);
+			providers.push_back(tId);
+		}
 	}
 }
 
 void Runner::buildTakers()
 {
-
 	std::exponential_distribution<double> distExpT(tMu);
+	traderId tId;
 	for (auto i = 0; i != numTakers; ++i)
 	{
 		auto size = setMaxQ(takerMaxQ);
-		traderId tId = 2000 + i;
+		tId = 2000 + i;
 		traderMap[tId] = std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, tId, size, mpi);
-//		bucket.push_back(std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, (2000 + i), size, mpi));
+		allTraders.push_back(tId);
 	}
 }
 
@@ -87,33 +103,51 @@ void Runner::buildInformed()
 
 	std::uniform_int_distribution<int> distUintI(prime1, runSteps);
 	traderMap[5000] = std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI);
-//	bucket.push_back(std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI));
+	allTraders.push_back(5000);
 }
 
 void Runner::buildMarketMakers()
 {
-	for (auto i = 0; i != numMMs; ++i)
+	auto size = setMaxQ(mmMaxQ);
+	traderId tId;
+	if (mpi == 1)
 	{
-		auto size = setMaxQ(mmMaxQ);
-		traderId tId = 3000 + i;
-		if (mpi == 1)
-			traderMap[tId] = std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes);
-//			bucket.push_back(std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes));
-		else
-			traderMap[tId] = std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes);
-//			bucket.push_back(std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes));
+		std::shared_ptr<MarketMaker> m;
+		for (auto i = 0; i != numMMs; ++i)
+		{
+			tId = 3000 + i;
+			m = std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes);
+			traderMap[tId] = m;
+			providerMap[tId] = m;
+			allTraders.push_back(tId);
+		}
 	}
+	else
+	{
+		std::shared_ptr<MarketMaker5> m;
+		for (auto i = 0; i != numMMs; ++i)
+		{
+			tId = 3000 + i;
+			m = std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes);
+			traderMap[tId] = m;
+			providerMap[tId] = m;
+			allTraders.push_back(tId);
+		}
+	}
+}
+
+void Runner::buildPennyJumper()
+{
+	j1 = std::make_shared<PennyJumper>(1, 4000, 1, mpi);
+	providerMap[4000] = j1;
 }
 
 std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 {
-//	std::valarray<double> qt0(runSteps);
-//	qt0[0] = 0.5;
 	double denom = 0.0, qt9 = 0.5, qt1 = 0.5;
 	double qt10, qt2, x, lambdaDenom, lambda;
 	std::vector<double> qTake;
 	std::vector<double> lambdaT;
-//	double x;
 	std::uniform_real_distribution<> distUreal(0, 1);
 	auto noise = std::bind(distUreal, engine);
 	for (auto i = 1; i != runSteps; ++i)
@@ -121,10 +155,7 @@ std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 		x = noise();
 		qt10 = (x > qt9) ? qt9 + whiteNoise : qt9 - whiteNoise;
 		qt9 = qt10;
-//		denom += std::pow(qt10 - 0.5, 2);
 		denom += (qt10 - 0.5) * (qt10 - 0.5);
-//		qt0[i] = (x > qt0[i - 1]) ? qt0[i - 1] + whiteNoise : qt0[i - 1] - whiteNoise;
-//		denom += std::pow(qt0[i] - 0.5, 2);
 	}
 	lambdaDenom = std::sqrt(denom / runSteps);
 	
@@ -142,7 +173,7 @@ std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 	return std::make_pair(qTake, lambdaT);
 }
 
-void Runner::qTakeToCsv(std::string filename)
+void Runner::qTakeToCsv(std::string &filename)
 {
 	std::ofstream csvfile;
 	csvfile.open(filename);

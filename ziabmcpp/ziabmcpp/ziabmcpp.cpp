@@ -40,12 +40,12 @@
 
 using cSide = char;
 
-std::random_device random_device;
-std::mt19937 engine{ random_device() };
-std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
+//std::random_device random_device;
+//std::mt19937 engine{ random_device() };
+//std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
 //std::uniform_real_distribution<> distUreal(0, 1);
 //std::exponential_distribution<double> distExp(1.0);
-std::uniform_int_distribution<> distA(1, 100000);
+//std::uniform_int_distribution<> distA(1, 100000);
 /*
 double buySellP()
 {
@@ -244,7 +244,7 @@ int main()
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\sip_1.csv";
 //	bTests.testExchangeSipToCsv(file1);
 
-	BucketTests kTests(defaultVec, distA, engine);
+//	BucketTests kTests(defaultVec, distA, engine);
 //	kTests.testZITrader();
 //	kTests.testTaker();
 //	kTests.testInformed();
@@ -253,15 +253,15 @@ int main()
 //	kTests.testMarketMaker();
 //	kTests.testMarketMaker5();
 //	kTests.testPJ();
-	kTests.testShuffle();
+//	kTests.testShuffle();
 
-//	RunnerTests rTests;
+	RunnerTests rTests;
 //	rTests.testConstructor();
 //	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
 //	rTests.testBuildInformed();
 //	rTests.testBuildPennyJumper();
-//	rTests.testBuildMarketMakers();
+	rTests.testBuildMarketMakers();
 //	rTests.testBuildLambda();
 //	std::string file1;
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";

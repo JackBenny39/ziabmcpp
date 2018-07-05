@@ -226,7 +226,7 @@ void Orderbook::bookTop2(Step step)
 	tob.emplace_back(TopOfBook{ step, std::get<0>(bestbid), std::get<1>(bestbid), std::get<0>(bestask), std::get<1>(bestask) });
 }
 
-void Orderbook::ordersToCsv(std::string filename)
+void Orderbook::ordersToCsv(std::string &filename)
 {
 	char csd;
 	std::ofstream csvfile;
@@ -241,7 +241,7 @@ void Orderbook::ordersToCsv(std::string filename)
 	csvfile.close();
 }
 
-void Orderbook::tradesToCsv(std::string filename)
+void Orderbook::tradesToCsv(std::string &filename)
 {
 	char csd;
 	std::ofstream csvfile;
@@ -256,7 +256,7 @@ void Orderbook::tradesToCsv(std::string filename)
 	csvfile.close();
 }
 
-void Orderbook::sipToCsv(std::string filename)
+void Orderbook::sipToCsv(std::string &filename)
 {
 	std::ofstream csvfile;
 	csvfile.open(filename);
