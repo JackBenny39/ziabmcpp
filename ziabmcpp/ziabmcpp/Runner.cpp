@@ -51,10 +51,12 @@ void Runner::buildProviders()
 		{
 			tId = 1000 + i;
 			p = std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
-			traderMap[tId] = p;
+//			traderMap[tId] = p;
 			providerMap[tId] = p;
-			allTraders.push_back(tId);
-			providers.push_back(tId);
+//			allTraders.push_back(tId);
+//			providers.push_back(tId);
+			allTraders.push_back(p);
+			providers.push_back(p);
 		}
 	}
 	else
@@ -64,10 +66,12 @@ void Runner::buildProviders()
 		{
 			tId = 1000 + i;
 			p = std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
-			traderMap[tId] = p;
+//			traderMap[tId] = p;
 			providerMap[tId] = p;
-			allTraders.push_back(tId);
-			providers.push_back(tId);
+//			allTraders.push_back(tId);
+//			providers.push_back(tId);
+			allTraders.push_back(p);
+			providers.push_back(p);
 		}
 	}
 }
@@ -75,13 +79,14 @@ void Runner::buildProviders()
 void Runner::buildTakers()
 {
 	std::exponential_distribution<double> distExpT(tMu);
-	traderId tId;
+//	traderId tId;
 	for (auto i = 0; i != numTakers; ++i)
 	{
 		auto size = setMaxQ(takerMaxQ);
-		tId = 2000 + i;
-		traderMap[tId] = std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, tId, size, mpi);
-		allTraders.push_back(tId);
+//		tId = 2000 + i;
+//		traderMap[tId] = std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, tId, size, mpi);
+//		allTraders.push_back(tId);
+		allTraders.emplace_back(std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, 2000 + i, size, mpi));
 	}
 }
 
@@ -91,10 +96,13 @@ void Runner::buildInformed()
 	int informedTrades;
 	if (taker)
 	{
-		for (std::pair<traderId, std::shared_ptr<ZITrader>> x : traderMap)
+//		for (std::pair<traderId, std::shared_ptr<ZITrader>> x : traderMap)
+		for (auto &x : allTraders)
 		{
-			if (x.second->traderType == 'T')
-				takerTrades += x.second->orderSize * runSteps / x.second->arrInt;
+//			if (x.second->traderType == 'T')
+			if (x->traderType == 'T')
+//				takerTrades += x.second->orderSize * runSteps / x.second->arrInt;
+				takerTrades += x->orderSize * runSteps / x->arrInt;
 		}
 		informedTrades = static_cast<int>(floor(takerTrades * iMu));
 	}
@@ -102,8 +110,9 @@ void Runner::buildInformed()
 		informedTrades = static_cast<int>(1 / iMu);
 
 	std::uniform_int_distribution<int> distUintI(prime1, runSteps);
-	traderMap[5000] = std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI);
-	allTraders.push_back(5000);
+//	traderMap[5000] = std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI);
+//	allTraders.push_back(5000);
+	allTraders.emplace_back(std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI));
 }
 
 void Runner::buildMarketMakers()
@@ -117,9 +126,10 @@ void Runner::buildMarketMakers()
 		{
 			tId = 3000 + i;
 			m = std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes);
-			traderMap[tId] = m;
+//			traderMap[tId] = m;
 			providerMap[tId] = m;
-			allTraders.push_back(tId);
+//			allTraders.push_back(tId);
+			allTraders.push_back(m);
 		}
 	}
 	else
@@ -129,9 +139,10 @@ void Runner::buildMarketMakers()
 		{
 			tId = 3000 + i;
 			m = std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes);
-			traderMap[tId] = m;
+//			traderMap[tId] = m;
 			providerMap[tId] = m;
-			allTraders.push_back(tId);
+//			allTraders.push_back(tId);
+			allTraders.push_back(m);
 		}
 	}
 }

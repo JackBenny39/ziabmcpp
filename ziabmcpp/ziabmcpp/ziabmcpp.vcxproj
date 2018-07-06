@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BucketTests.h" />
+    <ClInclude Include="BucketTests2.h" />
     <ClInclude Include="Informed.h" />
     <ClInclude Include="MarketMaker.h" />
     <ClInclude Include="MarketMaker5.h" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BucketTests.cpp" />
+    <ClCompile Include="BucketTests2.cpp" />
     <ClCompile Include="Informed.cpp" />
     <ClCompile Include="MarketMaker.cpp" />
     <ClCompile Include="MarketMaker5.cpp" />

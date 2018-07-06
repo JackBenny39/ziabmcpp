@@ -44,10 +44,11 @@ public:
 //	std::uniform_int_distribution<> distUint;
 //	std::uniform_real_distribution<> distUreal;
 
-//	std::vector<std::shared_ptr<ZITrader>> bucket;
-	std::vector<traderId> allTraders;
-	std::vector<traderId> providers;
-	std::unordered_map<traderId, std::shared_ptr<ZITrader>> traderMap;
+	std::vector<std::shared_ptr<ZITrader>> allTraders;
+	std::vector<std::shared_ptr<ZITrader>> providers;
+//	std::vector<traderId> allTraders;
+//	std::vector<traderId> providers;
+//	std::unordered_map<traderId, std::shared_ptr<ZITrader>> traderMap;
 	std::unordered_map<traderId, std::shared_ptr<ZITrader>> providerMap;
 	std::pair<std::vector<double>, std::vector<double>> QL;
 
