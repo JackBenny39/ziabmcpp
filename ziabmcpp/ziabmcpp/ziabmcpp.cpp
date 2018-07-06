@@ -47,6 +47,7 @@ using cSide = char;
 //std::uniform_real_distribution<> distUreal(0, 1);
 //std::exponential_distribution<double> distExp(1.0);
 //std::uniform_int_distribution<> distA(1, 100000);
+
 /*
 double buySellP()
 {
@@ -278,7 +279,7 @@ int main()
 //	std::string file1;
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
 //	rTests.testQTakeToCsv(file1);
-	rTests.testSeedBook();
+//	rTests.testSeedBook();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
@@ -288,6 +289,7 @@ int main()
 //	_CrtDumpMemoryLeaks();
 
 //	testExp2();
+
 
 	return 0;
 }

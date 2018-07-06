@@ -354,7 +354,7 @@ void OrderbookTests::testExchangeBookTop2()
 	std::cout << std::endl;
 
 	exchange1.addBook2(5001, 5, Side::SELL, 1004, 600, 9);
-	exchange1.bookTop(27);
+	exchange1.bookTop2(27);
 
 	auto &topper = exchange1.tob.back();
 

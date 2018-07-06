@@ -201,6 +201,24 @@ void Runner::seedBook()
 	exchange.addBook2(a.id, a.oid, a.side, a.price, a.qty, a.step);
 }
 
+void Runner::makeSetup()
+{
+	std::uniform_real_distribution<> distUreal(0, 1);
+	for (auto i = 1; i != prime1; ++i)
+	{
+		shuffle(providers.begin(), providers.end(), engine);
+		for (auto &x : providers)
+		{
+			if ((i % x->arrInt) == 0)
+			{
+				exchange.bookTop2(i);
+				x->processSignal(exchange.tob.back(), i, qProvide, -lambda0, engine, distUreal);
+			}
+
+		}
+	}
+}
+
 void Runner::qTakeToCsv(std::string &filename)
 {
 	std::ofstream csvfile;
