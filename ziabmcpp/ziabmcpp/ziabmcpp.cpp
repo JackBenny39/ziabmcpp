@@ -41,12 +41,12 @@
 
 using cSide = char;
 
-std::random_device random_device;
-std::mt19937 engine{ random_device() };
-std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
+//std::random_device random_device;
+//std::mt19937 engine{ random_device() };
+//std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
 //std::uniform_real_distribution<> distUreal(0, 1);
 //std::exponential_distribution<double> distExp(1.0);
-std::uniform_int_distribution<> distA(1, 100000);
+//std::uniform_int_distribution<> distA(1, 100000);
 /*
 double buySellP()
 {
@@ -267,7 +267,7 @@ int main()
 //	kTests.testPJ();
 //	kTests.testShuffle();
 
-//	RunnerTests rTests;
+	RunnerTests rTests;
 //	rTests.testConstructor();
 //	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
@@ -278,6 +278,7 @@ int main()
 //	std::string file1;
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
 //	rTests.testQTakeToCsv(file1);
+	rTests.testSeedBook();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

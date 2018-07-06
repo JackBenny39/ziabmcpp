@@ -24,6 +24,7 @@ public:
 	void testBuildMarketMakers();
 	void testBuildLambda();
 	void testQTakeToCsv(std::string);
+	void testSeedBook();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

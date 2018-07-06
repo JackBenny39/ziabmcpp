@@ -60,6 +60,7 @@ public:
 	void buildPennyJumper();
 	std::pair<std::vector<double>, std::vector<double>> buildLambda();
 	void qTakeToCsv(std::string &);
+	void seedBook();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

@@ -254,3 +254,38 @@ void RunnerTests::testQTakeToCsv(std::string file1)
 
 	market1.qTakeToCsv(file1);
 }
+
+void RunnerTests::testSeedBook()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.seedBook();
+
+	std::cout << "Provider Lookup\n";
+	std::cout << "Seed Provider ID: " << market1.providerMap[9999]->tId << "\n";
+	std::cout << "Seed Provider Bid Order Price: " << market1.providerMap[9999]->localBook[1].price << "\n";
+	std::cout << "Seed Provider Ask Order Price: " << market1.providerMap[9999]->localBook[2].price << "\n";
+	std::cout << "Exchange History 0: " << market1.exchange.history[0].price << "\n";
+	std::cout << "Exchange History 1: " << market1.exchange.history[1].price << "\n";
+	std::cout << "Bids:\n";
+	for (auto &x : market1.exchange.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	std::cout << "Asks:\n";
+	for (auto &x : market1.exchange.asks)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	std::cout << std::endl;
+}

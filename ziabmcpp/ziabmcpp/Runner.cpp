@@ -184,12 +184,29 @@ std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 	return std::make_pair(qTake, lambdaT);
 }
 
+void Runner::seedBook()
+{
+	std::exponential_distribution<double> distExpP(pAlpha);
+	std::shared_ptr<Provider> p = std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)), 9999, 1, pDelta, mpi);
+	providerMap[9999] = p;
+	std::uniform_int_distribution<int> distUintBid(997995, 999996);
+	std::uniform_int_distribution<int> distUintAsk(1000005, 1002001);
+	Order b = p->makeAddQuote(0, Side::BUY, 5 * (distUintBid(engine) / 5));
+	Order a = p->makeAddQuote(0, Side::SELL, 5 * ((distUintAsk(engine) / 5) + 1));
+	p->localBook[b.oid] = b;
+	p->localBook[a.oid] = a;
+	exchange.addHistory(b);
+	exchange.addHistory(a);
+	exchange.addBook2(b.id, b.oid, b.side, b.price, b.qty, b.step);
+	exchange.addBook2(a.id, a.oid, a.side, a.price, a.qty, a.step);
+}
+
 void Runner::qTakeToCsv(std::string &filename)
 {
 	std::ofstream csvfile;
 	csvfile.open(filename);
 	csvfile << "QTake,LambdaT\n";
-	for (auto i = 0; i != runSteps ; ++i)
+	for (auto i = 0; i != runSteps; ++i)
 		csvfile << i << "," << QL.first[i] << "," << QL.second[i] << "\n";
 	csvfile.close();
 }
