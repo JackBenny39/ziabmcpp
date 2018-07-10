@@ -26,6 +26,7 @@ public:
 	void testQTakeToCsv(std::string);
 	void testSeedBook();
 	void testMakeSetup();
+	void testDoCancels();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

@@ -62,6 +62,7 @@ public:
 	void qTakeToCsv(std::string &);
 	void seedBook();
 	void makeSetup();
+	void doCancels(std::shared_ptr<ZITrader> &);
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

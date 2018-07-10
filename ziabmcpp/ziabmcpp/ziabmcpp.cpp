@@ -280,7 +280,8 @@ int main()
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
 //	rTests.testQTakeToCsv(file1);
 //	rTests.testSeedBook();
-	rTests.testMakeSetup();
+//	rTests.testMakeSetup();
+	rTests.testDoCancels();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

@@ -37,6 +37,7 @@ void ZITrader::confirmCancel(Id oid)
 
 void ZITrader::bulkCancel(Step step, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
+	cancelCollector.clear();
 	for (auto &x : localBook)
 	{
 		if (dist(engine) < delta)

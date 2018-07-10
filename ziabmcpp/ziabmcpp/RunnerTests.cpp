@@ -352,3 +352,57 @@ void RunnerTests::testMakeSetup()
 	}
 	std::cout << std::endl;
 }
+
+void RunnerTests::testDoCancels()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.seedBook();
+	if (provider) { market1.buildProviders(); }
+	market1.makeSetup();
+
+	// print Provider 1032 localbook
+	std::cout << "Provider 1032 local book\n";
+	for (auto& x : market1.providers[20]->localBook)
+		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Price: " << x.second.price << "\n";
+
+	// print the orderbook
+	std::cout << "Exchange bid book\n";
+	std::cout << "Bids:\n";
+	for (auto &x : market1.exchange.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	std::cout << "\n\n Exchange ask book\n";
+	std::cout << "Asks:\n";
+	for (auto &x : market1.exchange.asks)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	// Provider 1032 is responsible for a bid @ 998548 - Provider 1032 is in bucket[20]
+	market1.providers[20]->cancelCollector.emplace_back(market1.providers[20]->makeCancelQuote(market1.providers[20]->localBook[2], 22));
+	market1.doCancels(market1.providers[20]);
+	std::cout << "Exchange bid book after (998548 is missing)\n";
+	std::cout << "Bids:\n";
+	for (auto &x : market1.exchange.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	std::cout << "Provider 1032 local book (order # 2 @ 998548 is missing)\n";
+	for (auto& x : market1.providers[20]->localBook)
+		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Price: " << x.second.price << "\n";
+
+	std::cout << std::endl;
+}

@@ -221,6 +221,16 @@ void Runner::makeSetup()
 	}
 }
 
+void Runner::doCancels(std::shared_ptr<ZITrader> &p)
+{
+	for (auto& c : p->cancelCollector)
+	{
+		exchange.process(c);
+		if (!exchange.modifyconfirms.empty())
+			p->confirmCancel(exchange.modifyconfirms.back().restoid);
+	}
+}
+
 void Runner::qTakeToCsv(std::string &filename)
 {
 	std::ofstream csvfile;
