@@ -209,10 +209,12 @@ void Runner::makeSetup()
 		shuffle(providers.begin(), providers.end(), engine);
 		for (auto &x : providers)
 		{
-			if ((i % x->arrInt) == 0)
+//			if ((i % x->arrInt) == 0)
+			if (!(i % x->arrInt))
 			{
 				exchange.bookTop2(i);
 				x->processSignal(exchange.tob.back(), i, qProvide, -lambda0, engine, distUreal);
+				exchange.process(x->quoteCollector.back());
 			}
 
 		}

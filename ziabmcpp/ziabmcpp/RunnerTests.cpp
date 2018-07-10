@@ -28,13 +28,13 @@ RunnerTests::RunnerTests()
 	numMMs = 1;
 	mmQuotes = 12;
 	mmRange = 60;
-	providerMaxQ = 50;
+	providerMaxQ = 1;
 	takerMaxQ = 1;
 	informedQ = 1;
 	mmMaxQ = 1;
 	pAlpha = 0.0375;
 	pDelta = 0.025; 
-	qProvide = 0.05; 
+	qProvide = 0.5; 
 	tMu = 0.001;
 	iMu = 0.001;
 	jAlpha = 0.05;
@@ -280,6 +280,69 @@ void RunnerTests::testSeedBook()
 		for (auto &y : x.second.quotes)
 			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
 	}
+	std::cout << "Asks:\n";
+	for (auto &x : market1.exchange.asks)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	std::cout << std::endl;
+}
+
+void RunnerTests::testMakeSetup()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.seedBook();
+	if (provider) { market1.buildProviders(); }
+	for (auto &x : market1.providers)
+		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
+	market1.makeSetup();
+	// Tests include trader.processSignal tests and orderbook.process & addBook2 tests
+	// Interrogate the trader's localBook if arrival interval is less than prime1
+	std::cout << "\n\n Check Provider's localBook if arrival interval less than prime1\n";
+	for (auto &x : market1.providers)
+	{
+		if (x->arrInt < prime1)
+		{
+			std::cout << "\n***Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "\n";
+			for (auto &b : x->localBook)
+			{
+				std::cout << "TraderId: " << b.second.id
+					<< " Order Id: " << b.second.oid
+					<< " Order Type: " << b.second.otype
+					<< " Order Price: " << b.second.price
+					<< " Order Qty: " << b.second.qty
+					<< " Order Side: " << (b.second.side == Side::BUY ? 'B' : 'S')
+					<< " Order Step: " << b.second.step << "\n";
+			}
+		}
+	}
+	// Check the exchange top of book
+	std::cout << "\n\n Check exchange top of book\n";
+	for (auto &x : market1.exchange.tob)
+	{
+		std::cout << "Step: " << x.step << "; Best Bid: " << x.bestbid << "; Best Bid Size: " << x.bestbidsz 
+			<< "; Best Ask: " << x.bestask << "; Best Ask Size: " << x.bestasksz << "\n";
+	}
+	// Check the bid book
+	std::cout << "\n\n Check exchange bid book\n";
+	std::cout << "Bids:\n";
+	for (auto &x : market1.exchange.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	// Check the ask book
+	std::cout << "\n\n Check exchange ask book\n";
 	std::cout << "Asks:\n";
 	for (auto &x : market1.exchange.asks)
 	{

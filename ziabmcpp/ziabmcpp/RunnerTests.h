@@ -25,6 +25,7 @@ public:
 	void testBuildLambda();
 	void testQTakeToCsv(std::string);
 	void testSeedBook();
+	void testMakeSetup();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
