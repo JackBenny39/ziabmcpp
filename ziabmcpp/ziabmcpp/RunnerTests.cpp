@@ -406,3 +406,18 @@ void RunnerTests::testDoCancels()
 
 	std::cout << std::endl;
 }
+
+void RunnerTests::testDoTrades()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.seedBook();
+	if (provider) { market1.buildProviders(); }
+	market1.makeSetup();
+}

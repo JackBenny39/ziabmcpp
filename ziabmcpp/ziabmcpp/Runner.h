@@ -63,6 +63,7 @@ public:
 	void seedBook();
 	void makeSetup();
 	void doCancels(std::shared_ptr<ZITrader> &);
+	void doTrades();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

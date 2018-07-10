@@ -27,6 +27,7 @@ public:
 	void testSeedBook();
 	void testMakeSetup();
 	void testDoCancels();
+	void testDoTrades();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
