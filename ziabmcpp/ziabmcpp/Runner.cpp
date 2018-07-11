@@ -204,6 +204,7 @@ void Runner::seedBook()
 void Runner::makeSetup()
 {
 	std::uniform_real_distribution<> distUreal(0, 1);
+	exchange.bookTop2(0);
 	for (auto i = 1; i != prime1; ++i)
 	{
 		shuffle(providers.begin(), providers.end(), engine);
@@ -212,9 +213,9 @@ void Runner::makeSetup()
 //			if ((i % x->arrInt) == 0)
 			if (!(i % x->arrInt))
 			{
-				exchange.bookTop2(i);
 				x->processSignal(exchange.tob.back(), i, qProvide, -lambda0, engine, distUreal);
 				exchange.process(x->quoteCollector.back());
+				exchange.bookTop2(i);
 			}
 
 		}
@@ -235,6 +236,97 @@ void Runner::doTrades()
 {
 	for (auto& c : exchange.tradeconfirms)
 		providerMap[c.restid]->confirmTrade(c);
+}
+
+void Runner::runMCS()
+{
+	std::uniform_real_distribution<> distUreal(0, 1);
+	for (auto i = prime1; i != runSteps; ++i)
+	{
+		shuffle(allTraders.begin(), allTraders.end(), engine);
+		for (auto &t : allTraders)
+		{
+			if (t->traderType == 'P' || t->traderType == 'M')
+			{
+				if (!(i % t->arrInt))
+				{
+					t->processSignal(exchange.tob.back(), i, qProvide, QL.second[i], engine, distUreal);
+					for (auto& q : t->quoteCollector)
+						exchange.process(q);
+					exchange.bookTop2(i);
+				}
+				t->bulkCancel(i, engine, distUreal);
+				if (!(t->cancelCollector.empty()))
+				{
+					doCancels(t);
+					exchange.bookTop2(i);
+				}
+			}
+			else 
+			{
+				if (t->traderType == 'T')
+					t->processSignal(i, QL.first[i], engine, distUreal);
+				else // traderType == 'I'
+					t->processSignal(i);
+				exchange.process(t->quoteCollector.back());
+				doTrades();
+				exchange.bookTop2(i);
+			}
+		}
+	}
+}
+
+void Runner::runMCSPJ()
+{
+	std::uniform_real_distribution<> distUreal(0, 1);
+	for (auto i = prime1; i != runSteps; ++i)
+	{
+		shuffle(allTraders.begin(), allTraders.end(), engine);
+		for (auto &t : allTraders)
+		{
+			if (t->traderType == 'P' || t->traderType == 'M')
+			{
+				if (!(i % t->arrInt))
+				{
+					t->processSignal(exchange.tob.back(), i, qProvide, QL.second[i], engine, distUreal);
+					for (auto& q : t->quoteCollector)
+						exchange.process(q);
+					exchange.bookTop2(i);
+				}
+				t->bulkCancel(i, engine, distUreal);
+				if (!(t->cancelCollector.empty()))
+				{
+					doCancels(t);
+					exchange.bookTop2(i);
+				}
+			}
+			else
+			{
+				if (t->traderType == 'T')
+					t->processSignal(i, QL.first[i], engine, distUreal);
+				else // traderType == 'I'
+					t->processSignal(i);
+				exchange.process(t->quoteCollector.back());
+				doTrades();
+				exchange.bookTop2(i);
+			}
+			if (distUreal(engine) < jAlpha)
+			{
+				j1->processSignal(exchange.tob.back(), i, QL.second[i], engine, distUreal);
+				if (!(j1->cancelCollector.empty())) // don't need to check this?
+				{
+					for (auto& c : j1->cancelCollector)
+						exchange.process(c);
+				}
+				if (!(j1->quoteCollector.empty())) // don't need to check this?
+				{
+					for (auto& q : j1->quoteCollector)
+						exchange.process(q);
+				}
+				exchange.bookTop2(i);
+			}
+		}
+	}
 }
 
 void Runner::qTakeToCsv(std::string &filename)

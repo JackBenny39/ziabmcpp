@@ -426,9 +426,13 @@ void RunnerTests::testDoTrades()
 		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Step: " << x.second.step 
 		<< "; Quantity: " << x.second.qty << "; Side: " << (x.second.side == Side::BUY ? 'B' : 'S') << "; Price: " << x.second.price << "\n";
 
+	// What if tradeconfirms is empty?
+	market1.doTrades();
+	std::cout << "Trade confirms is empty?: " << market1.exchange.tradeconfirms.size() << "\n";
+
 	market1.exchange.confirmTrade(1032, 2, 12, 1, Side::BUY, 998548);
 	// Exchange tradeconfirms has 1 trade confirm object
-	std::cout << "\nExchange tradeconfirm size should be 1: " << market1.exchange.tradeconfirms.size();
+	std::cout << "\nExchange tradeconfirm size should be 1: " << market1.exchange.tradeconfirms.size() << "\n";
 	
 	market1.doTrades();
 	std::cout << "\nProvider 1032 local book (order # 2 @ 998548 is missing)\n";

@@ -64,6 +64,8 @@ public:
 	void makeSetup();
 	void doCancels(std::shared_ptr<ZITrader> &);
 	void doTrades();
+	void runMCS();
+	void runMCSPJ();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
