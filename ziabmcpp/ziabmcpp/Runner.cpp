@@ -234,7 +234,7 @@ void Runner::doCancels(std::shared_ptr<ZITrader> &p)
 void Runner::doTrades()
 {
 	for (auto& c : exchange.tradeconfirms)
-		providerMap[c.restoid]->confirmTrade(c);
+		providerMap[c.restid]->confirmTrade(c);
 }
 
 void Runner::qTakeToCsv(std::string &filename)

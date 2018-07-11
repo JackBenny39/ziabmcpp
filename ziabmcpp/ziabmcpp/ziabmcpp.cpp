@@ -281,7 +281,8 @@ int main()
 //	rTests.testQTakeToCsv(file1);
 //	rTests.testSeedBook();
 //	rTests.testMakeSetup();
-	rTests.testDoCancels();
+//	rTests.testDoCancels();
+	rTests.testDoTrades();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

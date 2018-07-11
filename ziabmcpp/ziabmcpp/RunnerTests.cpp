@@ -403,7 +403,6 @@ void RunnerTests::testDoCancels()
 	std::cout << "Provider 1032 local book (order # 2 @ 998548 is missing)\n";
 	for (auto& x : market1.providers[20]->localBook)
 		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Price: " << x.second.price << "\n";
-
 	std::cout << std::endl;
 }
 
@@ -420,4 +419,21 @@ void RunnerTests::testDoTrades()
 	market1.seedBook();
 	if (provider) { market1.buildProviders(); }
 	market1.makeSetup();
+
+	// print Provider 1032 localbook
+	std::cout << "Provider 1032 local book\n";
+	for (auto& x : market1.providers[20]->localBook)
+		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Step: " << x.second.step 
+		<< "; Quantity: " << x.second.qty << "; Side: " << (x.second.side == Side::BUY ? 'B' : 'S') << "; Price: " << x.second.price << "\n";
+
+	market1.exchange.confirmTrade(1032, 2, 12, 1, Side::BUY, 998548);
+	// Exchange tradeconfirms has 1 trade confirm object
+	std::cout << "\nExchange tradeconfirm size should be 1: " << market1.exchange.tradeconfirms.size();
+	
+	market1.doTrades();
+	std::cout << "\nProvider 1032 local book (order # 2 @ 998548 is missing)\n";
+	for (auto& x : market1.providers[20]->localBook)
+		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Step: " << x.second.step
+		<< "; Quantity: " << x.second.qty << "; Side: " << (x.second.side == Side::BUY ? 'B' : 'S') << "; Price: " << x.second.price << "\n";
+	std::cout << std::endl;
 }

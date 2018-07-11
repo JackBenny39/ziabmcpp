@@ -129,6 +129,7 @@ void Orderbook::process(Order &q)
 
 void Orderbook::cross(Order &q)
 {
+	tradeconfirms.clear();
 	Prc best;
 	if (q.side == Side::BUY)
 	{
@@ -137,7 +138,7 @@ void Orderbook::cross(Order &q)
 			if ((best = std::get<0>(ask())))
 			{
 				if (q.price >= best)
-				{
+				{ // Quote reference here!
 					if (q.qty >= asks[best].quotes.front().qty)
 					{
 						confirmTrade(asks[best].quotes.front().id, asks[best].quotes.front().oid, q.step,
@@ -178,7 +179,7 @@ void Orderbook::cross(Order &q)
 			if ((best = std::get<0>(bid())))
 			{
 				if (q.price <= best)
-				{
+				{ // Quote reference here!
 					if (q.qty >= bids[best].quotes.front().qty)
 					{
 						confirmTrade(bids[best].quotes.front().id, bids[best].quotes.front().oid, q.step,
