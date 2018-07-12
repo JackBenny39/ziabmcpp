@@ -15,6 +15,7 @@ Informed::Informed(const int tnum, const int maxq, Side side, const unsigned run
 
 void Informed::processSignal(Step step)
 {
+	quoteCollector.clear();
 	quoteCollector.emplace_back(makeAddQuote(step, side, price));
 	arrInt = *it++;
 }

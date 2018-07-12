@@ -29,6 +29,7 @@ public:
 	void testMakeSetup();
 	void testDoCancels();
 	void testDoTrades();
+	void testRun();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

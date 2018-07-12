@@ -11,6 +11,7 @@ Provider5::Provider5(const Step arr, const int tnum, const int maxq, const doubl
 void Provider5::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
 	Order q;
+	quoteCollector.clear();
 	if (dist(engine) < qProvide)
 		q = makeAddQuote(step, Side::BUY, chooseP(Side::BUY, tob.bestask, lambdaT, engine, dist));
 	else

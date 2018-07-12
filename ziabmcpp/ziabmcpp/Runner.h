@@ -67,6 +67,7 @@ public:
 	void doTrades();
 	void runMCS();
 	void runMCSPJ();
+	void run();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

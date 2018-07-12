@@ -15,13 +15,13 @@ RunnerTests::RunnerTests()
 {
 	mpi = 1;
 	prime1 = 20; 
-	runSteps = 100000;
+	runSteps = 100001;
 	writeInterval = 5000; 
 	informedRun = 3;
 	provider = true;
 	taker = true;
-	informed = true;
-	jumper = true;
+	informed = false;
+	jumper = false;
 	maker = true;
 	numProviders = 38;
 	numTakers = 50;
@@ -36,7 +36,7 @@ RunnerTests::RunnerTests()
 	pDelta = 0.025; 
 	qProvide = 0.5; 
 	tMu = 0.001;
-	iMu = 0.001;
+	iMu = 0.01;
 	jAlpha = 0.05;
 	mmDelta = 0.025;
 	qTake = true;
@@ -459,4 +459,20 @@ void RunnerTests::testDoTrades()
 		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Step: " << x.second.step
 		<< "; Quantity: " << x.second.qty << "; Side: " << (x.second.side == Side::BUY ? 'B' : 'S') << "; Price: " << x.second.price << "\n";
 	std::cout << std::endl;
+}
+
+void RunnerTests::testRun()
+{
+	auto t0 = high_resolution_clock::now();
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.run();
+	auto t1 = high_resolution_clock::now();
+	std::cout << duration_cast<seconds>(t1 - t0).count() << " s\n";
 }

@@ -19,6 +19,8 @@ void PennyJumper::confirmTrade(TConfirm &c)
 void PennyJumper::processSignal(TopOfBook &tob, Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
 	Order q;
+	quoteCollector.clear();
+	cancelCollector.clear();
 	if (tob.bestask - tob.bestbid > mpi) {
 		if (dist(engine) < qTake) {
 			if (!bidBook.empty()) {

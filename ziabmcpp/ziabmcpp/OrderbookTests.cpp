@@ -1244,7 +1244,7 @@ void OrderbookTests::testExchangeCrossTime()
 	exchange1.cross2(o13);
 	exchange1.cross2(o14);
 	auto t1 = high_resolution_clock::now();
-	std::cout << "By Reference: " << duration_cast<nanoseconds>(t1 - t0).count() << " ns\n";
+	std::cout << "By Reference: " << duration_cast<microseconds>(t1 - t0).count() << " us\n";
 
 	Orderbook exchange2 = Orderbook();
 	//	Prime Book
@@ -1283,6 +1283,6 @@ void OrderbookTests::testExchangeCrossTime()
 	exchange2.cross(o26);
 	auto t3 = high_resolution_clock::now();
 	std::cout << "\n\nBy Lookup: " << duration_cast<nanoseconds>(t3 - t2).count() << " ns\n";
-	std::cout << "\n\nBy Lookup: " << duration_cast<milliseconds>(t3 - t2).count() << " ms\n";
+	std::cout << "\n\nBy Lookup: " << duration_cast<microseconds>(t3 - t2).count() << " us\n";
 	std::cout << std::endl;
 }

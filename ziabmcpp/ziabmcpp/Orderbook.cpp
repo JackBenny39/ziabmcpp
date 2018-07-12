@@ -250,7 +250,7 @@ void Orderbook::cross2(Order &q)
 			}
 			else
 			{
-				std::cout << "Ask Market Collapse with order: " << q.id << ":" << q.oid << "\n" << std::endl;
+				std::cout << "Ask Market Collapse with order: " << q.id << " : " << q.oid << " : " << q.step << "\n" << std::endl;
 				break;
 			}
 		}
@@ -288,7 +288,7 @@ void Orderbook::cross2(Order &q)
 			}
 			else
 			{
-				std::cout << "Bid Market Collapse with order: " << q.id << ":" << q.oid << "\n" << std::endl;
+				std::cout << "Bid Market Collapse with order: " << q.id << " : " << q.oid << " : " << q.step << "\n" << std::endl;
 				break;
 			}
 		}

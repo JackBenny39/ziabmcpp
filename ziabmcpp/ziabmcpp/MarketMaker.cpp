@@ -31,6 +31,7 @@ void MarketMaker::processSignal(TopOfBook &tob, Step step, double qProvide, doub
 {
 	Prc maxBid, minAsk;
 	Order q;
+	quoteCollector.clear();
 	if (dist(engine) < qProvide)
 	{
 		maxBid = tob.bestbidsz > 1 ? tob.bestbid : tob.bestbid - 1;

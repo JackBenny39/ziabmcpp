@@ -279,15 +279,16 @@ int main()
 //	rTests.testBuildPennyJumper();
 //	rTests.testBuildMarketMakers();
 //	rTests.testBuildLambda();
-	std::string file1;
+//	std::string file1;
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
 //	rTests.testQTakeToCsv(file1);
-	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mmprofits_1.csv";
-	rTests.testmmProfitsToCsv(file1);
+//	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mmprofits_1.csv";
+//	rTests.testmmProfitsToCsv(file1);
 //	rTests.testSeedBook();
 //	rTests.testMakeSetup();
 //	rTests.testDoCancels();
 //	rTests.testDoTrades();
+	rTests.testRun();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

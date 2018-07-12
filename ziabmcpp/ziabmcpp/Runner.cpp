@@ -27,8 +27,8 @@ Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 	defaultVec = { 1, 5, 10, 25, 50 };
 	engine.seed(seed);
 
-	exchange = Orderbook();
-	QL = buildLambda();
+//	exchange = Orderbook();
+//	QL = buildLambda();
 }
 
 int Runner::setMaxQ(int maxq)
@@ -210,14 +210,12 @@ void Runner::makeSetup()
 		shuffle(providers.begin(), providers.end(), engine);
 		for (auto &x : providers)
 		{
-//			if ((i % x->arrInt) == 0)
 			if (!(i % x->arrInt))
 			{
 				x->processSignal(exchange.tob.back(), i, qProvide, -lambda0, engine, distUreal);
 				exchange.process(x->quoteCollector.back());
 				exchange.bookTop2(i);
 			}
-
 		}
 	}
 }
@@ -264,13 +262,16 @@ void Runner::runMCS()
 			}
 			else 
 			{
-				if (t->traderType == 'T')
-					t->processSignal(i, QL.first[i], engine, distUreal);
-				else // traderType == 'I'
-					t->processSignal(i);
-				exchange.process(t->quoteCollector.back());
-				doTrades();
-				exchange.bookTop2(i);
+				if (!(i % t->arrInt))
+				{
+					if (t->traderType == 'T')
+						t->processSignal(i, QL.first[i], engine, distUreal);
+					else // traderType == 'I'
+						t->processSignal(i);
+					exchange.process(t->quoteCollector.back());
+					doTrades();
+					exchange.bookTop2(i);
+				}
 			}
 		}
 	}
@@ -302,13 +303,16 @@ void Runner::runMCSPJ()
 			}
 			else
 			{
-				if (t->traderType == 'T')
-					t->processSignal(i, QL.first[i], engine, distUreal);
-				else // traderType == 'I'
-					t->processSignal(i);
-				exchange.process(t->quoteCollector.back());
-				doTrades();
-				exchange.bookTop2(i);
+				if (!(i % t->arrInt))
+				{
+					if (t->traderType == 'T')
+						t->processSignal(i, QL.first[i], engine, distUreal);
+					else // traderType == 'I'
+						t->processSignal(i);
+					exchange.process(t->quoteCollector.back());
+					doTrades();
+					exchange.bookTop2(i);
+				}
 			}
 			if (distUreal(engine) < jAlpha)
 			{
@@ -327,6 +331,29 @@ void Runner::runMCSPJ()
 			}
 		}
 	}
+}
+
+void Runner::run()
+{
+	exchange = Orderbook();
+	QL = buildLambda();
+	if (provider) { buildProviders(); }
+	if (taker) { buildTakers(); }
+	if (informed) { buildInformed(); }
+	if (jumper) { buildPennyJumper(); }
+	if (maker) { buildMarketMakers(); }
+	seedBook();
+	if (provider) { makeSetup(); }
+	if (jumper)
+		runMCSPJ();
+	else
+		runMCS();
+	std::string tcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\trades_1.csv";
+	exchange.tradesToCsv(tcsv);
+	std::string qtcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
+	qTakeToCsv(qtcsv);
+	std::string mmcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mm_1.csv";
+	mmProfitsToCsv(mmcsv);
 }
 
 void Runner::qTakeToCsv(std::string &filename)
