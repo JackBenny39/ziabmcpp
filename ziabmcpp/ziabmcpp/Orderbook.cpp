@@ -105,14 +105,14 @@ void Orderbook::process(Order &q)
 		if (q.side == Side::BUY)
 		{
 			if (q.price >= std::get<0>(ask()))
-				cross(q);
+				cross2(q);
 			else
 				addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
 		}
 		else
 		{
 			if (q.price <= std::get<0>(bid()))
-				cross(q);
+				cross2(q);
 			else
 				addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
 		}
@@ -196,6 +196,87 @@ void Orderbook::cross(Order &q)
 						addTrade(bids[best].quotes.front().id, bids[best].quotes.front().oid, bids[best].quotes.front().step,
 							q.id, q.oid, q.step, q.qty, q.side, bids[best].quotes.front().prc);
 						modify(bids[best].quotes.front().id, bids[best].quotes.front().oid, q.qty);
+						break;
+					}
+				}
+				else
+				{
+					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					break;
+				}
+			}
+			else
+			{
+				std::cout << "Bid Market Collapse with order: " << q.id << ":" << q.oid << "\n" << std::endl;
+				break;
+			}
+		}
+	}
+}
+
+void Orderbook::cross2(Order &q)
+{
+	tradeconfirms.clear();
+	Prc best;
+	if (q.side == Side::BUY)
+	{
+		while (q.qty > 0)
+		{
+			if ((best = std::get<0>(ask())))
+			{
+				if (q.price >= best)
+				{
+					Quote& qq = asks[best].quotes.front();
+					if (q.qty >= qq.qty)
+					{
+						confirmTrade(qq.id, qq.oid, q.step, qq.qty, qq.side, qq.prc);
+						addTrade(qq.id, qq.oid, qq.step, q.id, q.oid, q.step, qq.qty, q.side, qq.prc);
+						q.qty -= qq.qty;
+						remove(qq.id, qq.oid, qq.qty);
+					}
+					else
+					{
+						confirmTrade(qq.id, qq.oid, q.step, q.qty, qq.side, qq.prc);
+						addTrade(qq.id, qq.oid, qq.step, q.id, q.oid, q.step, q.qty, q.side, qq.prc);
+						modify(qq.id, qq.oid, q.qty);
+						break;
+					}
+				}
+				else
+				{
+					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					break;
+				}
+			}
+			else
+			{
+				std::cout << "Ask Market Collapse with order: " << q.id << ":" << q.oid << "\n" << std::endl;
+				break;
+			}
+		}
+
+	}
+	else
+	{
+		while (q.qty > 0)
+		{
+			if ((best = std::get<0>(bid())))
+			{
+				if (q.price <= best)
+				{
+					Quote& qq = bids[best].quotes.front();
+					if (q.qty >= qq.qty)
+					{
+						confirmTrade(qq.id, qq.oid, q.step, qq.qty, qq.side, qq.prc);
+						addTrade(qq.id, qq.oid, qq.step, q.id, q.oid, q.step, qq.qty, q.side, qq.prc);
+						q.qty -= qq.qty;
+						remove(qq.id, qq.oid, qq.qty);
+					}
+					else
+					{
+						confirmTrade(qq.id, qq.oid, q.step, q.qty, qq.side, qq.prc);
+						addTrade(qq.id, qq.oid, qq.step, q.id, q.oid, q.step, q.qty, q.side, qq.prc);
+						modify(qq.id, qq.oid, q.qty);
 						break;
 					}
 				}

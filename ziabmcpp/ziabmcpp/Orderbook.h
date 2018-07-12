@@ -56,6 +56,7 @@ public:
 	void modify(traderId, Id, Qty);
 	void process(Order &);
 	void cross(Order &);
+	void cross2(Order &);
 //	std::vector<Execution> cross(Side, Prc, Qty);
 	auto bid();
 	auto ask();

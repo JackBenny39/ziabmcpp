@@ -3,10 +3,14 @@
 
 #include "stdafx.h"
 
+#include <chrono>
 #include <iostream>
 
 #include "OrderbookTests.h"
 #include "ZITrader.h"
+
+using namespace std::chrono;
+
 
 void OrderbookTests::testExchangeAddHistory()
 {
@@ -883,4 +887,402 @@ void OrderbookTests::testExchangeSipToCsv(std::string file1)
 	exchange1.bookTop(27);
 
 	exchange1.sipToCsv(file1);
+}
+
+void OrderbookTests::testExchangeCrossSell1r()
+{
+	cSide cSide1;
+	Orderbook exchange1 = Orderbook();
+	//	Prime Book
+	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+
+	// Add some depth
+	Order o3{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
+	Order o4{ 1001, 3, 4, 'A', 100, Side::SELL, 1006 };
+	Order o5{ 1001, 4, 4, 'A', 100, Side::SELL, 1008 };
+
+	Order o6{ 1002, 2, 3, 'A', 100, Side::BUY, 999 };
+	Order o7{ 1002, 3, 4, 'A', 100, Side::BUY, 998 };
+	Order o8{ 1002, 4, 4, 'A', 100, Side::BUY, 996 };
+
+	exchange1.process(o3);
+	exchange1.process(o4);
+	exchange1.process(o5);
+	exchange1.process(o6);
+	exchange1.process(o7);
+	exchange1.process(o8);
+
+	std::cout << "Bids:\n";
+	for (auto &x : exchange1.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	std::cout << "\n\nAsks:\n";
+	for (auto &x : exchange1.asks)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+
+	// Incoming order takes out part of best bid : 1001-1
+	// Impacts trades. tradeconfirms, and the bid book.
+
+	Order o9{ 4001, 2, 10, 'A', 50, Side::SELL, 0 };
+	exchange1.cross2(o9);
+
+	std::cout << "\n\nBid Qty reduced by 50\n";
+	std::cout << "Bids:\n";
+	for (auto &x : exchange1.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+
+	cSide1 = exchange1.trades[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Book After: " << exchange1.trades.size() << "\n";
+	std::cout << "First Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.trades[0].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.trades[0].restoid << "\n";
+	std::cout << "Resting Step: " << exchange1.trades[0].reststep << "\n";
+	std::cout << "Incoming Trader ID: " << exchange1.trades[0].incid << "\n";
+	std::cout << "Incomig Order ID: " << exchange1.trades[0].incoid << "\n";
+	std::cout << "Incoming Step: " << exchange1.trades[0].incstep << "\n";
+	std::cout << "Quantity: " << exchange1.trades[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.trades[0].price << "\n";
+
+	cSide1 = exchange1.tradeconfirms[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Confirms After: " << exchange1.tradeconfirms.size() << "\n";
+	std::cout << "First Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.tradeconfirms[0].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.tradeconfirms[0].restoid << "\n";
+	std::cout << "Step: " << exchange1.tradeconfirms[0].reststep << "\n";
+	std::cout << "Quantity: " << exchange1.tradeconfirms[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.tradeconfirms[0].price << "\n";
+
+	// Incoming order takes out remainder of best bid : 1001-1
+	// Incoming order takes out some of the next best bid : 1002-2
+	// Impacts trades. tradeconfirms, and the bid book.
+	exchange1.tradeconfirms.clear();
+	Order o10{ 4001, 3, 12, 'A', 75, Side::SELL, 0 };
+	exchange1.cross2(o10);
+
+	std::cout << "\n\nBid Qty reduced by 75\n";
+	std::cout << "Bids:\n";
+	for (auto &x : exchange1.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+
+	cSide1 = exchange1.trades[1].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Book After first: " << exchange1.trades.size() << "\n";
+	std::cout << "First Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.trades[1].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.trades[1].restoid << "\n";
+	std::cout << "Resting Step: " << exchange1.trades[1].reststep << "\n";
+	std::cout << "Incoming Trader ID: " << exchange1.trades[1].incid << "\n";
+	std::cout << "Incomig Order ID: " << exchange1.trades[1].incoid << "\n";
+	std::cout << "Incoming Step: " << exchange1.trades[1].incstep << "\n";
+	std::cout << "Quantity: " << exchange1.trades[1].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.trades[1].price << "\n";
+
+	cSide1 = exchange1.trades[2].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Book After second: " << exchange1.trades.size() << "\n";
+	std::cout << "Second Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.trades[2].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.trades[2].restoid << "\n";
+	std::cout << "Resting Step: " << exchange1.trades[2].reststep << "\n";
+	std::cout << "Incoming Trader ID: " << exchange1.trades[2].incid << "\n";
+	std::cout << "Incomig Order ID: " << exchange1.trades[2].incoid << "\n";
+	std::cout << "Incoming Step: " << exchange1.trades[2].incstep << "\n";
+	std::cout << "Quantity: " << exchange1.trades[2].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.trades[2].price << "\n";
+
+	cSide1 = exchange1.tradeconfirms[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Confirms After 1: " << exchange1.tradeconfirms.size() << "\n";
+	std::cout << "First Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.tradeconfirms[0].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.tradeconfirms[0].restoid << "\n";
+	std::cout << "Step: " << exchange1.tradeconfirms[0].reststep << "\n";
+	std::cout << "Quantity: " << exchange1.tradeconfirms[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.tradeconfirms[0].price << "\n";
+
+	cSide1 = exchange1.tradeconfirms[1].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Confirms After 2: " << exchange1.tradeconfirms.size() << "\n";
+	std::cout << "Second Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.tradeconfirms[1].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.tradeconfirms[1].restoid << "\n";
+	std::cout << "Step: " << exchange1.tradeconfirms[1].reststep << "\n";
+	std::cout << "Quantity: " << exchange1.tradeconfirms[1].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.tradeconfirms[1].price << "\n";
+
+	// Incoming order takes out remainder of best bid : 1002-2
+	// Incoming order takes out next best bid : 1002-3 @ 998
+	// Incoming order adds new order at 997
+	// Impacts trades. tradeconfirms, and the bid book.
+	exchange1.tradeconfirms.clear();
+	Order o11{ 4001, 4, 15, 'A', 200, Side::SELL, 997 };
+	exchange1.cross2(o11);
+
+	std::cout << "\n\nAsk Qty @ 997 = 25\n";
+	std::cout << "Asks:\n";
+	for (auto &x : exchange1.asks)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+
+	std::cout << std::endl;
+}
+
+void OrderbookTests::testExchangeCrossBuy1r()
+{
+	cSide cSide1;
+	Orderbook exchange1 = Orderbook();
+	//	Prime Book
+	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+
+	// Add some depth
+	Order o3{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
+	Order o4{ 1001, 3, 4, 'A', 100, Side::SELL, 1006 };
+	Order o5{ 1001, 4, 4, 'A', 100, Side::SELL, 1008 };
+
+	Order o6{ 1002, 2, 3, 'A', 100, Side::BUY, 999 };
+	Order o7{ 1002, 3, 4, 'A', 100, Side::BUY, 998 };
+	Order o8{ 1002, 4, 4, 'A', 100, Side::BUY, 996 };
+
+	exchange1.process(o3);
+	exchange1.process(o4);
+	exchange1.process(o5);
+	exchange1.process(o6);
+	exchange1.process(o7);
+	exchange1.process(o8);
+
+	std::cout << "Bids:\n";
+	for (auto &x : exchange1.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	std::cout << "\n\nAsks:\n";
+	for (auto &x : exchange1.asks)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+
+	// Incoming order takes out part of best ask : 1001-1
+	// Impacts trades. tradeconfirms, and the ask book.
+
+	Order o9{ 4001, 2, 10, 'A', 50, Side::BUY, 100000 };
+	exchange1.cross2(o9);
+
+	std::cout << "\n\nAsk Qty reduced by 50\n";
+	std::cout << "Asks:\n";
+	for (auto &x : exchange1.asks)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+
+	cSide1 = exchange1.trades[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Book After: " << exchange1.trades.size() << "\n";
+	std::cout << "First Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.trades[0].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.trades[0].restoid << "\n";
+	std::cout << "Resting Step: " << exchange1.trades[0].reststep << "\n";
+	std::cout << "Incoming Trader ID: " << exchange1.trades[0].incid << "\n";
+	std::cout << "Incomig Order ID: " << exchange1.trades[0].incoid << "\n";
+	std::cout << "Incoming Step: " << exchange1.trades[0].incstep << "\n";
+	std::cout << "Quantity: " << exchange1.trades[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.trades[0].price << "\n";
+
+	cSide1 = exchange1.tradeconfirms[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Confirms After: " << exchange1.tradeconfirms.size() << "\n";
+	std::cout << "First Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.tradeconfirms[0].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.tradeconfirms[0].restoid << "\n";
+	std::cout << "Step: " << exchange1.tradeconfirms[0].reststep << "\n";
+	std::cout << "Quantity: " << exchange1.tradeconfirms[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.tradeconfirms[0].price << "\n";
+
+	// Incoming order takes out remainder of best ask : 1002-1
+	// Incoming order takes out some of the next best ask : 1001-2
+	// Impacts trades. tradeconfirms, and the bid book.
+	exchange1.tradeconfirms.clear();
+	Order o10{ 4001, 3, 12, 'A', 75, Side::BUY, 100000 };
+	exchange1.cross2(o10);
+
+	std::cout << "\n\nAsk Qty reduced by 75\n";
+	std::cout << "Asks:\n";
+	for (auto &x : exchange1.asks)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+
+	cSide1 = exchange1.trades[1].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Book After first: " << exchange1.trades.size() << "\n";
+	std::cout << "First Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.trades[1].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.trades[1].restoid << "\n";
+	std::cout << "Resting Step: " << exchange1.trades[1].reststep << "\n";
+	std::cout << "Incoming Trader ID: " << exchange1.trades[1].incid << "\n";
+	std::cout << "Incomig Order ID: " << exchange1.trades[1].incoid << "\n";
+	std::cout << "Incoming Step: " << exchange1.trades[1].incstep << "\n";
+	std::cout << "Quantity: " << exchange1.trades[1].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.trades[1].price << "\n";
+
+	cSide1 = exchange1.trades[2].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Book After second: " << exchange1.trades.size() << "\n";
+	std::cout << "Second Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.trades[2].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.trades[2].restoid << "\n";
+	std::cout << "Resting Step: " << exchange1.trades[2].reststep << "\n";
+	std::cout << "Incoming Trader ID: " << exchange1.trades[2].incid << "\n";
+	std::cout << "Incomig Order ID: " << exchange1.trades[2].incoid << "\n";
+	std::cout << "Incoming Step: " << exchange1.trades[2].incstep << "\n";
+	std::cout << "Quantity: " << exchange1.trades[2].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.trades[2].price << "\n";
+
+	cSide1 = exchange1.tradeconfirms[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Confirms After 1: " << exchange1.tradeconfirms.size() << "\n";
+	std::cout << "First Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.tradeconfirms[0].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.tradeconfirms[0].restoid << "\n";
+	std::cout << "Step: " << exchange1.tradeconfirms[0].reststep << "\n";
+	std::cout << "Quantity: " << exchange1.tradeconfirms[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.tradeconfirms[0].price << "\n";
+
+	cSide1 = exchange1.tradeconfirms[1].side == Side::BUY ? 'B' : 'S';
+	std::cout << "\nTrade Confirms After 2: " << exchange1.tradeconfirms.size() << "\n";
+	std::cout << "Second Order: \n";
+	std::cout << "Resting Trader ID: " << exchange1.tradeconfirms[1].restid << "\n";
+	std::cout << "Resting Order ID: " << exchange1.tradeconfirms[1].restoid << "\n";
+	std::cout << "Step: " << exchange1.tradeconfirms[1].reststep << "\n";
+	std::cout << "Quantity: " << exchange1.tradeconfirms[1].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << exchange1.tradeconfirms[1].price << "\n";
+
+	// Incoming order takes out remainder of best ask : 1001-2
+	// Incoming order takes out next best ask : 1003-3 @ 1006
+	// Incoming order adds new order at 1007
+	// Impacts trades. tradeconfirms, and the bid book.
+	exchange1.tradeconfirms.clear();
+	Order o11{ 4001, 4, 15, 'A', 200, Side::BUY, 1007 };
+	exchange1.cross2(o11);
+
+	std::cout << "\n\nBid Qty @ 1007 = 25\n";
+	std::cout << "Bids:\n";
+	for (auto &x : exchange1.bids)
+	{
+		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+		for (auto &y : x.second.quotes)
+			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+	}
+	std::cout << std::endl;
+}
+
+void OrderbookTests::testExchangeCrossTime()
+{
+	Orderbook exchange1 = Orderbook();
+	//	Prime Book
+	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+
+	// Add some depth
+	Order o3{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
+	Order o4{ 1001, 3, 4, 'A', 100, Side::SELL, 1006 };
+	Order o5{ 1001, 4, 4, 'A', 100, Side::SELL, 1008 };
+
+	Order o6{ 1002, 2, 3, 'A', 100, Side::BUY, 999 };
+	Order o7{ 1002, 3, 4, 'A', 100, Side::BUY, 998 };
+	Order o8{ 1002, 4, 4, 'A', 100, Side::BUY, 996 };
+
+	exchange1.process(o3);
+	exchange1.process(o4);
+	exchange1.process(o5);
+	exchange1.process(o6);
+	exchange1.process(o7);
+	exchange1.process(o8);
+
+	Order o9{ 4001, 2, 10, 'A', 50, Side::SELL, 0 };
+	Order o10{ 4001, 3, 12, 'A', 75, Side::SELL, 0 };
+	Order o11{ 4001, 4, 15, 'A', 200, Side::SELL, 997 };
+	Order o12{ 4001, 2, 10, 'A', 50, Side::BUY, 100000 };
+	Order o13{ 4001, 3, 12, 'A', 75, Side::BUY, 100000 };
+	Order o14{ 4001, 4, 15, 'A', 200, Side::BUY, 1007 };
+
+	auto t0 = high_resolution_clock::now();
+	exchange1.cross2(o9);
+	exchange1.cross2(o10);
+	exchange1.cross2(o11);
+	exchange1.cross2(o12);
+	exchange1.cross2(o13);
+	exchange1.cross2(o14);
+	auto t1 = high_resolution_clock::now();
+	std::cout << "By Reference: " << duration_cast<nanoseconds>(t1 - t0).count() << " ns\n";
+
+	Orderbook exchange2 = Orderbook();
+	//	Prime Book
+	exchange2.addBook2(1001, 1, Side::BUY, 999, 100, 0);
+	exchange2.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+
+	// Add some depth
+	Order o15{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
+	Order o16{ 1001, 3, 4, 'A', 100, Side::SELL, 1006 };
+	Order o17{ 1001, 4, 4, 'A', 100, Side::SELL, 1008 };
+
+	Order o18{ 1002, 2, 3, 'A', 100, Side::BUY, 999 };
+	Order o19{ 1002, 3, 4, 'A', 100, Side::BUY, 998 };
+	Order o20{ 1002, 4, 4, 'A', 100, Side::BUY, 996 };
+
+	exchange2.process(o15);
+	exchange2.process(o16);
+	exchange2.process(o17);
+	exchange2.process(o18);
+	exchange2.process(o19);
+	exchange2.process(o20);
+
+	Order o21{ 4001, 2, 10, 'A', 50, Side::SELL, 0 };
+	Order o22{ 4001, 3, 12, 'A', 75, Side::SELL, 0 };
+	Order o23{ 4001, 4, 15, 'A', 200, Side::SELL, 997 };
+	Order o24{ 4001, 2, 10, 'A', 50, Side::BUY, 100000 };
+	Order o25{ 4001, 3, 12, 'A', 75, Side::BUY, 100000 };
+	Order o26{ 4001, 4, 15, 'A', 200, Side::BUY, 1007 };
+
+	auto t2 = high_resolution_clock::now();
+	exchange2.cross(o21);
+	exchange2.cross(o22);
+	exchange2.cross(o23);
+	exchange2.cross(o24);
+	exchange2.cross(o25);
+	exchange2.cross(o26);
+	auto t3 = high_resolution_clock::now();
+	std::cout << "\n\nBy Lookup: " << duration_cast<nanoseconds>(t3 - t2).count() << " ns\n";
+	std::cout << "\n\nBy Lookup: " << duration_cast<milliseconds>(t3 - t2).count() << " ms\n";
+	std::cout << std::endl;
 }

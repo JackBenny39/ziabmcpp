@@ -223,7 +223,7 @@ int main()
 //	engine.seed(44); 
 //	tTests.testPJ();
 
-//	OrderbookTests bTests;
+	OrderbookTests bTests;
 //	std::string file1;
 
 //	bTests.testExchangeAddHistory();
@@ -245,6 +245,9 @@ int main()
 //	bTests.testExchangeTradesToCsv(file1);
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\sip_1.csv";
 //	bTests.testExchangeSipToCsv(file1);
+//	bTests.testExchangeCrossSell1r();
+//	bTests.testExchangeCrossBuy1r();
+	bTests.testExchangeCrossTime();
 
 //	BucketTests kTests(defaultVec, distA, engine);
 //	kTests.testZITrader();
@@ -268,7 +271,7 @@ int main()
 //	kTests.testPJ();
 //	kTests.testShuffle();
 
-	RunnerTests rTests;
+//	RunnerTests rTests;
 //	rTests.testConstructor();
 //	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
@@ -282,7 +285,7 @@ int main()
 //	rTests.testSeedBook();
 //	rTests.testMakeSetup();
 //	rTests.testDoCancels();
-	rTests.testDoTrades();
+//	rTests.testDoTrades();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);

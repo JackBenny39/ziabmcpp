@@ -30,6 +30,9 @@ public:
 	void testExchangeCrossCrash();
 	void testExchangeCrossSell1();
 	void testExchangeCrossBuy1();
+	void testExchangeCrossSell1r();
+	void testExchangeCrossBuy1r();
+	void testExchangeCrossTime();
 	void testExchangeOrdersToCsv(std::string);
 	void testExchangeTradesToCsv(std::string);
 	void testExchangeSipToCsv(std::string);
