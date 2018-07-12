@@ -255,6 +255,25 @@ void RunnerTests::testQTakeToCsv(std::string file1)
 	market1.qTakeToCsv(file1);
 }
 
+void RunnerTests::testmmProfitsToCsv(std::string file1)
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	market1.buildMarketMakers();
+	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 27, 1000, 20 });
+	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 30, 2000, 40 });
+	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 33, 0, 0 });
+	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 35, -1000, -20 });
+	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 39, -2000, -40 });
+	market1.mmProfitsToCsv(file1);
+}
+
 void RunnerTests::testSeedBook()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,

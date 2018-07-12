@@ -24,6 +24,7 @@ public:
 	void testBuildMarketMakers();
 	void testBuildLambda();
 	void testQTakeToCsv(std::string);
+	void testmmProfitsToCsv(std::string);
 	void testSeedBook();
 	void testMakeSetup();
 	void testDoCancels();

@@ -15,7 +15,7 @@
 #include <vector>
 
 using stepset = std::set<Step>;
-struct CFlow { traderId id; Step step; int64_t cashFlow; unsigned position; };
+struct CFlow { traderId id; Step step; int64_t cashFlow; int64_t position; };
 
 
 class ZITrader

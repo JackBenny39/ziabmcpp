@@ -223,7 +223,7 @@ int main()
 //	engine.seed(44); 
 //	tTests.testPJ();
 
-	OrderbookTests bTests;
+//	OrderbookTests bTests;
 //	std::string file1;
 
 //	bTests.testExchangeAddHistory();
@@ -247,7 +247,7 @@ int main()
 //	bTests.testExchangeSipToCsv(file1);
 //	bTests.testExchangeCrossSell1r();
 //	bTests.testExchangeCrossBuy1r();
-	bTests.testExchangeCrossTime();
+//	bTests.testExchangeCrossTime();
 
 //	BucketTests kTests(defaultVec, distA, engine);
 //	kTests.testZITrader();
@@ -271,7 +271,7 @@ int main()
 //	kTests.testPJ();
 //	kTests.testShuffle();
 
-//	RunnerTests rTests;
+	RunnerTests rTests;
 //	rTests.testConstructor();
 //	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
@@ -279,9 +279,11 @@ int main()
 //	rTests.testBuildPennyJumper();
 //	rTests.testBuildMarketMakers();
 //	rTests.testBuildLambda();
-//	std::string file1;
+	std::string file1;
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
 //	rTests.testQTakeToCsv(file1);
+	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mmprofits_1.csv";
+	rTests.testmmProfitsToCsv(file1);
 //	rTests.testSeedBook();
 //	rTests.testMakeSetup();
 //	rTests.testDoCancels();

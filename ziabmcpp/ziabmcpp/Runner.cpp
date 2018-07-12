@@ -338,3 +338,18 @@ void Runner::qTakeToCsv(std::string &filename)
 		csvfile << i << "," << QL.first[i] << "," << QL.second[i] << "\n";
 	csvfile.close();
 }
+
+void Runner::mmProfitsToCsv(std::string &filename)
+{
+	std::ofstream csvfile;
+	csvfile.open(filename);
+	csvfile << "TraderID,Step,CashFlow,Position\n";
+	traderId tId;
+	for (auto i = 0; i != numMMs; ++i)
+	{
+		tId = 3000 + i;
+		for (auto& f : providerMap[tId]->cashFlowCollector)
+			csvfile << f.id << "," << f.step << "," << f.cashFlow << "," << f.position << "\n";
+	}
+	csvfile.close();
+}
