@@ -348,12 +348,12 @@ void Runner::run()
 		runMCSPJ();
 	else
 		runMCS();
-	std::string tcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\trades_1.csv";
-	exchange.tradesToCsv(tcsv);
-	std::string qtcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
-	qTakeToCsv(qtcsv);
-	std::string mmcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mm_1.csv";
-	mmProfitsToCsv(mmcsv);
+//	std::string tcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\trades_1.csv";
+//	exchange.tradesToCsv(tcsv);
+//	std::string qtcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
+//	qTakeToCsv(qtcsv);
+//	std::string mmcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mm_1.csv";
+//	mmProfitsToCsv(mmcsv);
 }
 
 void Runner::qTakeToCsv(std::string &filename)
