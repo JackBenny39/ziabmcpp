@@ -14,6 +14,7 @@ Taker::Taker(const Step arr, const int tnum, const int maxq, const Prc mpi)
 
 void Taker::processSignal(Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
+	quoteCollector.clear();
 	if (dist(engine) < qTake)
 		quoteCollector.emplace_back(makeAddQuote(step, Side::BUY, 2000000));
 	else

@@ -99,19 +99,20 @@ auto Orderbook::ask() { return asks.empty() ? std::make_tuple(Prc(0), Qty(0)) : 
 
 void Orderbook::process(Order &q)
 {
+	modifyconfirms.clear();
 	if (q.otype == 'A')
 	{
 		if (q.side == Side::BUY)
 		{
 			if (q.price >= std::get<0>(ask()))
-				cross(q);
+				cross2(q);
 			else
 				addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
 		}
 		else
 		{
 			if (q.price <= std::get<0>(bid()))
-				cross(q);
+				cross2(q);
 			else
 				addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
 		}
@@ -128,6 +129,7 @@ void Orderbook::process(Order &q)
 
 void Orderbook::cross(Order &q)
 {
+	tradeconfirms.clear();
 	Prc best;
 	if (q.side == Side::BUY)
 	{
@@ -136,7 +138,7 @@ void Orderbook::cross(Order &q)
 			if ((best = std::get<0>(ask())))
 			{
 				if (q.price >= best)
-				{
+				{ // Quote reference here!
 					if (q.qty >= asks[best].quotes.front().qty)
 					{
 						confirmTrade(asks[best].quotes.front().id, asks[best].quotes.front().oid, q.step,
@@ -177,7 +179,7 @@ void Orderbook::cross(Order &q)
 			if ((best = std::get<0>(bid())))
 			{
 				if (q.price <= best)
-				{
+				{ // Quote reference here!
 					if (q.qty >= bids[best].quotes.front().qty)
 					{
 						confirmTrade(bids[best].quotes.front().id, bids[best].quotes.front().oid, q.step,
@@ -212,6 +214,87 @@ void Orderbook::cross(Order &q)
 	}
 }
 
+void Orderbook::cross2(Order &q)
+{
+	tradeconfirms.clear();
+	Prc best;
+	if (q.side == Side::BUY)
+	{
+		while (q.qty > 0)
+		{
+			if ((best = std::get<0>(ask())))
+			{
+				if (q.price >= best)
+				{
+					Quote& qq = asks[best].quotes.front();
+					if (q.qty >= qq.qty)
+					{
+						confirmTrade(qq.id, qq.oid, q.step, qq.qty, qq.side, qq.prc);
+						addTrade(qq.id, qq.oid, qq.step, q.id, q.oid, q.step, qq.qty, q.side, qq.prc);
+						q.qty -= qq.qty;
+						remove(qq.id, qq.oid, qq.qty);
+					}
+					else
+					{
+						confirmTrade(qq.id, qq.oid, q.step, q.qty, qq.side, qq.prc);
+						addTrade(qq.id, qq.oid, qq.step, q.id, q.oid, q.step, q.qty, q.side, qq.prc);
+						modify(qq.id, qq.oid, q.qty);
+						break;
+					}
+				}
+				else
+				{
+					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					break;
+				}
+			}
+			else
+			{
+				std::cout << "Ask Market Collapse with order: " << q.id << " : " << q.oid << " : " << q.step << "\n" << std::endl;
+				break;
+			}
+		}
+
+	}
+	else
+	{
+		while (q.qty > 0)
+		{
+			if ((best = std::get<0>(bid())))
+			{
+				if (q.price <= best)
+				{
+					Quote& qq = bids[best].quotes.front();
+					if (q.qty >= qq.qty)
+					{
+						confirmTrade(qq.id, qq.oid, q.step, qq.qty, qq.side, qq.prc);
+						addTrade(qq.id, qq.oid, qq.step, q.id, q.oid, q.step, qq.qty, q.side, qq.prc);
+						q.qty -= qq.qty;
+						remove(qq.id, qq.oid, qq.qty);
+					}
+					else
+					{
+						confirmTrade(qq.id, qq.oid, q.step, q.qty, qq.side, qq.prc);
+						addTrade(qq.id, qq.oid, qq.step, q.id, q.oid, q.step, q.qty, q.side, qq.prc);
+						modify(qq.id, qq.oid, q.qty);
+						break;
+					}
+				}
+				else
+				{
+					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					break;
+				}
+			}
+			else
+			{
+				std::cout << "Bid Market Collapse with order: " << q.id << " : " << q.oid << " : " << q.step << "\n" << std::endl;
+				break;
+			}
+		}
+	}
+}
+
 std::vector<TopOfBook>::iterator Orderbook::bookTop(Step step)
 {
 	auto bestbid = bid();
@@ -226,13 +309,12 @@ void Orderbook::bookTop2(Step step)
 	tob.emplace_back(TopOfBook{ step, std::get<0>(bestbid), std::get<1>(bestbid), std::get<0>(bestask), std::get<1>(bestask) });
 }
 
-void Orderbook::ordersToCsv(std::string filename)
+void Orderbook::ordersToCsv(std::string &filename)
 {
 	char csd;
 	std::ofstream csvfile;
 	csvfile.open(filename);
-	csvfile << "Sequence," << "TraderId," << "OrderId," << "Step," << "OrderType,"
-			<< "Quantity," << "Side," << "Price\n";
+	csvfile << "Sequence,TraderId,OrderId,Step,OrderType,Quantity,Side,Price\n";
 	for (auto& x : history)
 	{
 		csd = x.side == Side::BUY ? 'B' : 'S';
@@ -242,13 +324,12 @@ void Orderbook::ordersToCsv(std::string filename)
 	csvfile.close();
 }
 
-void Orderbook::tradesToCsv(std::string filename)
+void Orderbook::tradesToCsv(std::string &filename)
 {
 	char csd;
 	std::ofstream csvfile;
 	csvfile.open(filename);
-	csvfile << "RestTraderId," << "RestOrderId," << "RestStep," << "IncTraderId," << "IncOrderId,"
-		<< "IncStep," << "Quantity," << "Side," << "Price\n";
+	csvfile << "RestTraderId,RestOrderId,RestStep,IncTraderId,IncOrderId,IncStep,Quantity,Side,Price\n";
 	for (auto& x : trades)
 	{
 		csd = x.side == Side::BUY ? 'B' : 'S';
@@ -258,11 +339,11 @@ void Orderbook::tradesToCsv(std::string filename)
 	csvfile.close();
 }
 
-void Orderbook::sipToCsv(std::string filename)
+void Orderbook::sipToCsv(std::string &filename)
 {
 	std::ofstream csvfile;
 	csvfile.open(filename);
-	csvfile << "Step," << "BestBidPrice," << "BestBidSize," << "BestAskPrice," << "BestAskSize\n";
+	csvfile << "Step,BestBidPrice,BestBidSize,BestAskPrice,BestAskSize\n";
 	for (auto& x : tob)
 		csvfile << x.step << "," << x.bestbid << "," << x.bestbidsz << "," << x.bestask << "," << x.bestasksz << "\n";
 	csvfile.close();

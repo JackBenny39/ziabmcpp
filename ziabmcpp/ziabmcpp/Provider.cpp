@@ -22,6 +22,7 @@ void Provider::confirmTrade(TConfirm &c)
 void Provider::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
 	Order q;
+	quoteCollector.clear();
 	if (dist(engine) < qProvide)
 		q = makeAddQuote(step, Side::BUY, chooseP(Side::BUY, tob.bestask, lambdaT, engine, dist));
 	else

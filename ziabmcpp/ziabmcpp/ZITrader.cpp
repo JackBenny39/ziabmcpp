@@ -37,6 +37,7 @@ void ZITrader::confirmCancel(Id oid)
 
 void ZITrader::bulkCancel(Step step, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
+	cancelCollector.clear();
 	for (auto &x : localBook)
 	{
 		if (dist(engine) < delta)
@@ -48,7 +49,7 @@ void ZITrader::makeSteps(const unsigned runL, const unsigned numChoices, std::mt
 {
 	unsigned count;
 	Step j;
-	for (int i = 1; i != numChoices; ++i)
+	for (auto i = 1; i != numChoices; ++i)
 	{
 		j = distA(engine);
 		count = 0;

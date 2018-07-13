@@ -56,14 +56,15 @@ public:
 	void modify(traderId, Id, Qty);
 	void process(Order &);
 	void cross(Order &);
+	void cross2(Order &);
 //	std::vector<Execution> cross(Side, Prc, Qty);
 	auto bid();
 	auto ask();
 	std::vector<TopOfBook>::iterator bookTop(Step);
-	void bookTop2(Step step);
-	void ordersToCsv(std::string); // references to string?
-	void tradesToCsv(std::string);
-	void sipToCsv(std::string);
+	void bookTop2(Step);
+	void ordersToCsv(std::string &); // references to string?
+	void tradesToCsv(std::string &);
+	void sipToCsv(std::string &);
 
 private:
 	exId orderSequence;

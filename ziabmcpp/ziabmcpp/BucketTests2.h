@@ -1,9 +1,9 @@
-// BucketTests.h
+// BucketTests2.h
 
 #pragma once
 
-#ifndef BUCKETTESTS_H
-#define BUCKETTESTS_H
+#ifndef BUCKETTESTS2_H
+#define BUCKETTESTS2_H
 
 #include "stdafx.h"
 
@@ -23,16 +23,16 @@
 
 using cSide = char;
 
-class BucketTests
+class BucketTests2
 {
 public:
-	BucketTests(std::vector<int> &, std::uniform_int_distribution<> &, std::mt19937 &);
+	BucketTests2(std::vector<int> &, std::uniform_int_distribution<> &, std::mt19937 &);
 	std::mt19937 engine;
 	std::uniform_int_distribution<> distUint;
 	std::uniform_real_distribution<> distUreal;
 	std::vector<int> defaultVec;
-	std::vector<std::shared_ptr<ZITrader>> bucket;
-	std::unordered_map<traderId, std::shared_ptr<ZITrader>> mappedBucket;
+	std::vector<std::shared_ptr<ZITrader>> allTraders;
+	std::unordered_map<traderId, std::shared_ptr<ZITrader>> providerMap;
 	std::unique_ptr<PennyJumper> j1, j2;
 	int setMaxQ(int);
 	void testZITrader();
@@ -47,4 +47,3 @@ public:
 };
 
 #endif
-

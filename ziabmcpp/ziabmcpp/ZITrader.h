@@ -15,7 +15,7 @@
 #include <vector>
 
 using stepset = std::set<Step>;
-struct CFlow { traderId id; Step step; int64_t cashFlow; unsigned position; };
+struct CFlow { traderId id; Step step; int64_t cashFlow; int position; };
 
 
 class ZITrader
@@ -44,7 +44,7 @@ public:
 	Prc price, mpi;
 	double delta;
 	int numQuotes, quoteRange;
-	unsigned position;
+	int position;
 	int64_t cashFlow;
 	stepset steps;
 	std::set<Step>::iterator it;
