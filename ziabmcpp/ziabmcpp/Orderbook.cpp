@@ -9,9 +9,7 @@
 #include "Orderbook.h"
 
 Orderbook::Orderbook() :
-	orderSequence(0)
-{
-}
+	orderSequence(0) { }
 
 void Orderbook::addHistory(Order &q)
 {
@@ -19,22 +17,6 @@ void Orderbook::addHistory(Order &q)
 }
 
 void Orderbook::addBook(traderId tid, Id id, Side side, Prc prc, Qty qty, Step step)
-{
-	auto b = side == Side::BUY ? &bids : &asks;
-	if (b->count(prc) > 0)
-	{
-		b->at(prc).qty += qty;
-		b->at(prc).ocnt++;
-		b->at(prc).quotes.emplace_back(Quote{ tid, id, qty, prc, side, step });
-	}
-	else
-		b->emplace(prc, Level{ qty, 1, Quotes{ Quote{ tid, id, qty, prc, side, step } } });
-	auto l = b->find(prc);
-	auto q = l->second.quotes.begin();
-	lookup[std::make_pair(tid, id)] = std::make_tuple(b, l, q);
-}
-
-void Orderbook::addBook2(traderId tid, Id id, Side side, Prc prc, Qty qty, Step step)
 {
 	auto b = side == Side::BUY ? &bids : &asks;
 	auto l = b->find(prc);
@@ -107,14 +89,14 @@ void Orderbook::process(Order &q)
 			if (q.price >= std::get<0>(ask()))
 				cross2(q);
 			else
-				addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+				addBook(q.id, q.oid, q.side, q.price, q.qty, q.step);
 		}
 		else
 		{
 			if (q.price <= std::get<0>(bid()))
 				cross2(q);
 			else
-				addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+				addBook(q.id, q.oid, q.side, q.price, q.qty, q.step);
 		}
 	}
 	else
@@ -160,7 +142,7 @@ void Orderbook::cross(Order &q)
 				}
 				else
 				{
-					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					addBook(q.id, q.oid, q.side, q.price, q.qty, q.step);
 					break;
 				}
 			}
@@ -201,7 +183,7 @@ void Orderbook::cross(Order &q)
 				}
 				else
 				{
-					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					addBook(q.id, q.oid, q.side, q.price, q.qty, q.step);
 					break;
 				}
 			}
@@ -244,7 +226,7 @@ void Orderbook::cross2(Order &q)
 				}
 				else
 				{
-					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					addBook(q.id, q.oid, q.side, q.price, q.qty, q.step);
 					break;
 				}
 			}
@@ -282,7 +264,7 @@ void Orderbook::cross2(Order &q)
 				}
 				else
 				{
-					addBook2(q.id, q.oid, q.side, q.price, q.qty, q.step);
+					addBook(q.id, q.oid, q.side, q.price, q.qty, q.step);
 					break;
 				}
 			}

@@ -11,7 +11,6 @@
 #include <map>			// std::map
 #include <string>		// std::string
 #include <tuple>        // std::tuple
-#include <unordered_map>        // std::unordered_map
 #include <vector>        // std::vector
 
 struct ExOrder { exId exid; traderId id; Id oid; Step step; char otype; Qty qty; Side side; Prc price; };
@@ -51,7 +50,6 @@ public:
 	void confirmTrade(traderId, Id, Step, Qty, Side, Prc);
 	void confirmModify(traderId, Id, Step, Qty, Side);
 	void addBook(traderId, Id, Side, Prc, Qty, Step);
-	void addBook2(traderId, Id, Side, Prc, Qty, Step);
 	void remove(traderId, Id, Qty);
 	void modify(traderId, Id, Qty);
 	void process(Order &);

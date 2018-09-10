@@ -113,6 +113,7 @@ void Runner::buildInformed()
 //	traderMap[5000] = std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI);
 //	allTraders.push_back(5000);
 	allTraders.emplace_back(std::make_shared<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI));
+	// This needs to be updated to reflect informedTrades/runLength = numChoices
 }
 
 void Runner::buildMarketMakers()
