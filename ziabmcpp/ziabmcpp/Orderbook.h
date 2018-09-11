@@ -38,7 +38,6 @@ public:
 	std::vector<ExOrder> history;
 	std::vector<ExTrade> trades;
 	std::vector<TConfirm> tradeconfirms;
-	std::vector<MConfirm> modifyconfirms;
 	std::vector<TopOfBook> tob;
 
 	BookSide bids, asks;
@@ -48,14 +47,12 @@ public:
 	void addHistory(Order &);
 	void addTrade(traderId, Id, Step, traderId, Id, Step, Qty, Side, Prc);
 	void confirmTrade(traderId, Id, Step, Qty, Side, Prc);
-	void confirmModify(traderId, Id, Step, Qty, Side);
 	void addBook(traderId, Id, Side, Prc, Qty, Step);
 	void remove(traderId, Id, Qty);
 	void modify(traderId, Id, Qty);
 	void process(Order &);
 	void cross(Order &);
 	void cross2(Order &);
-//	std::vector<Execution> cross(Side, Prc, Qty);
 	auto bid();
 	auto ask();
 	std::vector<TopOfBook>::iterator bookTop(Step);

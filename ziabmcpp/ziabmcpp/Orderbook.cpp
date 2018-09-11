@@ -71,17 +71,11 @@ void Orderbook::confirmTrade(traderId restid, Id restoid, Step reststep, Qty qty
 	tradeconfirms.emplace_back(TConfirm{ restid, restoid, reststep, qty, side, price });
 }
 
-void Orderbook::confirmModify(traderId restid, Id restoid, Step reststep, Qty qty, Side side)
-{
-	modifyconfirms.emplace_back(MConfirm{ restid, restoid, reststep, qty, side});
-}
-
 auto Orderbook::bid() { return bids.empty() ? std::make_tuple(Prc(0), Qty(0)) : std::make_tuple(bids.rbegin()->first, bids.rbegin()->second.qty); }
 auto Orderbook::ask() { return asks.empty() ? std::make_tuple(Prc(0), Qty(0)) : std::make_tuple(asks.begin()->first, asks.begin()->second.qty); }
 
 void Orderbook::process(Order &q)
 {
-	modifyconfirms.clear();
 	if (q.otype == 'A')
 	{
 		if (q.side == Side::BUY)
@@ -101,7 +95,6 @@ void Orderbook::process(Order &q)
 	}
 	else
 	{
-		confirmModify(q.id, q.oid, q.step, q.qty, q.side);
 		if (q.otype == 'C')
 			remove(q.id, q.oid, q.qty);
 		else

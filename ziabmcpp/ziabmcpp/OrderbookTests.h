@@ -18,12 +18,11 @@ class OrderbookTests
 public:
 	OrderbookTests() = default;
 	void testExchangeAddHistory();
-	void testExchangeAddBook2();
+	void testExchangeAddBook();
 	void testOrderbookRemove();
 	void testOrderbookModify();
 	void testExchangeAddTrade();
 	void testExchangeConfirmTrade();
-	void testExchangeConfirmModify();
 	void testExchangeBookTop();
 	void testExchangeBookTop2();
 	void testExchangeProcess();

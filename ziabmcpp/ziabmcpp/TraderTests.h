@@ -11,14 +11,14 @@
 
 #include "Sharedstx.h"
 
-#include "ZITrader.h"
-#include "Taker.h"
-#include "Informed.h"
+//#include "ZITrader.h"
+//#include "Taker.h"
+//#include "Informed.h"
 #include "Provider.h"
-#include "Provider5.h"
-#include "MarketMaker.h"
-#include "MarketMaker5.h"
-#include "PennyJumper.h"
+//#include "Provider5.h"
+//#include "MarketMaker.h"
+//#include "MarketMaker5.h"
+//#include "PennyJumper.h"
 
 using cSide = char;
 
@@ -32,14 +32,14 @@ public:
 	std::uniform_int_distribution<> distUint;
 	int seed;
 	int setMaxQ(int);
-	void testZITrader();
-	void testTaker();
-	void testInformed();
+//	void testZITrader();
+//	void testTaker();
+//	void testInformed();
 	void testProvider();
-	void testProvider5();
-	void testMarketMaker();
-	void testMarketMaker5();
-	void testPJ();
+//	void testProvider5();
+//	void testMarketMaker();
+//	void testMarketMaker5();
+//	void testPJ();
 };
 
 #endif

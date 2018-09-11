@@ -38,13 +38,13 @@ void OrderbookTests::testExchangeAddHistory()
 	std::cout << std::endl;
 }
 
-void OrderbookTests::testExchangeAddBook2()
+void OrderbookTests::testExchangeAddBook()
 {
 	Orderbook exchange1 = Orderbook();
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 1);
-	exchange1.addBook2(1001, 2, Side::BUY, 1000, 200, 2);
-	exchange1.addBook2(1001, 3, Side::BUY, 1001, 300, 3);
-	exchange1.addBook2(1001, 4, Side::BUY, 999, 200, 4);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 1);
+	exchange1.addBook(1001, 2, Side::BUY, 1000, 200, 2);
+	exchange1.addBook(1001, 3, Side::BUY, 1001, 300, 3);
+	exchange1.addBook(1001, 4, Side::BUY, 999, 200, 4);
 	std::cout << "Bids:\n";
 	for (auto &x : exchange1.bids)
 	{
@@ -53,10 +53,10 @@ void OrderbookTests::testExchangeAddBook2()
 			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
 	}
 
-	exchange1.addBook2(5001, 1, Side::SELL, 1005, 100, 5);
-	exchange1.addBook2(5001, 2, Side::SELL, 1006, 200, 6);
-	exchange1.addBook2(5001, 3, Side::SELL, 1007, 300, 7);
-	exchange1.addBook2(5001, 4, Side::SELL, 1005, 200, 8);
+	exchange1.addBook(5001, 1, Side::SELL, 1005, 100, 5);
+	exchange1.addBook(5001, 2, Side::SELL, 1006, 200, 6);
+	exchange1.addBook(5001, 3, Side::SELL, 1007, 300, 7);
+	exchange1.addBook(5001, 4, Side::SELL, 1005, 200, 8);
 	std::cout << "Asks:\n";
 	for (auto &x : exchange1.asks)
 	{
@@ -87,15 +87,15 @@ void OrderbookTests::testExchangeAddBook2()
 void OrderbookTests::testOrderbookRemove()
 {
 	Orderbook exchange1 = Orderbook();
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 1);
-	exchange1.addBook2(1001, 2, Side::BUY, 1000, 200, 2);
-	exchange1.addBook2(1001, 3, Side::BUY, 1001, 300, 3);
-	exchange1.addBook2(1001, 4, Side::BUY, 999, 200, 4);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 1);
+	exchange1.addBook(1001, 2, Side::BUY, 1000, 200, 2);
+	exchange1.addBook(1001, 3, Side::BUY, 1001, 300, 3);
+	exchange1.addBook(1001, 4, Side::BUY, 999, 200, 4);
 
-	exchange1.addBook2(5001, 1, Side::SELL, 1005, 100, 5);
-	exchange1.addBook2(5001, 2, Side::SELL, 1006, 200, 6);
-	exchange1.addBook2(5001, 3, Side::SELL, 1007, 300, 7);
-	exchange1.addBook2(5001, 4, Side::SELL, 1005, 200, 8);
+	exchange1.addBook(5001, 1, Side::SELL, 1005, 100, 5);
+	exchange1.addBook(5001, 2, Side::SELL, 1006, 200, 6);
+	exchange1.addBook(5001, 3, Side::SELL, 1007, 300, 7);
+	exchange1.addBook(5001, 4, Side::SELL, 1005, 200, 8);
 
 	traderId tid = 1001;
 	Id oid = 2;
@@ -138,15 +138,15 @@ void OrderbookTests::testOrderbookRemove()
 void OrderbookTests::testOrderbookModify()
 {
 	Orderbook exchange1 = Orderbook();
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 1);
-	exchange1.addBook2(1001, 2, Side::BUY, 1000, 200, 2);
-	exchange1.addBook2(1001, 3, Side::BUY, 1001, 300, 3);
-	exchange1.addBook2(1001, 4, Side::BUY, 999, 200, 4);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 1);
+	exchange1.addBook(1001, 2, Side::BUY, 1000, 200, 2);
+	exchange1.addBook(1001, 3, Side::BUY, 1001, 300, 3);
+	exchange1.addBook(1001, 4, Side::BUY, 999, 200, 4);
 
-	exchange1.addBook2(5001, 1, Side::SELL, 1005, 100, 5);
-	exchange1.addBook2(5001, 2, Side::SELL, 1006, 200, 6);
-	exchange1.addBook2(5001, 3, Side::SELL, 1007, 300, 7);
-	exchange1.addBook2(5001, 4, Side::SELL, 1005, 200, 8);
+	exchange1.addBook(5001, 1, Side::SELL, 1005, 100, 5);
+	exchange1.addBook(5001, 2, Side::SELL, 1006, 200, 6);
+	exchange1.addBook(5001, 3, Side::SELL, 1007, 300, 7);
+	exchange1.addBook(5001, 4, Side::SELL, 1005, 200, 8);
 
 	traderId tid = 5001;
 	Id oid = 2;
@@ -250,42 +250,18 @@ void OrderbookTests::testExchangeConfirmTrade()
 	std::cout << std::endl;
 }
 
-void OrderbookTests::testExchangeConfirmModify()
-{
-	Orderbook exchange1 = Orderbook();
-
-	traderId restid1 = 5002;
-	Id restoid1 = 1206;
-	Step reststep1 = 96587;
-	Qty qty1 = 350;
-	Side side1 = Side::BUY;
-
-	std::cout << "Modify Confirms Before: " << exchange1.modifyconfirms.size() << "\n";
-	exchange1.confirmModify(restid1, restoid1, reststep1, qty1, side1);
-
-	cSide cSide4 = exchange1.modifyconfirms[0].side == Side::BUY ? 'B' : 'S';
-	std::cout << "Modify Confirms After: " << exchange1.modifyconfirms.size() << "\n";
-	std::cout << "First Order: \n";
-	std::cout << "Resting Trader ID: " << exchange1.modifyconfirms[0].restid << "\n";
-	std::cout << "Resting Order ID: " << exchange1.modifyconfirms[0].restoid << "\n";
-	std::cout << "Resting Step: " << exchange1.modifyconfirms[0].reststep << "\n";
-	std::cout << "Quantity: " << exchange1.modifyconfirms[0].qty << "\n";
-	std::cout << "Side: " << cSide4 << "\n";
-	std::cout << std::endl;
-}
-
 void OrderbookTests::testExchangeBookTop()
 {
 	Orderbook exchange1 = Orderbook();
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 1);
-	exchange1.addBook2(1001, 2, Side::BUY, 1000, 200, 2);
-	exchange1.addBook2(1001, 3, Side::BUY, 1001, 300, 3);
-	exchange1.addBook2(1001, 4, Side::BUY, 999, 200, 4);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 1);
+	exchange1.addBook(1001, 2, Side::BUY, 1000, 200, 2);
+	exchange1.addBook(1001, 3, Side::BUY, 1001, 300, 3);
+	exchange1.addBook(1001, 4, Side::BUY, 999, 200, 4);
 
-	exchange1.addBook2(5001, 1, Side::SELL, 1005, 100, 5);
-	exchange1.addBook2(5001, 2, Side::SELL, 1006, 200, 6);
-	exchange1.addBook2(5001, 3, Side::SELL, 1007, 300, 7);
-	exchange1.addBook2(5001, 4, Side::SELL, 1005, 200, 8);
+	exchange1.addBook(5001, 1, Side::SELL, 1005, 100, 5);
+	exchange1.addBook(5001, 2, Side::SELL, 1006, 200, 6);
+	exchange1.addBook(5001, 3, Side::SELL, 1007, 300, 7);
+	exchange1.addBook(5001, 4, Side::SELL, 1005, 200, 8);
 
 	std::vector<TopOfBook>::iterator top;
 	top = exchange1.bookTop(23);
@@ -306,7 +282,7 @@ void OrderbookTests::testExchangeBookTop()
 	std::cout << "Best Ask Size: " << exchange1.tob[0].bestasksz << "\n\n";
 	std::cout << std::endl;
 
-	exchange1.addBook2(5001, 5, Side::SELL, 1004, 600, 9);
+	exchange1.addBook(5001, 5, Side::SELL, 1004, 600, 9);
 	top = exchange1.bookTop(27);
 
 	std::cout << "From returned TopOfBook struct: \n\n";
@@ -329,15 +305,15 @@ void OrderbookTests::testExchangeBookTop()
 void OrderbookTests::testExchangeBookTop2()
 {
 	Orderbook exchange1 = Orderbook();
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 1);
-	exchange1.addBook2(1001, 2, Side::BUY, 1000, 200, 2);
-	exchange1.addBook2(1001, 3, Side::BUY, 1001, 300, 3);
-	exchange1.addBook2(1001, 4, Side::BUY, 999, 200, 4);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 1);
+	exchange1.addBook(1001, 2, Side::BUY, 1000, 200, 2);
+	exchange1.addBook(1001, 3, Side::BUY, 1001, 300, 3);
+	exchange1.addBook(1001, 4, Side::BUY, 999, 200, 4);
 
-	exchange1.addBook2(5001, 1, Side::SELL, 1005, 100, 5);
-	exchange1.addBook2(5001, 2, Side::SELL, 1006, 200, 6);
-	exchange1.addBook2(5001, 3, Side::SELL, 1007, 300, 7);
-	exchange1.addBook2(5001, 4, Side::SELL, 1005, 200, 8);
+	exchange1.addBook(5001, 1, Side::SELL, 1005, 100, 5);
+	exchange1.addBook(5001, 2, Side::SELL, 1006, 200, 6);
+	exchange1.addBook(5001, 3, Side::SELL, 1007, 300, 7);
+	exchange1.addBook(5001, 4, Side::SELL, 1005, 200, 8);
 
 	exchange1.bookTop2(23);
 
@@ -357,7 +333,7 @@ void OrderbookTests::testExchangeBookTop2()
 	std::cout << "Best Ask Size: " << exchange1.tob[0].bestasksz << "\n\n";
 	std::cout << std::endl;
 
-	exchange1.addBook2(5001, 5, Side::SELL, 1004, 600, 9);
+	exchange1.addBook(5001, 5, Side::SELL, 1004, 600, 9);
 	exchange1.bookTop2(27);
 
 	auto &topper = exchange1.tob.back();
@@ -383,8 +359,8 @@ void OrderbookTests::testExchangeProcess()
 {
 	Orderbook exchange1 = Orderbook();
 	//	Prime Book
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
-	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook(1002, 1, Side::SELL, 1005, 100, 0);
 
 	std::cout << "Prime Bid and Ask\n";
 	std::cout << "Bids:\n";
@@ -505,8 +481,8 @@ void OrderbookTests::testExchangeCrossSell1()
 	cSide cSide1;
 	Orderbook exchange1 = Orderbook();
 	//	Prime Book
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
-	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook(1002, 1, Side::SELL, 1005, 100, 0);
 
 	// Add some depth
 	Order o3{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
@@ -664,8 +640,8 @@ void OrderbookTests::testExchangeCrossBuy1()
 	cSide cSide1;
 	Orderbook exchange1 = Orderbook();
 	//	Prime Book
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
-	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook(1002, 1, Side::SELL, 1005, 100, 0);
 
 	// Add some depth
 	Order o3{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
@@ -873,17 +849,17 @@ void OrderbookTests::testExchangeSipToCsv(std::string file1)
 {
 	Orderbook exchange1 = Orderbook();
 
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 1);
-	exchange1.addBook2(1001, 2, Side::BUY, 1000, 200, 2);
-	exchange1.addBook2(1001, 3, Side::BUY, 1001, 300, 3);
-	exchange1.addBook2(1001, 4, Side::BUY, 999, 200, 4);
-	exchange1.addBook2(5001, 1, Side::SELL, 1005, 100, 5);
-	exchange1.addBook2(5001, 2, Side::SELL, 1006, 200, 6);
-	exchange1.addBook2(5001, 3, Side::SELL, 1007, 300, 7);
-	exchange1.addBook2(5001, 4, Side::SELL, 1005, 200, 8);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 1);
+	exchange1.addBook(1001, 2, Side::BUY, 1000, 200, 2);
+	exchange1.addBook(1001, 3, Side::BUY, 1001, 300, 3);
+	exchange1.addBook(1001, 4, Side::BUY, 999, 200, 4);
+	exchange1.addBook(5001, 1, Side::SELL, 1005, 100, 5);
+	exchange1.addBook(5001, 2, Side::SELL, 1006, 200, 6);
+	exchange1.addBook(5001, 3, Side::SELL, 1007, 300, 7);
+	exchange1.addBook(5001, 4, Side::SELL, 1005, 200, 8);
 	exchange1.bookTop2(23);
 
-	exchange1.addBook2(5001, 5, Side::SELL, 1004, 600, 9);
+	exchange1.addBook(5001, 5, Side::SELL, 1004, 600, 9);
 	exchange1.bookTop(27);
 
 	exchange1.sipToCsv(file1);
@@ -894,8 +870,8 @@ void OrderbookTests::testExchangeCrossSell1r()
 	cSide cSide1;
 	Orderbook exchange1 = Orderbook();
 	//	Prime Book
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
-	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook(1002, 1, Side::SELL, 1005, 100, 0);
 
 	// Add some depth
 	Order o3{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
@@ -1053,8 +1029,8 @@ void OrderbookTests::testExchangeCrossBuy1r()
 	cSide cSide1;
 	Orderbook exchange1 = Orderbook();
 	//	Prime Book
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
-	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook(1002, 1, Side::SELL, 1005, 100, 0);
 
 	// Add some depth
 	Order o3{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
@@ -1210,8 +1186,8 @@ void OrderbookTests::testExchangeCrossTime()
 {
 	Orderbook exchange1 = Orderbook();
 	//	Prime Book
-	exchange1.addBook2(1001, 1, Side::BUY, 999, 100, 0);
-	exchange1.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+	exchange1.addBook(1001, 1, Side::BUY, 999, 100, 0);
+	exchange1.addBook(1002, 1, Side::SELL, 1005, 100, 0);
 
 	// Add some depth
 	Order o3{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };
@@ -1248,8 +1224,8 @@ void OrderbookTests::testExchangeCrossTime()
 
 	Orderbook exchange2 = Orderbook();
 	//	Prime Book
-	exchange2.addBook2(1001, 1, Side::BUY, 999, 100, 0);
-	exchange2.addBook2(1002, 1, Side::SELL, 1005, 100, 0);
+	exchange2.addBook(1001, 1, Side::BUY, 999, 100, 0);
+	exchange2.addBook(1002, 1, Side::SELL, 1005, 100, 0);
 
 	// Add some depth
 	Order o15{ 1001, 2, 3, 'A', 100, Side::SELL, 1005 };

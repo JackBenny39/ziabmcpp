@@ -24,10 +24,11 @@
 
 #include "TraderTests.h"
 #include "OrderbookTests.h"
+/*
 #include "BucketTests2.h"
 #include "BucketTests.h"
 #include "RunnerTests.h"
-/*
+
 #include "ZITrader.h"
 #include "Taker.h"
 #include "Informed.h"
@@ -41,12 +42,12 @@
 
 using cSide = char;
 
-//std::random_device random_device;
-//std::mt19937 engine{ random_device() };
-//std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
+std::random_device random_device;
+std::mt19937 engine{ random_device() };
+std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
 //std::uniform_real_distribution<> distUreal(0, 1);
 //std::exponential_distribution<double> distExp(1.0);
-//std::uniform_int_distribution<> distA(1, 100000);
+std::uniform_int_distribution<> distA(1, 100000);
 
 /*
 double buySellP()
@@ -210,9 +211,9 @@ void testBucket()
 
 int main()
 {
-//	engine.seed(39);
+	engine.seed(39);
 
-//	TraderTests tTests(defaultVec, distA, engine);
+	TraderTests tTests(defaultVec, distA, engine);
 //	tTests.testZITrader();
 //	tTests.testTaker();
 //	tTests.testInformed();
@@ -223,22 +224,21 @@ int main()
 //	engine.seed(44); 
 //	tTests.testPJ();
 
-//	OrderbookTests bTests;
-//	std::string file1;
+	OrderbookTests bTests;
+	std::string file1;
 
 //	bTests.testExchangeAddHistory();
-//	bTests.testExchangeAddBook2();
+//	bTests.testExchangeAddBook();
 //	bTests.testOrderbookRemove();
 //	bTests.testOrderbookModify();
 //	bTests.testExchangeAddTrade();
 //	bTests.testExchangeConfirmTrade();
-//	bTests.testExchangeConfirmModify();
 //	bTests.testExchangeBookTop();
 //	bTests.testExchangeBookTop2();
 //	bTests.testExchangeProcess();
 //	bTests.testExchangeCrossCrash();
 //	bTests.testExchangeCrossSell1();
-//	bTests.testExchangeCrossBuy1();
+	bTests.testExchangeCrossBuy1();
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\history_1.csv";
 //	bTests.testExchangeOrdersToCsv(file1);
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\trades_1.csv";
@@ -271,7 +271,7 @@ int main()
 //	kTests.testPJ();
 //	kTests.testShuffle();
 
-	RunnerTests rTests;
+//	RunnerTests rTests;
 //	rTests.testConstructor();
 //	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
@@ -288,7 +288,7 @@ int main()
 //	rTests.testMakeSetup();
 //	rTests.testDoCancels();
 //	rTests.testDoTrades();
-	rTests.testRun();
+//	rTests.testRun();
 
 //	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
