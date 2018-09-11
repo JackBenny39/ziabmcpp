@@ -15,7 +15,7 @@
 //#include "Taker.h"
 //#include "Informed.h"
 #include "Provider.h"
-//#include "Provider5.h"
+#include "Provider5.h"
 //#include "MarketMaker.h"
 //#include "MarketMaker5.h"
 //#include "PennyJumper.h"
@@ -36,7 +36,7 @@ public:
 //	void testTaker();
 //	void testInformed();
 	void testProvider();
-//	void testProvider5();
+	void testProvider5();
 //	void testMarketMaker();
 //	void testMarketMaker5();
 //	void testPJ();

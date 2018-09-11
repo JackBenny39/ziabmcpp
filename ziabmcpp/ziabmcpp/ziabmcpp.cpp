@@ -45,21 +45,21 @@ using cSide = char;
 std::random_device random_device;
 std::mt19937 engine{ random_device() };
 std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
-//std::uniform_real_distribution<> distUreal(0, 1);
+std::uniform_real_distribution<> distUreal(0, 1);
 //std::exponential_distribution<double> distExp(1.0);
 std::uniform_int_distribution<> distA(1, 100000);
-
-/*
-double buySellP()
-{
-	return distUreal(engine);
-}
 
 void simpleTest(std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
 	for (int i = 1; i != 21; ++i)
 		std::cout << dist(engine) << "\n";
 	std::cout << std::endl;
+}
+
+/*
+double buySellP()
+{
+	return distUreal(engine);
 }
 
 void testExp()
@@ -213,7 +213,7 @@ int main()
 {
 	engine.seed(39);
 
-	TraderTests tTests(defaultVec, distA, engine);
+//	TraderTests tTests(defaultVec, distA, engine);
 //	tTests.testZITrader();
 //	tTests.testTaker();
 //	tTests.testInformed();
@@ -224,8 +224,8 @@ int main()
 //	engine.seed(44); 
 //	tTests.testPJ();
 
-	OrderbookTests bTests;
-	std::string file1;
+//	OrderbookTests bTests;
+//	std::string file1;
 
 //	bTests.testExchangeAddHistory();
 //	bTests.testExchangeAddBook();
@@ -238,7 +238,7 @@ int main()
 //	bTests.testExchangeProcess();
 //	bTests.testExchangeCrossCrash();
 //	bTests.testExchangeCrossSell1();
-	bTests.testExchangeCrossBuy1();
+//	bTests.testExchangeCrossBuy1();
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\history_1.csv";
 //	bTests.testExchangeOrdersToCsv(file1);
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\trades_1.csv";
@@ -290,7 +290,7 @@ int main()
 //	rTests.testDoTrades();
 //	rTests.testRun();
 
-//	simpleTest(engine, distUreal);
+	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
 //	testMM5PS();
 //	testInformedSteps();
