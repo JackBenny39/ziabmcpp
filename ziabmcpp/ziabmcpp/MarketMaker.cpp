@@ -3,12 +3,10 @@
 
 #include "stdafx.h"
 
-#include <iostream> 
-
 #include "MarketMaker.h"
 
 MarketMaker::MarketMaker(const Step arr, const int tnum, const int maxq, const double dlt, const int qRange, const int numQ)
-	: arrInt(arr), tId(tnum), orderSize(maxq), delta(dlt), mpi(mpi), quoteRange(qRange), numQuotes(numQ + 1), position(0), cashFlow(0), quoteSequence(0) { traderType = 'M'; }
+	: arrInt(arr), tId(tnum), orderSize(maxq), delta(dlt), quoteRange(qRange), numQuotes(numQ + 1), position(0), cashFlow(0), quoteSequence(0) { traderType = 'M'; }
 
 Order MarketMaker::makeCancelQuote(Order &q, Step timestamp)
 {

@@ -9,11 +9,11 @@
 
 #include "Sharedstx.h"
 
+#include <cstdint>
 #include <random>
 #include <unordered_map>
 #include <vector>
 
-struct CFlow { traderId id; Step step; int64_t cashFlow; int position; };
 
 class MarketMaker
 {
@@ -24,7 +24,6 @@ public:
 	traderId tId;
 	Qty orderSize;
 	char traderType;
-	Prc mpi;
 	double delta;
 	int numQuotes, quoteRange, position;
 	int64_t cashFlow;

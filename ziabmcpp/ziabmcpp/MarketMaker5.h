@@ -7,15 +7,39 @@
 
 #include "stdafx.h"
 
+#include "Sharedstx.h"
+
+#include <cstdint>
+#include <random>
+#include <unordered_map>
 #include <vector>
 
-#include "MarketMaker.h"
 
-class MarketMaker5 : public MarketMaker
+class MarketMaker5
 {
 public:
 	MarketMaker5(const Step, const int, const int, const double, const int, const int);
-	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &) override;
+
+	Step arrInt;
+	traderId tId;
+	Qty orderSize;
+	char traderType;
+	double delta;
+	int numQuotes, quoteRange, position;
+	int64_t cashFlow;
+
+	Order makeCancelQuote(Order &, Step);
+	void confirmTrade(TConfirm &);
+	void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
+	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
+
+	std::unordered_map<Id, Order> localBook;
+	std::vector<CFlow> cashFlowCollector;
+	std::vector<Order> cancelCollector;
+	std::vector<Order> quoteCollector;
+
+private:
+	Id quoteSequence;
 };
 
 #endif

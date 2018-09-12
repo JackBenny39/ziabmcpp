@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MarketMaker.h" />
+    <ClInclude Include="MarketMaker5.h" />
     <ClInclude Include="Orderbook.h" />
     <ClInclude Include="OrderbookTests.h" />
     <ClInclude Include="Provider.h" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MarketMaker.cpp" />
+    <ClCompile Include="MarketMaker5.cpp" />
     <ClCompile Include="Orderbook.cpp" />
     <ClCompile Include="OrderbookTests.cpp" />
     <ClCompile Include="Provider.cpp" />

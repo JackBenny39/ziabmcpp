@@ -28,16 +28,6 @@
 #include "BucketTests2.h"
 #include "BucketTests.h"
 #include "RunnerTests.h"
-
-#include "ZITrader.h"
-#include "Taker.h"
-#include "Informed.h"
-#include "Provider.h"
-#include "Provider5.h"
-#include "MarketMaker.h"
-#include "MarketMaker5.h"
-#include "PennyJumper.h"
-#include "Orderbook.h"
 */
 
 using cSide = char;
@@ -219,8 +209,8 @@ int main()
 //	tTests.testInformed();
 //	tTests.testProvider();
 //	tTests.testProvider5();
-	tTests.testMarketMaker();
-//	tTests.testMarketMaker5();
+//	tTests.testMarketMaker();
+	tTests.testMarketMaker5();
 //	engine.seed(44); 
 //	tTests.testPJ();
 
