@@ -23,16 +23,11 @@ class ZITrader
 public:
 	ZITrader(const Step, const int, const int, const Prc); // ZITrader, Taker, PennyJumper
 	ZITrader(const int, const int, Side, const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &); //Informed
-	ZITrader(const Step, const int, const int, const double, const Prc); // Provider, Provider5
-	ZITrader(const Step, const int, const int, const double, const int, const int); // Provider, MarketMaker, MarketMaker5
 
 	virtual void processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 	virtual void processSignal(Step);
-	virtual void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
-	virtual void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 
 	virtual void confirmTrade(TConfirm &);
-	virtual Prc chooseP(Side, Prc, double, std::mt19937 &, std::uniform_real_distribution<> &);
 
 	virtual ~ZITrader() = default;
 
@@ -51,7 +46,6 @@ public:
 	Order makeAddQuote(Step, Side, Prc);
 	Order makeCancelQuote(Order &, Step);
 	void confirmCancel(Id);
-	void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
 	void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
 	std::vector<Order> quoteCollector;
 	std::unordered_map<Id, Order> localBook;

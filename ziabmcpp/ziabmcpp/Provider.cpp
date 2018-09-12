@@ -40,9 +40,13 @@ Order Provider::processSignal(TopOfBook &tob, Step step, double qProvide, double
 {
 	++quoteSequence;
 	if (dist(engine) < qProvide)
+	{
 		return localBook.emplace(quoteSequence, Order{ tId, quoteSequence, step, 'A', orderSize, Side::BUY, chooseP(Side::BUY, tob.bestask, lambdaT, engine, dist) }).first->second;
+	}
 	else
-		return localBook.emplace(quoteSequence, Order{ tId, quoteSequence, step, 'A', orderSize, Side::SELL, chooseP(Side::SELL, tob.bestask, lambdaT, engine, dist) }).first->second;
+	{
+		return localBook.emplace(quoteSequence, Order{ tId, quoteSequence, step, 'A', orderSize, Side::SELL, chooseP(Side::SELL, tob.bestbid, lambdaT, engine, dist) }).first->second;
+	}
 }
 
 Prc Provider::chooseP(Side side, Prc inside, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)

@@ -20,7 +20,7 @@ int TraderTests::setMaxQ(int maxq)
 	std::uniform_int_distribution<int> distUintV(0, actualVec.size() - 1);
 	return actualVec[distUintV(engine)];
 }
-
+/*
 void TraderTests::testProvider()
 {
 	cSide cSide1;
@@ -316,6 +316,82 @@ void TraderTests::testProvider5()
 
 	std::cout << std::endl;
 }
+*/
+void TraderTests::testMarketMaker()
+{
+	cSide cSide1;
+	MarketMaker m1(1, 3001, setMaxQ(50), 0.05, 60, 12);
+
+	// Test constructor
+	std::cout << "Trader Type: " << m1.traderType << "\n";
+	std::cout << "Max Quantity: " << m1.orderSize << "\n";
+	std::cout << "Trader ID: " << m1.tId << "\n";
+	std::cout << "Delta: " << m1.delta << "\n";
+	std::cout << "Quote Interval: " << m1.quoteRange << "\n";
+	std::cout << "Number of Quotes: " << m1.numQuotes << "\n";
+	std::cout << "Quote Collector Before: " << m1.quoteCollector.size() << "\n";
+
+	// Test confirmTrade
+	std::cout << "\n\nBefore Trade Confirm:" << "\n";
+	std::cout << "Cash Flow Before: " << m1.cashFlow << "\n";
+	std::cout << "Position Before: " << m1.position << "\n";
+	TConfirm t1{ 7001, 4, 89, 30, Side::BUY, 962 };
+	m1.confirmTrade(t1);
+	std::cout << "\nAfter Trade Confirm 1:" << "\n";
+	std::cout << "Cash Flow After 1: " << m1.cashFlow << "\n";
+	std::cout << "Position After 1: " << m1.position << "\n";
+	TConfirm t2{ 7001, 7, 95, 30, Side::SELL, 963 };
+	m1.confirmTrade(t2);
+	std::cout << "\nAfter Trade Confirm 2:" << "\n";
+	std::cout << "Cash Flow After 2: " << m1.cashFlow << "\n";
+	std::cout << "Position After 2: " << m1.position << "\n";
+
+	// Test processSignal
+	Step step1;
+	TopOfBook tob;
+
+	step1 = 27;
+	tob = { step1, 995, 1, 1010, 1 };
+	m1.localBook.clear();
+	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	std::cout << "Quote Collector: \n";
+	for (auto& x : m1.quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	m1.quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
+	std::cout << "Local Book: \n";
+	for (auto& x : m1.localBook)
+	{
+		cSide1 = x.second.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << " : " << x.first << " : " << x.second.oid << "\n";
+	}
+
+	step1 = 35;
+	tob = { step1, 995, 1, 1010, 1 };
+	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	std::cout << "\n\nProcess signal: \n";
+	std::cout << "Quote Collector: \n";
+	for (auto& x : m1.quoteCollector)
+	{
+		cSide1 = x.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << ":" << x.price << "\n";
+	}
+	m1.quoteCollector.clear();
+	std::cout << "Quote Collector After Clear: " << m1.quoteCollector.size() << "\n";
+	std::cout << "Local Book: \n";
+	for (auto& x : m1.localBook)
+	{
+		cSide1 = x.second.side == Side::BUY ? 'B' : 'S';
+		std::cout << cSide1 << " : " << x.first << " : " << x.second.oid << "\n";
+	}
+
+	std::cout << std::endl;
+}
+
 /*
 void TraderTests::testZITrader()
 {

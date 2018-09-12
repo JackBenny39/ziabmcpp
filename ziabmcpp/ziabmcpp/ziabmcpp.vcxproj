@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="MarketMaker.h" />
     <ClInclude Include="Orderbook.h" />
     <ClInclude Include="OrderbookTests.h" />
     <ClInclude Include="Provider.h" />
@@ -155,9 +156,9 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TraderTests.h" />
-    <ClInclude Include="ZITrader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MarketMaker.cpp" />
     <ClCompile Include="Orderbook.cpp" />
     <ClCompile Include="OrderbookTests.cpp" />
     <ClCompile Include="Provider.cpp" />
@@ -170,7 +171,6 @@
     </ClCompile>
     <ClCompile Include="TraderTests.cpp" />
     <ClCompile Include="ziabmcpp.cpp" />
-    <ClCompile Include="ZITrader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

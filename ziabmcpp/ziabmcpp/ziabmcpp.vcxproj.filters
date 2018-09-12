@@ -27,16 +27,16 @@
     <ClInclude Include="Sharedstx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Provider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TraderTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OrderbookTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ZITrader.h">
+    <ClInclude Include="MarketMaker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Provider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Provider5.h">
@@ -53,16 +53,16 @@
     <ClCompile Include="Orderbook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Provider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TraderTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OrderbookTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ZITrader.cpp">
+    <ClCompile Include="MarketMaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Provider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Provider5.cpp">

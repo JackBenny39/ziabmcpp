@@ -45,7 +45,7 @@ using cSide = char;
 std::random_device random_device;
 std::mt19937 engine{ random_device() };
 std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
-std::uniform_real_distribution<> distUreal(0, 1);
+//std::uniform_real_distribution<> distUreal(0, 1);
 //std::exponential_distribution<double> distExp(1.0);
 std::uniform_int_distribution<> distA(1, 100000);
 
@@ -211,15 +211,15 @@ void testBucket()
 
 int main()
 {
-	engine.seed(39);
+	engine.seed(504);
 
-//	TraderTests tTests(defaultVec, distA, engine);
+	TraderTests tTests(defaultVec, distA, engine);
 //	tTests.testZITrader();
 //	tTests.testTaker();
 //	tTests.testInformed();
 //	tTests.testProvider();
 //	tTests.testProvider5();
-//	tTests.testMarketMaker();
+	tTests.testMarketMaker();
 //	tTests.testMarketMaker5();
 //	engine.seed(44); 
 //	tTests.testPJ();
@@ -290,7 +290,7 @@ int main()
 //	rTests.testDoTrades();
 //	rTests.testRun();
 
-	simpleTest(engine, distUreal);
+//	simpleTest(engine, distUreal);
 //	simpleTest(engine, distUreal);
 //	testMM5PS();
 //	testInformedSteps();

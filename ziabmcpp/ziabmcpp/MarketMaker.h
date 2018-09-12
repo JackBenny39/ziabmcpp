@@ -7,14 +7,40 @@
 
 #include "stdafx.h"
 
-#include "Provider.h"
+#include "Sharedstx.h"
 
-class MarketMaker : public Provider
+#include <random>
+#include <unordered_map>
+#include <vector>
+
+struct CFlow { traderId id; Step step; int64_t cashFlow; int position; };
+
+class MarketMaker
 {
 public:
 	MarketMaker(const Step, const int, const int, const double, const int, const int);
-	void confirmTrade(TConfirm &) override;
-	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &) override;
+
+	Step arrInt;
+	traderId tId;
+	Qty orderSize;
+	char traderType;
+	Prc mpi;
+	double delta;
+	int numQuotes, quoteRange, position;
+	int64_t cashFlow;
+
+	Order makeCancelQuote(Order &, Step);
+	void confirmTrade(TConfirm &);
+	void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
+	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
+
+	std::unordered_map<Id, Order> localBook;
+	std::vector<CFlow> cashFlowCollector;
+	std::vector<Order> cancelCollector;
+	std::vector<Order> quoteCollector;
+
+private:
+	Id quoteSequence;
 };
 
 #endif

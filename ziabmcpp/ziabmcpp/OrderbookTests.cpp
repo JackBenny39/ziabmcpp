@@ -7,7 +7,6 @@
 #include <iostream>
 
 #include "OrderbookTests.h"
-#include "ZITrader.h"
 
 using namespace std::chrono;
 
@@ -15,13 +14,16 @@ using namespace std::chrono;
 void OrderbookTests::testExchangeAddHistory()
 {
 	Orderbook exchange1 = Orderbook();
-	ZITrader z1(7, 1, 10, 1);
 
+	traderId tid = 1;
+	Id oid = 1;
 	Step step1 = 23;
+	char otype = 'A';
+	Qty qty = 1;
 	Side side1 = Side::SELL;
 	Prc price1 = 1099;
 
-	Order q1 = z1.makeAddQuote(step1, side1, price1);
+	Order q1 = Order{ tid, oid, step1, otype, qty, side1, price1 };
 	std::cout << "Order Collector Before: " << exchange1.history.size() << "\n";
 	exchange1.addHistory(q1);
 	cSide cSide4 = exchange1.history[0].side == Side::BUY ? 'B' : 'S';

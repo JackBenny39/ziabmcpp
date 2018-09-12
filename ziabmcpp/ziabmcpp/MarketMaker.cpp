@@ -3,10 +3,17 @@
 
 #include "stdafx.h"
 
+#include <iostream> 
+
 #include "MarketMaker.h"
 
-MarketMaker::MarketMaker(const Step arr, const int tnum, const int maxq, const double delta, const int qRange, const int numQ)
-	: Provider(arr, tnum, maxq, delta, qRange, numQ) { traderType = 'M'; }
+MarketMaker::MarketMaker(const Step arr, const int tnum, const int maxq, const double dlt, const int qRange, const int numQ)
+	: arrInt(arr), tId(tnum), orderSize(maxq), delta(dlt), mpi(mpi), quoteRange(qRange), numQuotes(numQ + 1), position(0), cashFlow(0), quoteSequence(0) { traderType = 'M'; }
+
+Order MarketMaker::makeCancelQuote(Order &q, Step timestamp)
+{
+	return Order{ q.id, q.oid, timestamp, 'C', q.qty, q.side, q.price };
+}
 
 void MarketMaker::confirmTrade(TConfirm &c)
 {
@@ -21,16 +28,29 @@ void MarketMaker::confirmTrade(TConfirm &c)
 		position -= c.qty;
 	}
 	if (c.qty == localBook[c.restoid].qty)
-		confirmCancel(c.restoid);
+		localBook.erase(c.restoid);
 	else
 		localBook[c.restoid].qty -= c.qty;
 	cashFlowCollector.emplace_back(CFlow{ tId, c.reststep, cashFlow, position });
 }
 
+void MarketMaker::bulkCancel(Step step, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
+{
+	cancelCollector.clear();
+	for (auto &x : localBook)
+	{
+		if (dist(engine) < delta)
+			cancelCollector.emplace_back(makeCancelQuote(x.second, step));
+	}
+	for (auto &x : cancelCollector)
+	{
+		localBook.erase(x.oid);
+	}
+}
+
 void MarketMaker::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
 	Prc maxBid, minAsk;
-	Order q;
 	quoteCollector.clear();
 	if (dist(engine) < qProvide)
 	{
@@ -38,9 +58,8 @@ void MarketMaker::processSignal(TopOfBook &tob, Step step, double qProvide, doub
 		std::uniform_int_distribution<Prc> distU(maxBid - quoteRange + 1, maxBid);
 		for (int i = 1; i < numQuotes; i++)
 		{
-			q = makeAddQuote(step, Side::BUY, distU(engine));
-			quoteCollector.push_back(q);
-			localBook[q.oid] = q;
+			++quoteSequence;
+			quoteCollector.push_back(localBook.emplace(quoteSequence, Order{ tId, quoteSequence, step, 'A', orderSize, Side::BUY, distU(engine) }).first->second);
 		}
 	}
 	else
@@ -49,9 +68,8 @@ void MarketMaker::processSignal(TopOfBook &tob, Step step, double qProvide, doub
 		std::uniform_int_distribution<Prc> distU(minAsk, minAsk + quoteRange - 1);
 		for (int i = 1; i < numQuotes; i++)
 		{
-			q = makeAddQuote(step, Side::SELL, distU(engine));
-			quoteCollector.push_back(q);
-			localBook[q.oid] = q;
+			++quoteSequence;
+			quoteCollector.push_back(localBook.emplace(quoteSequence, Order{ tId, quoteSequence, step, 'A', orderSize, Side::SELL, distU(engine) }).first->second);
 		}
 	}
 }
