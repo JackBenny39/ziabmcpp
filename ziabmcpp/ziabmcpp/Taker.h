@@ -7,13 +7,24 @@
 
 #include "stdafx.h"
 
-#include "ZITrader.h"
+#include "Sharedstx.h"
 
-class Taker : public ZITrader
+#include <random>
+
+class Taker
 {
 public:
-	Taker(const Step, const int, const int, const Prc);
-	void processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &) override;
+	Taker(const Step, const int, const int);
+
+	Step arrInt;
+	traderId tId;
+	Qty orderSize;
+	char traderType;
+
+	Order processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
+
+private:
+	Id quoteSequence;
 };
 
 #endif

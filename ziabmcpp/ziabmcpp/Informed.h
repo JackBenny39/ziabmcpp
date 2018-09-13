@@ -7,13 +7,32 @@
 
 #include "stdafx.h"
 
-#include "ZITrader.h"
+#include "Sharedstx.h"
 
-class Informed : public ZITrader
+#include <random>
+#include <set>
+
+using stepset = std::set<Step>;
+
+class Informed
 {
 public:
 	Informed(const int, const int, Side, const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
-	void processSignal(Step) override;
+
+	Step arrInt;
+	traderId tId;
+	Qty orderSize;
+	char traderType;
+	Side side; // must precede price
+	Prc price;
+	stepset steps;
+	std::set<Step>::iterator it;
+
+	void makeSteps(const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
+	Order processSignal(Step);
+
+private:
+	Id quoteSequence;
 };
 
 #endif

@@ -37,7 +37,7 @@ std::mt19937 engine{ random_device() };
 std::vector<int> defaultVec = { 1, 5, 10, 25, 50 };
 //std::uniform_real_distribution<> distUreal(0, 1);
 //std::exponential_distribution<double> distExp(1.0);
-std::uniform_int_distribution<> distA(1, 100000);
+std::uniform_int_distribution<> distA(20, 100000); // should run from prime to end
 
 void simpleTest(std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
@@ -204,13 +204,12 @@ int main()
 	engine.seed(504);
 
 	TraderTests tTests(defaultVec, distA, engine);
-//	tTests.testZITrader();
 //	tTests.testTaker();
-//	tTests.testInformed();
+	tTests.testInformed();
 //	tTests.testProvider();
 //	tTests.testProvider5();
 //	tTests.testMarketMaker();
-	tTests.testMarketMaker5();
+//	tTests.testMarketMaker5();
 //	engine.seed(44); 
 //	tTests.testPJ();
 

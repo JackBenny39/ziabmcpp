@@ -45,6 +45,12 @@
     <ClInclude Include="MarketMaker5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Taker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Informed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -72,6 +78,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MarketMaker5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Taker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Informed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
