@@ -51,6 +51,9 @@
     <ClInclude Include="Informed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PennyJumper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Informed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyJumper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

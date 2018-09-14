@@ -7,14 +7,27 @@
 
 #include "stdafx.h"
 
-#include "ZITrader.h"
+#include "Sharedstx.h"
 
-class PennyJumper : public ZITrader
+#include <random>
+
+class PennyJumper
 {
 public:
-	PennyJumper(const Step, const int, const int, const Prc);
-	void confirmTrade(TConfirm &) override;
-	void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &) override;
+	PennyJumper(const int, const int, const Prc);
+
+	traderId tId;
+	Qty orderSize;
+	char traderType;
+	Prc mpi;
+
+	Order makeCancelQuote(Order &, Step);
+	void confirmTrade(TConfirm &);
+	void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
+
+	std::vector<Order> quoteCollector, cancelCollector, askBook, bidBook;
+private:
+	Id quoteSequence;
 };
 
 #endif

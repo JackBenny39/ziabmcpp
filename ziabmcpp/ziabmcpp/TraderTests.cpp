@@ -578,14 +578,14 @@ void TraderTests::testInformed()
 	std::cout << std::endl;
 }
 
-/*
+
 void TraderTests::testPJ()
 {
 	engine.seed(44);
 
 	TopOfBook tob;
 	cSide cSide1;
-	PennyJumper j1(1, 1, setMaxQ(50), 1);
+	PennyJumper j1(4001, setMaxQ(50), 1);
 	std::cout << "Trader Type: " << j1.traderType << "\n";
 	std::cout << "Max Quantity: " << j1.orderSize << "\n";
 	std::cout << "Trader ID: " << j1.tId << "\n";
@@ -594,6 +594,7 @@ void TraderTests::testPJ()
 
 	// seed == 17 generates first > 0.5 and second < 0.5
 	engine.seed(17);
+
 
 	// Spread > mpi
 	std::cout << "\nQuote books should be empty" << "\n";
@@ -629,10 +630,9 @@ void TraderTests::testPJ()
 	// PJ behind the best prices: cancels then jumps bid and ask by 1
 	engine.seed(17);
 	tob = { 27, 1001, 5, 1006, 5 };
-	j1.processSignal(tob, 28, 0.5, engine, distUreal);
-	j1.processSignal(tob, 29, 0.5, engine, distUreal);
 
-	std::cout << "\nPJ Cancels Old Quotes" << "\n";
+	j1.processSignal(tob, 28, 0.5, engine, distUreal);
+	std::cout << "\nPJ Cancels Old Bid Quote" << "\n";
 	cSide1 = j1.cancelCollector[0].side == Side::BUY ? 'B' : 'S';
 	std::cout << "Cancel Bid Quote 1000: \n";
 	std::cout << "Trader ID: " << j1.cancelCollector[0].id << "\n";
@@ -642,26 +642,7 @@ void TraderTests::testPJ()
 	std::cout << "Quantity: " << j1.cancelCollector[0].qty << "\n";
 	std::cout << "Side: " << cSide1 << "\n";
 	std::cout << "Price: " << j1.cancelCollector[0].price << "\n";
-	cSide1 = j1.cancelCollector[1].side == Side::BUY ? 'B' : 'S';
-	std::cout << "Cancel Ask Quote 1007: \n";
-	std::cout << "Trader ID: " << j1.cancelCollector[1].id << "\n";
-	std::cout << "Order ID: " << j1.cancelCollector[1].oid << "\n";
-	std::cout << "Timestamp: " << j1.cancelCollector[1].step << "\n";
-	std::cout << "Type: " << j1.cancelCollector[1].otype << "\n";
-	std::cout << "Quantity: " << j1.bidBook[0].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << j1.cancelCollector[1].price << "\n";
-
-	std::cout << "\nPJ takes the inside" << "\n";
-	cSide1 = j1.askBook[0].side == Side::BUY ? 'B' : 'S';
-	std::cout << "Ask Quote 1005: \n";
-	std::cout << "Trader ID: " << j1.askBook[0].id << "\n";
-	std::cout << "Order ID: " << j1.askBook[0].oid << "\n";
-	std::cout << "Timestamp: " << j1.askBook[0].step << "\n";
-	std::cout << "Type: " << j1.askBook[0].otype << "\n";
-	std::cout << "Quantity: " << j1.askBook[0].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << j1.askBook[0].price << "\n";
+	std::cout << "\nPJ takes the inside bid" << "\n";
 	cSide1 = j1.bidBook[0].side == Side::BUY ? 'B' : 'S';
 	std::cout << "Bid Quote 1002: \n";
 	std::cout << "Trader ID: " << j1.bidBook[0].id << "\n";
@@ -671,6 +652,28 @@ void TraderTests::testPJ()
 	std::cout << "Quantity: " << j1.bidBook[0].qty << "\n";
 	std::cout << "Side: " << cSide1 << "\n";
 	std::cout << "Price: " << j1.bidBook[0].price << "\n";
+
+	j1.processSignal(tob, 29, 0.5, engine, distUreal);
+	std::cout << "\nPJ Cancels Old Ask Quote" << "\n";
+	cSide1 = j1.cancelCollector[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Cancel Ask Quote 1007: \n";
+	std::cout << "Trader ID: " << j1.cancelCollector[0].id << "\n";
+	std::cout << "Order ID: " << j1.cancelCollector[0].oid << "\n";
+	std::cout << "Timestamp: " << j1.cancelCollector[0].step << "\n";
+	std::cout << "Type: " << j1.cancelCollector[0].otype << "\n";
+	std::cout << "Quantity: " << j1.cancelCollector[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << j1.cancelCollector[0].price << "\n";
+	std::cout << "\nPJ takes the inside ask" << "\n";
+	cSide1 = j1.askBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Ask Quote 1005: \n";
+	std::cout << "Trader ID: " << j1.askBook[0].id << "\n";
+	std::cout << "Order ID: " << j1.askBook[0].oid << "\n";
+	std::cout << "Timestamp: " << j1.askBook[0].step << "\n";
+	std::cout << "Type: " << j1.askBook[0].otype << "\n";
+	std::cout << "Quantity: " << j1.askBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << j1.askBook[0].price << "\n";
 	j1.cancelCollector.clear();
 
 	// PJ alone at the inside: nothing happens
@@ -705,10 +708,9 @@ void TraderTests::testPJ()
 	// PJ not alone at inside: cancels then jumps bid and ask by 1
 	engine.seed(17);
 	tob = { 27, 1002, 20, 1005, 20 };
-	j1.processSignal(tob, 28, 0.5, engine, distUreal);
-	j1.processSignal(tob, 29, 0.5, engine, distUreal);
 
-	std::cout << "\nPJ Cancels Old Quotes" << "\n";
+	j1.processSignal(tob, 28, 0.5, engine, distUreal);
+	std::cout << "\nPJ Cancels Old Bid" << "\n";
 	cSide1 = j1.cancelCollector[0].side == Side::BUY ? 'B' : 'S';
 	std::cout << "Cancel Bid Quote 1002: \n";
 	std::cout << "Trader ID: " << j1.cancelCollector[0].id << "\n";
@@ -718,26 +720,7 @@ void TraderTests::testPJ()
 	std::cout << "Quantity: " << j1.cancelCollector[0].qty << "\n";
 	std::cout << "Side: " << cSide1 << "\n";
 	std::cout << "Price: " << j1.cancelCollector[0].price << "\n";
-	cSide1 = j1.cancelCollector[1].side == Side::BUY ? 'B' : 'S';
-	std::cout << "Cancel Ask Quote 1005: \n";
-	std::cout << "Trader ID: " << j1.cancelCollector[1].id << "\n";
-	std::cout << "Order ID: " << j1.cancelCollector[1].oid << "\n";
-	std::cout << "Timestamp: " << j1.cancelCollector[1].step << "\n";
-	std::cout << "Type: " << j1.cancelCollector[1].otype << "\n";
-	std::cout << "Quantity: " << j1.bidBook[0].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << j1.cancelCollector[1].price << "\n";
-
-	std::cout << "\nPJ takes the inside" << "\n";
-	cSide1 = j1.askBook[0].side == Side::BUY ? 'B' : 'S';
-	std::cout << "Ask Quote 1004: \n";
-	std::cout << "Trader ID: " << j1.askBook[0].id << "\n";
-	std::cout << "Order ID: " << j1.askBook[0].oid << "\n";
-	std::cout << "Timestamp: " << j1.askBook[0].step << "\n";
-	std::cout << "Type: " << j1.askBook[0].otype << "\n";
-	std::cout << "Quantity: " << j1.askBook[0].qty << "\n";
-	std::cout << "Side: " << cSide1 << "\n";
-	std::cout << "Price: " << j1.askBook[0].price << "\n";
+	std::cout << "\nPJ takes the inside bid" << "\n";
 	cSide1 = j1.bidBook[0].side == Side::BUY ? 'B' : 'S';
 	std::cout << "Bid Quote 1003: \n";
 	std::cout << "Trader ID: " << j1.bidBook[0].id << "\n";
@@ -747,6 +730,28 @@ void TraderTests::testPJ()
 	std::cout << "Quantity: " << j1.bidBook[0].qty << "\n";
 	std::cout << "Side: " << cSide1 << "\n";
 	std::cout << "Price: " << j1.bidBook[0].price << "\n";
+
+	j1.processSignal(tob, 29, 0.5, engine, distUreal);
+	std::cout << "\nPJ Cancels Old Ask" << "\n";
+	cSide1 = j1.cancelCollector[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Cancel Ask Quote 1005: \n";
+	std::cout << "Trader ID: " << j1.cancelCollector[0].id << "\n";
+	std::cout << "Order ID: " << j1.cancelCollector[0].oid << "\n";
+	std::cout << "Timestamp: " << j1.cancelCollector[0].step << "\n";
+	std::cout << "Type: " << j1.cancelCollector[0].otype << "\n";
+	std::cout << "Quantity: " << j1.cancelCollector[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << j1.cancelCollector[0].price << "\n";
+	std::cout << "\nPJ takes the inside ask" << "\n";
+	cSide1 = j1.askBook[0].side == Side::BUY ? 'B' : 'S';
+	std::cout << "Ask Quote 1004: \n";
+	std::cout << "Trader ID: " << j1.askBook[0].id << "\n";
+	std::cout << "Order ID: " << j1.askBook[0].oid << "\n";
+	std::cout << "Timestamp: " << j1.askBook[0].step << "\n";
+	std::cout << "Type: " << j1.askBook[0].otype << "\n";
+	std::cout << "Quantity: " << j1.askBook[0].qty << "\n";
+	std::cout << "Side: " << cSide1 << "\n";
+	std::cout << "Price: " << j1.askBook[0].price << "\n";
 	j1.cancelCollector.clear();
 
 	// Spread at MPI, PJ alone at inside: nothing happens
@@ -780,7 +785,7 @@ void TraderTests::testPJ()
 
 	// Spread at MPI, PJ not at inside: PJ cancels
 	engine.seed(17);
-	PennyJumper j2(1, 1, setMaxQ(50), 1);
+	PennyJumper j2(4001, setMaxQ(50), 1);
 	tob = { 27, 1000, 10, 1010, 10 };
 	j2.processSignal(tob, 28, 0.5, engine, distUreal);
 	j2.processSignal(tob, 29, 0.5, engine, distUreal);
@@ -818,4 +823,3 @@ void TraderTests::testPJ()
 
 	std::cout << std::endl;
 }
-*/

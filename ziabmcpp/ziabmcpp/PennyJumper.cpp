@@ -5,8 +5,13 @@
 
 #include "PennyJumper.h"
 
-PennyJumper::PennyJumper(const Step arr, const int tnum, const int maxq, const Prc mpi)
-	: ZITrader(arr, tnum, maxq, mpi) { traderType = 'J'; }
+PennyJumper::PennyJumper(const int tnum, const int maxq, const Prc mpi)
+	: tId(tnum), orderSize(maxq), mpi(mpi) { traderType = 'J'; }
+
+Order PennyJumper::makeCancelQuote(Order &q, Step timestamp)
+{
+	return Order{ q.id, q.oid, timestamp, 'C', q.qty, q.side, q.price };
+}
 
 void PennyJumper::confirmTrade(TConfirm &c)
 {
@@ -31,7 +36,8 @@ void PennyJumper::processSignal(TopOfBook &tob, Step step, double qTake, std::mt
 				}
 			}
 			if (bidBook.empty()) {
-				q = makeAddQuote(step, Side::BUY, tob.bestbid + mpi);
+				++quoteSequence;
+				q = Order{ tId, quoteSequence, step, 'A', orderSize, Side::BUY, tob.bestbid + mpi };
 				quoteCollector.push_back(q);
 				bidBook.push_back(q);
 			}
@@ -45,7 +51,8 @@ void PennyJumper::processSignal(TopOfBook &tob, Step step, double qTake, std::mt
 				}
 			}
 			if (askBook.empty()) {
-				q = makeAddQuote(step, Side::SELL, tob.bestask - mpi);
+				++quoteSequence;
+				q = Order{ tId, quoteSequence, step, 'A', orderSize, Side::SELL, tob.bestask - mpi };
 				quoteCollector.push_back(q);
 				askBook.push_back(q);
 			}

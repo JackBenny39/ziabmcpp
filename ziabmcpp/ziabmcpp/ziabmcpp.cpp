@@ -205,13 +205,13 @@ int main()
 
 	TraderTests tTests(defaultVec, distA, engine);
 //	tTests.testTaker();
-	tTests.testInformed();
+//	tTests.testInformed();
 //	tTests.testProvider();
 //	tTests.testProvider5();
 //	tTests.testMarketMaker();
 //	tTests.testMarketMaker5();
-//	engine.seed(44); 
-//	tTests.testPJ();
+	engine.seed(44); 
+	tTests.testPJ();
 
 //	OrderbookTests bTests;
 //	std::string file1;

@@ -17,7 +17,7 @@
 #include "Provider5.h"
 #include "MarketMaker.h"
 #include "MarketMaker5.h"
-//#include "PennyJumper.h"
+#include "PennyJumper.h"
 
 using cSide = char;
 
@@ -39,7 +39,7 @@ public:
 	void testProvider5();
 	void testMarketMaker();
 	void testMarketMaker5();
-//	void testPJ();
+	void testPJ();
 };
 
 #endif

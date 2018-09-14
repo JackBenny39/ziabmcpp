@@ -152,6 +152,7 @@
     <ClInclude Include="MarketMaker5.h" />
     <ClInclude Include="Orderbook.h" />
     <ClInclude Include="OrderbookTests.h" />
+    <ClInclude Include="PennyJumper.h" />
     <ClInclude Include="Provider.h" />
     <ClInclude Include="Provider5.h" />
     <ClInclude Include="Sharedstx.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="MarketMaker5.cpp" />
     <ClCompile Include="Orderbook.cpp" />
     <ClCompile Include="OrderbookTests.cpp" />
+    <ClCompile Include="PennyJumper.cpp" />
     <ClCompile Include="Provider.cpp" />
     <ClCompile Include="Provider5.cpp" />
     <ClCompile Include="stdafx.cpp">
