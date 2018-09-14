@@ -5,8 +5,10 @@
 
 #include "Taker.h"
 
-Taker::Taker(const Step arr, const int tnum, const int maxq)
-	: arrInt(arr), tId(tnum), orderSize(maxq), quoteSequence(0) { traderType = 'T'; }
+Taker::Taker(const Step arr, const traderId tnum, const Qty maxq)
+	: arrInt(arr), tId(tnum), orderSize(maxq), quoteSequence(0) { }
+
+const char Taker::traderType{ 'T' };
 
 Order Taker::processSignal(Step step, double qTake, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {

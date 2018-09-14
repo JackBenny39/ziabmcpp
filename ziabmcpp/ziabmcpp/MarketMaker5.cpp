@@ -5,8 +5,10 @@
 
 #include "MarketMaker5.h"
 
-MarketMaker5::MarketMaker5(const Step arr, const int tnum, const int maxq, const double dlt, const int qRange, const int numQ)
-	: arrInt(arr), tId(tnum), orderSize(maxq), delta(dlt), quoteRange(qRange), numQuotes(numQ + 1), position(0), cashFlow(0), quoteSequence(0) { traderType = 'M'; }
+MarketMaker5::MarketMaker5(const Step arr, const traderId tnum, const Qty maxq, const double dlt, const int qRange, const int numQ)
+	: arrInt(arr), tId(tnum), orderSize(maxq), delta(dlt), quoteRange(qRange), numQuotes(numQ + 1), position(0), cashFlow(0), quoteSequence(0) { }
+
+const char MarketMaker5::traderType{ 'M' };
 
 Order MarketMaker5::makeCancelQuote(Order &q, Step timestamp)
 {

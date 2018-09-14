@@ -24,14 +24,13 @@ int TraderTests::setMaxQ(int maxq)
 void TraderTests::testProvider()
 {
 	cSide cSide1;
-	Provider p1(17, 1000, setMaxQ(50), 0.85, 5);
+	Provider p1(17, 1000, setMaxQ(50), 0.85);
 
 	// Test constructor
 	std::cout << "Trader Type: " << p1.traderType << "\n";
 	std::cout << "Max Quantity: " << p1.orderSize << "\n";
 	std::cout << "Trader ID: " << p1.tId << "\n";
 	std::cout << "Delta: " << p1.delta << "\n";
-	std::cout << "MPI: " << p1.mpi << "\n";
 	std::cout << "Local Book Before: " << p1.localBook.size() << "\n";
 
 	// Test makeCancelQuote
@@ -172,14 +171,13 @@ void TraderTests::testProvider()
 void TraderTests::testProvider5()
 {
 	cSide cSide1;
-	Provider5 p1(17, 1000, setMaxQ(50), 0.85, 5);
+	Provider5 p1(17, 1000, setMaxQ(50), 0.85);
 
 	// Test constructor
 	std::cout << "Trader Type: " << p1.traderType << "\n";
 	std::cout << "Max Quantity: " << p1.orderSize << "\n";
 	std::cout << "Trader ID: " << p1.tId << "\n";
 	std::cout << "Delta: " << p1.delta << "\n";
-	std::cout << "MPI: " << p1.mpi << "\n";
 	std::cout << "Local Book Before: " << p1.localBook.size() << "\n";
 
 	// Test makeCancelQuote

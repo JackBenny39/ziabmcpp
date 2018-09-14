@@ -16,12 +16,12 @@
 class Provider
 {
 public:
-	Provider(const Step, const int, const int, const double, const Prc);
+	Provider(const Step, const traderId, const Qty, const double);
 
 	Step arrInt;
 	traderId tId;
 	Qty orderSize;
-	char traderType;
+	static const char traderType;
 	Prc mpi;
 	double delta;
 

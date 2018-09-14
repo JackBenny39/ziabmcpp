@@ -18,12 +18,12 @@
 class MarketMaker5
 {
 public:
-	MarketMaker5(const Step, const int, const int, const double, const int, const int);
+	MarketMaker5(const Step, const traderId, const Qty, const double, const int, const int);
 
 	Step arrInt;
 	traderId tId;
 	Qty orderSize;
-	char traderType;
+	static const char traderType;
 	double delta;
 	int numQuotes, quoteRange, position;
 	int64_t cashFlow;

@@ -17,12 +17,12 @@ using stepset = std::set<Step>;
 class Informed
 {
 public:
-	Informed(const int, const int, Side, const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
+	Informed(const traderId, const Qty, const Side, const unsigned, const unsigned, std::mt19937 &, std::uniform_int_distribution<> &);
 
 	Step arrInt;
 	traderId tId;
 	Qty orderSize;
-	char traderType;
+	static const char traderType;
 	Side side; // must precede price
 	Prc price;
 	stepset steps;

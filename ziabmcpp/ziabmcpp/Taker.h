@@ -14,12 +14,12 @@
 class Taker
 {
 public:
-	Taker(const Step, const int, const int);
+	Taker(const Step, const traderId, const Qty);
 
 	Step arrInt;
 	traderId tId;
 	Qty orderSize;
-	char traderType;
+	static const char traderType;
 
 	Order processSignal(Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 

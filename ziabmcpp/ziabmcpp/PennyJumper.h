@@ -18,7 +18,7 @@ public:
 
 	traderId tId;
 	Qty orderSize;
-	char traderType;
+	static const char traderType;
 	Prc mpi;
 
 	Order makeCancelQuote(Order &, Step);

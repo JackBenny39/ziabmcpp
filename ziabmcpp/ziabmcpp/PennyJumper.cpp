@@ -6,7 +6,9 @@
 #include "PennyJumper.h"
 
 PennyJumper::PennyJumper(const int tnum, const int maxq, const Prc mpi)
-	: tId(tnum), orderSize(maxq), mpi(mpi) { traderType = 'J'; }
+	: tId(tnum), orderSize(maxq), mpi(mpi) { }
+
+const char PennyJumper::traderType{ 'J' };
 
 Order PennyJumper::makeCancelQuote(Order &q, Step timestamp)
 {

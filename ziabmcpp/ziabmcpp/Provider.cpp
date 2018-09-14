@@ -6,8 +6,10 @@
 #include "Provider.h"
 
 
-Provider::Provider(const Step arr, const int tnum, const int maxq, const double dlt, const Prc mpi)
-	: arrInt(arr), tId(tnum), orderSize(maxq), delta(dlt), mpi(mpi), quoteSequence(0) { traderType = 'P'; }
+Provider::Provider(const Step arr, const traderId tnum, const Qty maxq, const double dlt)
+	: arrInt(arr), tId(tnum), orderSize(maxq), delta(dlt), quoteSequence(0) { }
+
+const char Provider::traderType{ 'P' };
 
 Order Provider::makeCancelQuote(Order &q, Step timestamp)
 {
