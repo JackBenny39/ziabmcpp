@@ -43,18 +43,20 @@ public:
 //	std::uniform_int_distribution<> distUint;
 //	std::uniform_real_distribution<> distUreal;
 
-//	std::vector<std::shared_ptr<ZITrader>> allTraders;
+	std::vector<traderId> allTraders;
 	std::vector<std::shared_ptr<Provider>> providers;
 	std::vector<std::shared_ptr<Provider5>> providers5;
-	std::vector<traderId> allTraders;
+	std::vector<std::shared_ptr<Taker>> takers;
+	std::unique_ptr<Informed> informedTrader;
+	
 //	std::vector<traderId> providers;
 //	std::unordered_map<traderId, std::shared_ptr<ZITrader>> traderMap;
 //	std::pair<std::vector<double>, std::vector<double>> QL;
 
 	int setMaxQ(int);
 	void buildProviders();
-//	void buildTakers();
-//	void buildInformed();
+	void buildTakers();
+	void buildInformed();
 //	void buildMarketMakers();
 //	void buildPennyJumper();
 //	std::pair<std::vector<double>, std::vector<double>> buildLambda();

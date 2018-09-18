@@ -18,7 +18,7 @@ public:
 
 	void testConstructor();
 	void testBuildProvider();
-//	void testBuildTakers();
+	void testBuildTakers();
 //	void testBuildInformed();
 //	void testBuildPennyJumper();
 //	void testBuildMarketMakers();
