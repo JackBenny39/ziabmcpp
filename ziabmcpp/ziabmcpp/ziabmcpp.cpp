@@ -24,10 +24,11 @@
 
 #include "TraderTests.h"
 #include "OrderbookTests.h"
+#include "RunnerTests.h"
 /*
 #include "BucketTests2.h"
 #include "BucketTests.h"
-#include "RunnerTests.h"
+
 */
 
 using cSide = char;
@@ -203,15 +204,15 @@ int main()
 {
 	engine.seed(504);
 
-	TraderTests tTests(defaultVec, distA, engine);
+//	TraderTests tTests(defaultVec, distA, engine);
 //	tTests.testTaker();
 //	tTests.testInformed();
 //	tTests.testProvider();
 //	tTests.testProvider5();
 //	tTests.testMarketMaker();
 //	tTests.testMarketMaker5();
-	engine.seed(44); 
-	tTests.testPJ();
+//	engine.seed(44); 
+//	tTests.testPJ();
 
 //	OrderbookTests bTests;
 //	std::string file1;
@@ -260,9 +261,9 @@ int main()
 //	kTests.testPJ();
 //	kTests.testShuffle();
 
-//	RunnerTests rTests;
-//	rTests.testConstructor();
-//	rTests.testBuildProvider();
+	RunnerTests rTests;
+	rTests.testConstructor();
+	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
 //	rTests.testBuildInformed();
 //	rTests.testBuildPennyJumper();

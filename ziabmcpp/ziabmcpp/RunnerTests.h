@@ -18,18 +18,18 @@ public:
 
 	void testConstructor();
 	void testBuildProvider();
-	void testBuildTakers();
-	void testBuildInformed();
-	void testBuildPennyJumper();
-	void testBuildMarketMakers();
-	void testBuildLambda();
-	void testQTakeToCsv(std::string);
-	void testmmProfitsToCsv(std::string);
-	void testSeedBook();
-	void testMakeSetup();
-	void testDoCancels();
-	void testDoTrades();
-	void testRun();
+//	void testBuildTakers();
+//	void testBuildInformed();
+//	void testBuildPennyJumper();
+//	void testBuildMarketMakers();
+//	void testBuildLambda();
+//	void testQTakeToCsv(std::string);
+//	void testmmProfitsToCsv(std::string);
+//	void testSeedBook();
+//	void testMakeSetup();
+//	void testDoCancels();
+//	void testDoTrades();
+//	void testRun();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

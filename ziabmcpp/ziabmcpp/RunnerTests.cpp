@@ -106,23 +106,15 @@ void RunnerTests::testBuildProvider()
 	if (provider) { market1.buildProviders(); }
 
 	std::cout << "Provider Alpha: " << market1.pAlpha << "\n";
-//	std::cout << "From traderMap: \n";
-//	for (std::pair<traderId, std::shared_ptr<ZITrader>> x : market1.traderMap)
-//		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt << "; Max Q: " << x.second->orderSize << "\n";
-	std::cout << "From providerMap: \n";
-	for (std::pair<traderId, std::shared_ptr<ZITrader>> x : market1.providerMap)
-		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt << "; Max Q: " << x.second->orderSize << "\n";
-	std::cout << "From allTraders: \n";
-	for (auto &x : market1.allTraders)
-//		std::cout << "Trader ID: " << x << "\n";
-		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
-	std::cout << "From providers: \n";
+	std::cout << "From providers vector of unique pointers: \n";
 	for (auto &x : market1.providers)
-//		std::cout << "Trader ID: " << x << "\n";
 		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
+	std::cout << "\nFrom allTraders integers: \n";
+	for (auto &x : market1.allTraders)
+		std::cout << "Trader ID: " << x << "\n";
 	std::cout << std::endl;
 }
-
+/*
 void RunnerTests::testBuildTakers()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
@@ -476,3 +468,4 @@ void RunnerTests::testRun()
 	auto t1 = high_resolution_clock::now();
 	std::cout << duration_cast<seconds>(t1 - t0).count() << " s\n";
 }
+*/

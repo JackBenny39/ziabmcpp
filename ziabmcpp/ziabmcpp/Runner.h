@@ -17,7 +17,6 @@
 
 #include "Orderbook.h"
 
-#include "ZITrader.h"
 #include "Taker.h"
 #include "Informed.h"
 #include "Provider.h"
@@ -44,30 +43,30 @@ public:
 //	std::uniform_int_distribution<> distUint;
 //	std::uniform_real_distribution<> distUreal;
 
-	std::vector<std::shared_ptr<ZITrader>> allTraders;
-	std::vector<std::shared_ptr<ZITrader>> providers;
-//	std::vector<traderId> allTraders;
+//	std::vector<std::shared_ptr<ZITrader>> allTraders;
+	std::vector<std::shared_ptr<Provider>> providers;
+	std::vector<std::shared_ptr<Provider5>> providers5;
+	std::vector<traderId> allTraders;
 //	std::vector<traderId> providers;
 //	std::unordered_map<traderId, std::shared_ptr<ZITrader>> traderMap;
-	std::unordered_map<traderId, std::shared_ptr<ZITrader>> providerMap;
-	std::pair<std::vector<double>, std::vector<double>> QL;
+//	std::pair<std::vector<double>, std::vector<double>> QL;
 
 	int setMaxQ(int);
 	void buildProviders();
-	void buildTakers();
-	void buildInformed();
-	void buildMarketMakers();
-	void buildPennyJumper();
-	std::pair<std::vector<double>, std::vector<double>> buildLambda();
-	void qTakeToCsv(std::string &);
-	void mmProfitsToCsv(std::string &);
-	void seedBook();
-	void makeSetup();
-	void doCancels(std::shared_ptr<ZITrader> &);
-	void doTrades();
-	void runMCS();
-	void runMCSPJ();
-	void run();
+//	void buildTakers();
+//	void buildInformed();
+//	void buildMarketMakers();
+//	void buildPennyJumper();
+//	std::pair<std::vector<double>, std::vector<double>> buildLambda();
+//	void qTakeToCsv(std::string &);
+//	void mmProfitsToCsv(std::string &);
+//	void seedBook();
+//	void makeSetup();
+//	void doCancels(std::shared_ptr<ZITrader> &);
+//	void doTrades();
+//	void runMCS();
+//	void runMCSPJ();
+//	void run();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

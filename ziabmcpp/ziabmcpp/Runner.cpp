@@ -46,36 +46,24 @@ void Runner::buildProviders()
 	auto size = setMaxQ(providerMaxQ);
 	if (mpi == 1)
 	{
-		std::shared_ptr<Provider> p;
 		for (auto i = 0; i != numProviders; ++i)
 		{
 			tId = 1000 + i;
-			p = std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
-//			traderMap[tId] = p;
-			providerMap[tId] = p;
-//			allTraders.push_back(tId);
-//			providers.push_back(tId);
-			allTraders.push_back(p);
-			providers.push_back(p);
+			allTraders.push_back(tId);
+			providers.emplace_back(std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta));
 		}
 	}
 	else
 	{
-		std::shared_ptr<Provider5> p;
 		for (auto i = 0; i != numProviders; ++i)
 		{
 			tId = 1000 + i;
-			p = std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta, mpi);
-//			traderMap[tId] = p;
-			providerMap[tId] = p;
-//			allTraders.push_back(tId);
-//			providers.push_back(tId);
-			allTraders.push_back(p);
-			providers.push_back(p);
+			allTraders.push_back(tId);
+			providers5.emplace_back(std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta));
 		}
 	}
 }
-
+/*
 void Runner::buildTakers()
 {
 	std::exponential_distribution<double> distExpT(tMu);
@@ -381,3 +369,4 @@ void Runner::mmProfitsToCsv(std::string &filename)
 	}
 	csvfile.close();
 }
+*/
