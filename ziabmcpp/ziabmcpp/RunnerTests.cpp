@@ -159,6 +159,31 @@ void RunnerTests::testBuildInformed()
 		std::cout << "Trader ID: " << x << "\n";
 	std::cout << std::endl;
 }
+
+void RunnerTests::testBuildMarketMakers()
+{
+	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
+		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
+		taker, numTakers, takerMaxQ, tMu,
+		informed, informedRun, informedQ, iMu, informedSide,
+		jumper, jAlpha,
+		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
+		qTake, lambda0, whiteNoise, cLambda, engine, seed);
+
+	if (taker) { market1.buildTakers(); }
+	if (maker) { market1.buildMarketMakers(); }
+
+	std::cout << "From makers vector of shared pointers: \n";
+	for (auto &x : market1.makers)
+		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt 
+			<< "; Order Size: " << x->orderSize << "; MM Delta: " << x->delta << "; MM Quote Range: " << x->quoteRange << "; MM Quotes: " 
+			<< x->numQuotes << "\n";
+	std::cout << "\nFrom allTraders integers: \n";
+	for (auto &x : market1.allTraders)
+		std::cout << "Trader ID: " << x << "\n";
+	std::cout << std::endl;
+}
+
 /*
 void RunnerTests::testBuildPennyJumper()
 {
@@ -180,36 +205,6 @@ void RunnerTests::testBuildPennyJumper()
 		<< "; PJ MPI: " << x.second->mpi << "\n";
 }
 
-void RunnerTests::testBuildMarketMakers()
-{
-	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
-		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
-		taker, numTakers, takerMaxQ, tMu,
-		informed, informedRun, informedQ, iMu, informedSide,
-		jumper, jAlpha,
-		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
-		qTake, lambda0, whiteNoise, cLambda, engine, seed);
-
-	if (maker) { market1.buildMarketMakers(); }
-
-//	std::cout << "From traderMap: \n";
-//	for (std::pair<traderId, std::shared_ptr<ZITrader>> x : market1.traderMap)
-//		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt 
-//		<< "; Order Size: " << x.second->orderSize << "; MM Delta: " << x.second->delta << ": MM Quote Range" << x.second->quoteRange << ": MM Quotes: " 
-//		<< x.second->numQuotes << "\n";
-	std::cout << "From providerMap: \n";
-	for (std::pair<traderId, std::shared_ptr<ZITrader>> x : market1.providerMap)
-		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt
-		<< "; Order Size: " << x.second->orderSize << "; MM Delta: " << x.second->delta << ": MM Quote Range" << x.second->quoteRange << ": MM Quotes: "
-		<< x.second->numQuotes << "\n";
-	std::cout << "From allTraders: \n";
-	for (auto &x : market1.allTraders)
-//		std::cout << "Trader ID: " << x << "\n";
-		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt
-		<< "; Order Size: " << x->orderSize << "; MM Delta: " << x->delta << ": MM Quote Range" << x->quoteRange << ": MM Quotes: "
-		<< x->numQuotes << "\n";
-	std::cout << std::endl;
-}
 
 void RunnerTests::testBuildLambda()
 {

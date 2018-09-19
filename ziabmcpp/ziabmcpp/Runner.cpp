@@ -96,39 +96,32 @@ void Runner::buildInformed()
 	informedTrader = std::make_unique<Informed>(5000, informedQ, informedSide, informedRun, numChoices, engine, distUintI);
 	allTraders.push_back(5000);
 }
-/*
+
 void Runner::buildMarketMakers()
 {
 	auto size = setMaxQ(mmMaxQ);
 	traderId tId;
+
 	if (mpi == 1)
 	{
-		std::shared_ptr<MarketMaker> m;
 		for (auto i = 0; i != numMMs; ++i)
 		{
 			tId = 3000 + i;
-			m = std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes);
-//			traderMap[tId] = m;
-			providerMap[tId] = m;
-//			allTraders.push_back(tId);
-			allTraders.push_back(m);
+			allTraders.push_back(tId);
+			makers.emplace_back(std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes));
 		}
 	}
 	else
 	{
-		std::shared_ptr<MarketMaker5> m;
 		for (auto i = 0; i != numMMs; ++i)
 		{
 			tId = 3000 + i;
-			m = std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes);
-//			traderMap[tId] = m;
-			providerMap[tId] = m;
-//			allTraders.push_back(tId);
-			allTraders.push_back(m);
+			allTraders.push_back(tId);
+			makers5.emplace_back(std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes));
 		}
 	}
 }
-
+/*
 void Runner::buildPennyJumper()
 {
 	j1 = std::make_shared<PennyJumper>(1, 4000, 1, mpi);

@@ -48,6 +48,8 @@ public:
 	std::vector<std::shared_ptr<Provider5>> providers5;
 	std::vector<std::shared_ptr<Taker>> takers;
 	std::unique_ptr<Informed> informedTrader;
+	std::vector<std::shared_ptr<MarketMaker>> makers;
+	std::vector<std::shared_ptr<MarketMaker5>> makers5;
 	
 //	std::vector<traderId> providers;
 //	std::unordered_map<traderId, std::shared_ptr<ZITrader>> traderMap;
@@ -57,7 +59,7 @@ public:
 	void buildProviders();
 	void buildTakers();
 	void buildInformed();
-//	void buildMarketMakers();
+	void buildMarketMakers();
 //	void buildPennyJumper();
 //	std::pair<std::vector<double>, std::vector<double>> buildLambda();
 //	void qTakeToCsv(std::string &);
