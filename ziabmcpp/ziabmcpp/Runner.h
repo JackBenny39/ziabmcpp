@@ -50,9 +50,8 @@ public:
 	std::unique_ptr<Informed> informedTrader;
 	std::vector<std::shared_ptr<MarketMaker>> makers;
 	std::vector<std::shared_ptr<MarketMaker5>> makers5;
+	std::unique_ptr<PennyJumper> jumper1;
 	
-//	std::vector<traderId> providers;
-//	std::unordered_map<traderId, std::shared_ptr<ZITrader>> traderMap;
 //	std::pair<std::vector<double>, std::vector<double>> QL;
 
 	int setMaxQ(int);
@@ -60,7 +59,7 @@ public:
 	void buildTakers();
 	void buildInformed();
 	void buildMarketMakers();
-//	void buildPennyJumper();
+	void buildPennyJumper();
 //	std::pair<std::vector<double>, std::vector<double>> buildLambda();
 //	void qTakeToCsv(std::string &);
 //	void mmProfitsToCsv(std::string &);
@@ -81,7 +80,7 @@ public:
 	double lambda0, whiteNoise, cLambda, lambdaDenom;
 	Side informedSide;
 	Orderbook exchange;
-	std::shared_ptr<PennyJumper> j1;
+	
 };
 
 #endif

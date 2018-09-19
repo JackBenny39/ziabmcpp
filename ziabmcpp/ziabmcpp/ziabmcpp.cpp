@@ -266,8 +266,8 @@ int main()
 //	rTests.testBuildProvider();
 //	rTests.testBuildTakers();
 //	rTests.testBuildInformed();
-//	rTests.testBuildPennyJumper();
-	rTests.testBuildMarketMakers();
+	rTests.testBuildPennyJumper();
+//	rTests.testBuildMarketMakers();
 //	rTests.testBuildLambda();
 //	std::string file1;
 //	file1 = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";

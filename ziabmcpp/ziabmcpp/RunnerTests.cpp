@@ -21,7 +21,7 @@ RunnerTests::RunnerTests()
 	provider = true;
 	taker = true;
 	informed = true;
-	jumper = false;
+	jumper = true;
 	maker = true;
 	numProviders = 38;
 	numTakers = 50;
@@ -184,7 +184,6 @@ void RunnerTests::testBuildMarketMakers()
 	std::cout << std::endl;
 }
 
-/*
 void RunnerTests::testBuildPennyJumper()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
@@ -197,15 +196,11 @@ void RunnerTests::testBuildPennyJumper()
 
 	if (jumper) { market1.buildPennyJumper(); }
 
-	std::cout << "Trader Type: " << market1.j1->traderType << "; Trader ID: " << market1.j1->tId << "; Max Q: " << market1.j1->orderSize 
-		<< "; PJ MPI: " << market1.j1->mpi << "\n";
-	std::cout << "From providerMap: \n";
-	for (std::pair<traderId, std::shared_ptr<ZITrader>> x : market1.providerMap)
-		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Max Q: " << x.second->orderSize 
-		<< "; PJ MPI: " << x.second->mpi << "\n";
+	std::cout << "Trader Type: " << market1.jumper1->traderType << "; Trader ID: " << market1.jumper1->tId << "; Max Q: " 
+		<< market1.jumper1->orderSize << "; PJ MPI: " << market1.jumper1->mpi << "\n";
+	std::cout << std::endl;
 }
-
-
+/*
 void RunnerTests::testBuildLambda()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,

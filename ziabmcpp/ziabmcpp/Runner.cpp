@@ -85,7 +85,7 @@ void Runner::buildInformed()
 	if (taker)
 	{
 		for (auto &x : takers)
-				takerTrades += x->orderSize * runSteps / x->arrInt;
+			takerTrades += x->orderSize * runSteps / x->arrInt;
 		informedTrades = static_cast<int>(floor(takerTrades * iMu));
 	}
 	else
@@ -121,13 +121,12 @@ void Runner::buildMarketMakers()
 		}
 	}
 }
-/*
+
 void Runner::buildPennyJumper()
 {
-	j1 = std::make_shared<PennyJumper>(1, 4000, 1, mpi);
-	providerMap[4000] = j1;
+	jumper1 = std::make_unique<PennyJumper>(4000, 1, mpi);
 }
-
+/*
 std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 {
 	double denom = 0.0, qt9 = 0.5, qt1 = 0.5;

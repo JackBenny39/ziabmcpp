@@ -21,7 +21,7 @@ public:
 	void testBuildTakers();
 	void testBuildInformed();
 	void testBuildMarketMakers();
-//	void testBuildPennyJumper();
+	void testBuildPennyJumper();
 //	void testBuildLambda();
 //	void testQTakeToCsv(std::string);
 //	void testmmProfitsToCsv(std::string);
