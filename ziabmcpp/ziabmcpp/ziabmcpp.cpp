@@ -264,8 +264,8 @@ int main()
 	RunnerTests rTests;
 //	rTests.testConstructor();
 //	rTests.testBuildProvider();
-	rTests.testBuildTakers();
-//	rTests.testBuildInformed();
+//	rTests.testBuildTakers();
+	rTests.testBuildInformed();
 //	rTests.testBuildPennyJumper();
 //	rTests.testBuildMarketMakers();
 //	rTests.testBuildLambda();

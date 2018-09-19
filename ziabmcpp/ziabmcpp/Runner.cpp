@@ -90,9 +90,10 @@ void Runner::buildInformed()
 	}
 	else
 		informedTrades = static_cast<int>(1 / iMu);
+	unsigned numChoices = static_cast<unsigned>(1 + informedTrades / (informedRun*informedQ));
 
 	std::uniform_int_distribution<int> distUintI(prime1, runSteps);
-	informedTrader = std::make_unique<Informed>(5000, informedQ, informedSide, informedRun, informedTrades, engine, distUintI);
+	informedTrader = std::make_unique<Informed>(5000, informedQ, informedSide, informedRun, numChoices, engine, distUintI);
 	allTraders.push_back(5000);
 }
 /*

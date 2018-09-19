@@ -20,7 +20,7 @@ RunnerTests::RunnerTests()
 	informedRun = 3;
 	provider = true;
 	taker = true;
-	informed = false;
+	informed = true;
 	jumper = false;
 	maker = true;
 	numProviders = 38;
@@ -137,7 +137,7 @@ void RunnerTests::testBuildTakers()
 		std::cout << "Trader ID: " << x << "\n";
 	std::cout << std::endl;
 }
-/*
+
 void RunnerTests::testBuildInformed()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
@@ -151,19 +151,15 @@ void RunnerTests::testBuildInformed()
 	if (taker) { market1.buildTakers(); }
 	if (informed) { market1.buildInformed(); }
 
-//	std::cout << "From traderMap: \n";
-//	for (std::pair<traderId, std::shared_ptr<ZITrader>> x : market1.traderMap)
-//		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt << "; Max Q: " << x.second->orderSize << "\n";
-	std::cout << "From allTraders: \n";
+	std::cout << "From informedTrader unique_ptr: \n";
+	std::cout << "Trader Type: " << market1.informedTrader->traderType << "; Trader ID: " << market1.informedTrader->tId << "; Arrival Interval: " 
+		<< market1.informedTrader->arrInt << "; Max Q: " << market1.informedTrader->orderSize << "\n";
+	std::cout << "From allTraders integers: \n";
 	for (auto &x : market1.allTraders)
-//		std::cout << "Trader ID: " << x << "\n";
-		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
-//	for (auto &x : market1.traderMap[numTakers]->steps)
-	for (auto &x : market1.allTraders[numTakers]->steps)
-		std::cout << "Arrival Interval: " << x << "\n";
+		std::cout << "Trader ID: " << x << "\n";
 	std::cout << std::endl;
 }
-
+/*
 void RunnerTests::testBuildPennyJumper()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
