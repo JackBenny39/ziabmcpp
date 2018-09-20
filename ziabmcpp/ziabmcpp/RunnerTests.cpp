@@ -257,7 +257,7 @@ void RunnerTests::testmmProfitsToCsv(std::string file1)
 	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 39, -2000, -40 });
 	market1.mmProfitsToCsv(file1);
 }
-/*
+
 void RunnerTests::testSeedBook()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
@@ -271,9 +271,9 @@ void RunnerTests::testSeedBook()
 	market1.seedBook();
 
 	std::cout << "Provider Lookup\n";
-	std::cout << "Seed Provider ID: " << market1.providerMap[9999]->tId << "\n";
-	std::cout << "Seed Provider Bid Order Price: " << market1.providerMap[9999]->localBook[1].price << "\n";
-	std::cout << "Seed Provider Ask Order Price: " << market1.providerMap[9999]->localBook[2].price << "\n";
+	std::cout << "Seed Provider ID: " << market1.providers.back()->tId << "\n";
+	std::cout << "Seed Provider Bid Order Price: " << market1.providers.back()->localBook[1].price << "\n";
+	std::cout << "Seed Provider Ask Order Price: " << market1.providers.back()->localBook[2].price << "\n";
 	std::cout << "Exchange History 0: " << market1.exchange.history[0].price << "\n";
 	std::cout << "Exchange History 1: " << market1.exchange.history[1].price << "\n";
 	std::cout << "Bids:\n";
@@ -292,7 +292,7 @@ void RunnerTests::testSeedBook()
 	}
 	std::cout << std::endl;
 }
-
+/*
 void RunnerTests::testMakeSetup()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,

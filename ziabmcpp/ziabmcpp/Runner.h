@@ -62,7 +62,7 @@ public:
 	std::pair<std::vector<double>, std::vector<double>> buildLambda();
 	void qTakeToCsv(std::string &);
 	void mmProfitsToCsv(std::string &);
-//	void seedBook();
+	void seedBook();
 //	void makeSetup();
 //	void doCancels(std::shared_ptr<ZITrader> &);
 //	void doTrades();

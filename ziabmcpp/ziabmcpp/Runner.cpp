@@ -188,24 +188,23 @@ void Runner::mmProfitsToCsv(std::string &filename)
 	}
 	csvfile.close();
 }
-/*
+
 void Runner::seedBook()
 {
-	std::exponential_distribution<double> distExpP(pAlpha);
-	std::shared_ptr<Provider> p = std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)), 9999, 1, pDelta, mpi);
-	providerMap[9999] = p;
+	allTraders.push_back(numProviders);
+	providers.emplace_back(std::make_shared<Provider>(1, numProviders, 1, pDelta));
 	std::uniform_int_distribution<int> distUintBid(997995, 999996);
 	std::uniform_int_distribution<int> distUintAsk(1000005, 1002001);
-	Order b = p->makeAddQuote(0, Side::BUY, 5 * (distUintBid(engine) / 5));
-	Order a = p->makeAddQuote(0, Side::SELL, 5 * ((distUintAsk(engine) / 5) + 1));
-	p->localBook[b.oid] = b;
-	p->localBook[a.oid] = a;
+	Order b = Order{ numProviders, 1, 0, 'A', 1, Side::BUY, static_cast<unsigned>(5 * (distUintBid(engine) / 5)) };
+	Order a = Order{ numProviders, 2, 0, 'A', 1, Side::SELL, static_cast<unsigned>(5 * ((distUintAsk(engine) / 5) + 1)) };
+	providers.back()->localBook[b.oid] = b;
+	providers.back()->localBook[a.oid] = a;
 	exchange.addHistory(b);
 	exchange.addHistory(a);
-	exchange.addBook2(b.id, b.oid, b.side, b.price, b.qty, b.step);
-	exchange.addBook2(a.id, a.oid, a.side, a.price, a.qty, a.step);
+	exchange.addBook(b.id, b.oid, b.side, b.price, b.qty, b.step);
+	exchange.addBook(a.id, a.oid, a.side, a.price, a.qty, a.step);
 }
-
+/*
 void Runner::makeSetup()
 {
 	std::uniform_real_distribution<> distUreal(0, 1);
