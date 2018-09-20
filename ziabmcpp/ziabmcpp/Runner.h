@@ -51,8 +51,7 @@ public:
 	std::vector<std::shared_ptr<MarketMaker>> makers;
 	std::vector<std::shared_ptr<MarketMaker5>> makers5;
 	std::unique_ptr<PennyJumper> jumper1;
-	
-//	std::pair<std::vector<double>, std::vector<double>> QL;
+	std::pair<std::vector<double>, std::vector<double>> QL;
 
 	int setMaxQ(int);
 	void buildProviders();
@@ -60,16 +59,16 @@ public:
 	void buildInformed();
 	void buildMarketMakers();
 	void buildPennyJumper();
-//	std::pair<std::vector<double>, std::vector<double>> buildLambda();
-//	void qTakeToCsv(std::string &);
-//	void mmProfitsToCsv(std::string &);
+	std::pair<std::vector<double>, std::vector<double>> buildLambda();
+	void qTakeToCsv(std::string &);
+	void mmProfitsToCsv(std::string &);
 //	void seedBook();
 //	void makeSetup();
 //	void doCancels(std::shared_ptr<ZITrader> &);
 //	void doTrades();
 //	void runMCS();
 //	void runMCSPJ();
-//	void run();
+	void run();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;

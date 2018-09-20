@@ -42,7 +42,7 @@ RunnerTests::RunnerTests()
 	qTake = true;
 	lambda0 = 100.0;
 	whiteNoise = 0.001;
-	cLambda = 1.0;
+	cLambda = 5.0;
 	std::random_device random_device;
 	std::mt19937 engine{ random_device() };
 	informedSide = Side::BUY;
@@ -200,7 +200,7 @@ void RunnerTests::testBuildPennyJumper()
 		<< market1.jumper1->orderSize << "; PJ MPI: " << market1.jumper1->mpi << "\n";
 	std::cout << std::endl;
 }
-/*
+
 void RunnerTests::testBuildLambda()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
@@ -215,8 +215,13 @@ void RunnerTests::testBuildLambda()
 	std::pair<std::vector<double>, std::vector<double>> test = market1.buildLambda();
 	auto t1 = high_resolution_clock::now();
 	std::cout << duration_cast<milliseconds>(t1 - t0).count() << " ms\n";
+	std::cout << "cLambda: " << market1.cLambda << "\n";
 	std::cout << "QL position 0 = " << test.first[0] << " : " << test.second[0] << "\n";
 	std::cout << "QL position 100 = " << test.first[100] << " : " << test.second[100] << "\n";
+	std::cout << "QL position 1000 = " << test.first[1000] << " : " << test.second[1000] << "\n";
+	std::cout << "QL position 10000 = " << test.first[10000] << " : " << test.second[10000] << "\n";
+	std::cout << "QL position 99999 = " << test.first[99999] << " : " << test.second[99999] << "\n";
+	std::cout << "QL Length: " << test.first.size() << " : " << test.second.size() << "\n";
 	std::cout << std::endl;
 }
 
@@ -230,6 +235,7 @@ void RunnerTests::testQTakeToCsv(std::string file1)
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
+	market1.QL = market1.buildLambda();
 	market1.qTakeToCsv(file1);
 }
 
@@ -244,14 +250,14 @@ void RunnerTests::testmmProfitsToCsv(std::string file1)
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
 	market1.buildMarketMakers();
-	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 27, 1000, 20 });
-	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 30, 2000, 40 });
-	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 33, 0, 0 });
-	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 35, -1000, -20 });
-	market1.allTraders[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 39, -2000, -40 });
+	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 27, 1000, 20 });
+	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 30, 2000, 40 });
+	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 33, 0, 0 });
+	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 35, -1000, -20 });
+	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 39, -2000, -40 });
 	market1.mmProfitsToCsv(file1);
 }
-
+/*
 void RunnerTests::testSeedBook()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,

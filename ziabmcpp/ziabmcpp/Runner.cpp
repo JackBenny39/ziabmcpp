@@ -26,9 +26,6 @@ Runner::Runner(Prc mpi, Step prime1, Step runSteps, Step writeInterval,
 {
 	defaultVec = { 1, 5, 10, 25, 50 };
 	engine.seed(seed);
-
-//	exchange = Orderbook();
-//	QL = buildLambda();
 }
 
 int Runner::setMaxQ(int maxq)
@@ -126,7 +123,7 @@ void Runner::buildPennyJumper()
 {
 	jumper1 = std::make_unique<PennyJumper>(4000, 1, mpi);
 }
-/*
+
 std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 {
 	double denom = 0.0, qt9 = 0.5, qt1 = 0.5;
@@ -158,6 +155,40 @@ std::pair<std::vector<double>, std::vector<double>> Runner::buildLambda()
 	return std::make_pair(qTake, lambdaT);
 }
 
+void Runner::qTakeToCsv(std::string &filename)
+{
+	std::ofstream csvfile;
+	csvfile.open(filename);
+	csvfile << "QTake,LambdaT\n";
+	for (auto i = 0; i != runSteps; ++i)
+		csvfile << i << "," << QL.first[i] << "," << QL.second[i] << "\n";
+	csvfile.close();
+}
+
+void Runner::mmProfitsToCsv(std::string &filename)
+{
+	std::ofstream csvfile;
+	csvfile.open(filename);
+	csvfile << "TraderID,Step,CashFlow,Position\n";
+	for (auto i = 0; i != numMMs; ++i)
+	{
+		if (mpi == 1)
+		{
+			std::shared_ptr<MarketMaker> &mm = makers[i];
+			for (auto& f : mm->cashFlowCollector)
+				csvfile << f.id << "," << f.step << "," << f.cf << "," << f.position << "\n";
+		}
+		else
+		{
+			std::shared_ptr<MarketMaker5> &mm = makers5[i];
+			for (auto& f : mm->cashFlowCollector)
+				csvfile << f.id << "," << f.step << "," << f.cf << "," << f.position << "\n";
+		}
+		
+	}
+	csvfile.close();
+}
+/*
 void Runner::seedBook()
 {
 	std::exponential_distribution<double> distExpP(pAlpha);
@@ -306,7 +337,7 @@ void Runner::runMCSPJ()
 		}
 	}
 }
-
+*/
 void Runner::run()
 {
 	exchange = Orderbook();
@@ -316,12 +347,12 @@ void Runner::run()
 	if (informed) { buildInformed(); }
 	if (jumper) { buildPennyJumper(); }
 	if (maker) { buildMarketMakers(); }
-	seedBook();
-	if (provider) { makeSetup(); }
-	if (jumper)
-		runMCSPJ();
-	else
-		runMCS();
+//	seedBook();
+//	if (provider) { makeSetup(); }
+//	if (jumper)
+//		runMCSPJ();
+//	else
+//		runMCS();
 //	std::string tcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\trades_1.csv";
 //	exchange.tradesToCsv(tcsv);
 //	std::string qtcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
@@ -329,29 +360,3 @@ void Runner::run()
 //	std::string mmcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mm_1.csv";
 //	mmProfitsToCsv(mmcsv);
 }
-
-void Runner::qTakeToCsv(std::string &filename)
-{
-	std::ofstream csvfile;
-	csvfile.open(filename);
-	csvfile << "QTake,LambdaT\n";
-	for (auto i = 0; i != runSteps; ++i)
-		csvfile << i << "," << QL.first[i] << "," << QL.second[i] << "\n";
-	csvfile.close();
-}
-
-void Runner::mmProfitsToCsv(std::string &filename)
-{
-	std::ofstream csvfile;
-	csvfile.open(filename);
-	csvfile << "TraderID,Step,CashFlow,Position\n";
-	traderId tId;
-	for (auto i = 0; i != numMMs; ++i)
-	{
-		tId = 3000 + i;
-		for (auto& f : providerMap[tId]->cashFlowCollector)
-			csvfile << f.id << "," << f.step << "," << f.cashFlow << "," << f.position << "\n";
-	}
-	csvfile.close();
-}
-*/

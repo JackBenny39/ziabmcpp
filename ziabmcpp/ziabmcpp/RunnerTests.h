@@ -22,9 +22,9 @@ public:
 	void testBuildInformed();
 	void testBuildMarketMakers();
 	void testBuildPennyJumper();
-//	void testBuildLambda();
-//	void testQTakeToCsv(std::string);
-//	void testmmProfitsToCsv(std::string);
+	void testBuildLambda();
+	void testQTakeToCsv(std::string);
+	void testmmProfitsToCsv(std::string);
 //	void testSeedBook();
 //	void testMakeSetup();
 //	void testDoCancels();
