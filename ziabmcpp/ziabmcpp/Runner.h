@@ -11,6 +11,7 @@
 #include <functional>
 #include <memory>
 #include <random>
+#include <unordered_map>
 #include <valarray>
 
 #include "Sharedstx.h"
@@ -43,13 +44,14 @@ public:
 //	std::uniform_int_distribution<> distUint;
 //	std::uniform_real_distribution<> distUreal;
 
-	std::vector<traderId> allTraders;
-	std::vector<std::shared_ptr<Provider>> providers;
-	std::vector<std::shared_ptr<Provider5>> providers5;
-	std::vector<std::shared_ptr<Taker>> takers;
-	std::unique_ptr<Informed> informedTrader;
-	std::vector<std::shared_ptr<MarketMaker>> makers;
-	std::vector<std::shared_ptr<MarketMaker5>> makers5;
+	std::vector<traderId> allTraderIds;
+	std::vector<traderId> providerIds;
+	std::unordered_map<traderId, std::shared_ptr<Provider>> providers;
+	std::unordered_map<traderId, std::shared_ptr<Provider5>> providers5;
+	std::unordered_map<traderId, std::shared_ptr<Taker>> takers;
+	std::unique_ptr<Informed> informed1;
+	std::unordered_map<traderId, std::shared_ptr<MarketMaker>> makers;
+	std::unordered_map<traderId, std::shared_ptr<MarketMaker5>> makers5;
 	std::unique_ptr<PennyJumper> jumper1;
 	std::pair<std::vector<double>, std::vector<double>> QL;
 
@@ -68,7 +70,7 @@ public:
 //	void doTrades();
 //	void runMCS();
 //	void runMCSPJ();
-	void run();
+//	void run();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
@@ -79,7 +81,6 @@ public:
 	double lambda0, whiteNoise, cLambda, lambdaDenom;
 	Side informedSide;
 	Orderbook exchange;
-	
 };
 
 #endif

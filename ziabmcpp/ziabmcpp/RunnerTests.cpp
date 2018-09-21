@@ -106,11 +106,15 @@ void RunnerTests::testBuildProvider()
 	if (provider) { market1.buildProviders(); }
 
 	std::cout << "Provider Alpha: " << market1.pAlpha << "\n";
-	std::cout << "From providers vector of shared pointers: \n";
+	std::cout << "From providers map: \n";
 	for (auto &x : market1.providers)
-		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
-	std::cout << "\nFrom allTraders integers: \n";
-	for (auto &x : market1.allTraders)
+		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt
+			<< "; Max Q: " << x.second->orderSize << "\n";
+	std::cout << "\nFrom allTraderIds integers: \n";
+	for (auto &x : market1.allTraderIds)
+		std::cout << "Trader ID: " << x << "\n";
+	std::cout << "\nFrom providerIds integers: \n";
+	for (auto &x : market1.providerIds)
 		std::cout << "Trader ID: " << x << "\n";
 	std::cout << std::endl;
 }
@@ -129,11 +133,12 @@ void RunnerTests::testBuildTakers()
 	if (taker) { market1.buildTakers(); }
 
 	std::cout << "Taker Mu: " << market1.tMu << "\n";
-	std::cout << "From providers vector of shared pointers\n";
+	std::cout << "From takers map\n";
 	for (auto &x : market1.takers)
-		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
+		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt
+			<< "; Max Q: " << x.second->orderSize << "\n";
 	std::cout << "From allTraders integers: \n";
-	for (auto &x : market1.allTraders)
+	for (auto &x : market1.allTraderIds)
 		std::cout << "Trader ID: " << x << "\n";
 	std::cout << std::endl;
 }
@@ -152,10 +157,10 @@ void RunnerTests::testBuildInformed()
 	if (informed) { market1.buildInformed(); }
 
 	std::cout << "From informedTrader unique_ptr: \n";
-	std::cout << "Trader Type: " << market1.informedTrader->traderType << "; Trader ID: " << market1.informedTrader->tId << "; Arrival Interval: " 
-		<< market1.informedTrader->arrInt << "; Max Q: " << market1.informedTrader->orderSize << "\n";
+	std::cout << "Trader Type: " << market1.informed1->traderType << "; Trader ID: " << market1.informed1->tId << "; Arrival Interval: " 
+		<< market1.informed1->arrInt << "; Max Q: " << market1.informed1->orderSize << "\n";
 	std::cout << "From allTraders integers: \n";
-	for (auto &x : market1.allTraders)
+	for (auto &x : market1.allTraderIds)
 		std::cout << "Trader ID: " << x << "\n";
 	std::cout << std::endl;
 }
@@ -173,13 +178,13 @@ void RunnerTests::testBuildMarketMakers()
 	if (taker) { market1.buildTakers(); }
 	if (maker) { market1.buildMarketMakers(); }
 
-	std::cout << "From makers vector of shared pointers: \n";
+	std::cout << "From makers map: \n";
 	for (auto &x : market1.makers)
-		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt 
-			<< "; Order Size: " << x->orderSize << "; MM Delta: " << x->delta << "; MM Quote Range: " << x->quoteRange << "; MM Quotes: " 
-			<< x->numQuotes << "\n";
-	std::cout << "\nFrom allTraders integers: \n";
-	for (auto &x : market1.allTraders)
+		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt
+			<< "; Order Size: " << x.second->orderSize << "; MM Delta: " << x.second->delta << "; MM Quote Range: " << x.second->quoteRange << "; MM Quotes: "
+			<< x.second->numQuotes << "\n";
+	std::cout << "\nFrom allTraderIds integers: \n";
+	for (auto &x : market1.allTraderIds)
 		std::cout << "Trader ID: " << x << "\n";
 	std::cout << std::endl;
 }
@@ -250,11 +255,12 @@ void RunnerTests::testmmProfitsToCsv(std::string file1)
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
 	market1.buildMarketMakers();
-	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 27, 1000, 20 });
-	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 30, 2000, 40 });
-	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 33, 0, 0 });
-	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 35, -1000, -20 });
-	market1.makers[0]->cashFlowCollector.emplace_back(CFlow{ 3001, 39, -2000, -40 });
+	std::shared_ptr<MarketMaker> mm = market1.makers[3000];
+	mm->cashFlowCollector.emplace_back(CFlow{ 3001, 27, 1000, 20 });
+	mm->cashFlowCollector.emplace_back(CFlow{ 3001, 30, 2000, 40 });
+	mm->cashFlowCollector.emplace_back(CFlow{ 3001, 33, 0, 0 });
+	mm->cashFlowCollector.emplace_back(CFlow{ 3001, 35, -1000, -20 });
+	mm->cashFlowCollector.emplace_back(CFlow{ 3001, 39, -2000, -40 });
 	market1.mmProfitsToCsv(file1);
 }
 
@@ -268,12 +274,13 @@ void RunnerTests::testSeedBook()
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
+	if (provider) { market1.buildProviders(); }
 	market1.seedBook();
 
 	std::cout << "Provider Lookup\n";
-	std::cout << "Seed Provider ID: " << market1.providers.back()->tId << "\n";
-	std::cout << "Seed Provider Bid Order Price: " << market1.providers.back()->localBook[1].price << "\n";
-	std::cout << "Seed Provider Ask Order Price: " << market1.providers.back()->localBook[2].price << "\n";
+	std::cout << "Seed Provider ID: " << market1.providers[numProviders]->tId << "\n";
+	std::cout << "Seed Provider Bid Order Price: " << market1.providers[numProviders]->localBook[1].price << "\n";
+	std::cout << "Seed Provider Ask Order Price: " << market1.providers[numProviders]->localBook[2].price << "\n";
 	std::cout << "Exchange History 0: " << market1.exchange.history[0].price << "\n";
 	std::cout << "Exchange History 1: " << market1.exchange.history[1].price << "\n";
 	std::cout << "Bids:\n";

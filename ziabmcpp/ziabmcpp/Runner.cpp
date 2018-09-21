@@ -5,6 +5,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <numeric>
 
 #include "Runner.h"
 
@@ -42,12 +43,13 @@ void Runner::buildProviders()
 	traderId tId;
 	if (mpi == 1)
 	{
-		for (auto i = 0; i != numProviders; ++i)
+		for (auto i = 1; i != numProviders; ++i)
 		{
 			auto size = setMaxQ(providerMaxQ);
 			tId = 1000 + i;
-			allTraders.push_back(tId);
-			providers.emplace_back(std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta));
+			allTraderIds.push_back(tId);
+			providerIds.push_back(tId);
+			providers.emplace(tId, std::make_shared<Provider>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta));
 		}
 	}
 	else
@@ -56,8 +58,9 @@ void Runner::buildProviders()
 		{
 			auto size = setMaxQ(providerMaxQ);
 			tId = 1000 + i;
-			allTraders.push_back(tId);
-			providers5.emplace_back(std::make_shared<Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta));
+			allTraderIds.push_back(tId);
+			providerIds.push_back(tId);
+			providers5.emplace(tId, std::make_shared <Provider5>(static_cast<int>(floor(distExpP(engine) + 1)) * size, tId, size, pDelta));
 		}
 	}
 }
@@ -70,8 +73,8 @@ void Runner::buildTakers()
 	{
 		auto size = setMaxQ(takerMaxQ);
 		tId = 2000 + i;
-		allTraders.push_back(tId);
-		takers.emplace_back(std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, 2000 + i, size));
+		allTraderIds.push_back(tId);
+		takers.emplace(tId, std::make_shared<Taker>(static_cast<int>(floor(distExpT(engine) + 1)) * size, 2000 + i, size));
 	}
 }
 
@@ -82,7 +85,7 @@ void Runner::buildInformed()
 	if (taker)
 	{
 		for (auto &x : takers)
-			takerTrades += x->orderSize * runSteps / x->arrInt;
+			takerTrades += x.second->orderSize * runSteps / x.second->arrInt;
 		informedTrades = static_cast<int>(floor(takerTrades * iMu));
 	}
 	else
@@ -90,8 +93,8 @@ void Runner::buildInformed()
 	unsigned numChoices = static_cast<unsigned>(1 + informedTrades / (informedRun*informedQ));
 
 	std::uniform_int_distribution<int> distUintI(prime1, runSteps);
-	informedTrader = std::make_unique<Informed>(5000, informedQ, informedSide, informedRun, numChoices, engine, distUintI);
-	allTraders.push_back(5000);
+	informed1 = std::make_unique<Informed>(5000, informedQ, informedSide, informedRun, numChoices, engine, distUintI);
+	allTraderIds.push_back(5000);
 }
 
 void Runner::buildMarketMakers()
@@ -104,8 +107,8 @@ void Runner::buildMarketMakers()
 		for (auto i = 0; i != numMMs; ++i)
 		{
 			tId = 3000 + i;
-			allTraders.push_back(tId);
-			makers.emplace_back(std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes));
+			allTraderIds.push_back(tId);
+			makers.emplace(tId, std::make_shared<MarketMaker>(size, tId, size, mmDelta, mmRange, mmQuotes));
 		}
 	}
 	else
@@ -113,8 +116,8 @@ void Runner::buildMarketMakers()
 		for (auto i = 0; i != numMMs; ++i)
 		{
 			tId = 3000 + i;
-			allTraders.push_back(tId);
-			makers5.emplace_back(std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes));
+			allTraderIds.push_back(tId);
+			makers5.emplace(tId, std::make_shared<MarketMaker5>(size, tId, size, mmDelta, mmRange, mmQuotes));
 		}
 	}
 }
@@ -170,35 +173,33 @@ void Runner::mmProfitsToCsv(std::string &filename)
 	std::ofstream csvfile;
 	csvfile.open(filename);
 	csvfile << "TraderID,Step,CashFlow,Position\n";
-	for (auto i = 0; i != numMMs; ++i)
+	if (mpi == 1)
 	{
-		if (mpi == 1)
+		for (auto i = 0; i != numMMs; ++i)
 		{
-			std::shared_ptr<MarketMaker> &mm = makers[i];
-			for (auto& f : mm->cashFlowCollector)
+			for (auto& f : makers[3000 + i]->cashFlowCollector)
 				csvfile << f.id << "," << f.step << "," << f.cf << "," << f.position << "\n";
 		}
-		else
+	}
+	else
+	{
+		for (auto i = 0; i != numMMs; ++i)
 		{
-			std::shared_ptr<MarketMaker5> &mm = makers5[i];
-			for (auto& f : mm->cashFlowCollector)
+			for (auto& f : makers5[3000 + i]->cashFlowCollector)
 				csvfile << f.id << "," << f.step << "," << f.cf << "," << f.position << "\n";
 		}
-		
 	}
 	csvfile.close();
 }
 
 void Runner::seedBook()
 {
-	allTraders.push_back(numProviders);
-	providers.emplace_back(std::make_shared<Provider>(1, numProviders, 1, pDelta));
+	allTraderIds.push_back(numProviders);
+	providers.emplace(numProviders, std::make_shared<Provider>(1, numProviders, 1, pDelta));
 	std::uniform_int_distribution<int> distUintBid(997995, 999996);
 	std::uniform_int_distribution<int> distUintAsk(1000005, 1002001);
-	Order b = Order{ numProviders, 1, 0, 'A', 1, Side::BUY, static_cast<unsigned>(5 * (distUintBid(engine) / 5)) };
-	Order a = Order{ numProviders, 2, 0, 'A', 1, Side::SELL, static_cast<unsigned>(5 * ((distUintAsk(engine) / 5) + 1)) };
-	providers.back()->localBook[b.oid] = b;
-	providers.back()->localBook[a.oid] = a;
+	auto b = providers[numProviders]->localBook.emplace(1, Order{ numProviders, 1, 0, 'A', 1, Side::BUY, static_cast<unsigned>(5 * (distUintBid(engine) / 5)) }).first->second;
+	auto a = providers[numProviders]->localBook.emplace(2, Order{ numProviders, 2, 0, 'A', 1, Side::SELL, static_cast<unsigned>(5 * (distUintAsk(engine) / 5)) }).first->second;
 	exchange.addHistory(b);
 	exchange.addHistory(a);
 	exchange.addBook(b.id, b.oid, b.side, b.price, b.qty, b.step);
@@ -207,17 +208,19 @@ void Runner::seedBook()
 /*
 void Runner::makeSetup()
 {
+	std::vector<int> pv(numProviders + 1);
+	std::iota(pv.begin(), pv.end(), 0);
 	std::uniform_real_distribution<> distUreal(0, 1);
 	exchange.bookTop2(0);
 	for (auto i = 1; i != prime1; ++i)
 	{
-		shuffle(providers.begin(), providers.end(), engine);
-		for (auto &x : providers)
+		shuffle(pv.begin(), pv.end(), engine);
+		for (auto x : pv)
 		{
-			if (!(i % x->arrInt))
+			if (!(i % providers[x]->arrInt))
 			{
-				x->processSignal(exchange.tob.back(), i, qProvide, -lambda0, engine, distUreal);
-				exchange.process(x->quoteCollector.back());
+				auto o = providers[x]->processSignal(exchange.tob.back(), i, qProvide, -lambda0, engine, distUreal);
+				exchange.process(o);
 				exchange.bookTop2(i);
 			}
 		}
@@ -336,7 +339,7 @@ void Runner::runMCSPJ()
 		}
 	}
 }
-*/
+
 void Runner::run()
 {
 	exchange = Orderbook();
@@ -359,3 +362,4 @@ void Runner::run()
 //	std::string mmcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mm_1.csv";
 //	mmProfitsToCsv(mmcsv);
 }
+*/
