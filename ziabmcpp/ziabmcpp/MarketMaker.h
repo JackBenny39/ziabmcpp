@@ -31,7 +31,7 @@ public:
 	Order makeCancelQuote(Order &, Step);
 	void confirmTrade(TConfirm &);
 	void bulkCancel(Step, std::mt19937 &, std::uniform_real_distribution<> &);
-	void processSignal(TopOfBook &, Step, double, double, std::mt19937 &, std::uniform_real_distribution<> &);
+	void processSignal(TopOfBook &, Step, double, std::mt19937 &, std::uniform_real_distribution<> &);
 
 	std::unordered_map<Id, Order> localBook;
 	std::vector<CFlow> cashFlowCollector;

@@ -65,11 +65,11 @@ public:
 	void qTakeToCsv(std::string &);
 	void mmProfitsToCsv(std::string &);
 	void seedBook();
-//	void makeSetup();
-//	void doCancels(std::shared_ptr<ZITrader> &);
-//	void doTrades();
-//	void runMCS();
-//	void runMCSPJ();
+	void makeSetup();
+	void runMCS1();
+	void runMCS5();
+	void runMCSPJ1();
+	void runMCSPJ5();
 //	void run();
 
 	Prc mpi;

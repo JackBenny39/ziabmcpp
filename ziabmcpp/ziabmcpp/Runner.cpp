@@ -194,28 +194,27 @@ void Runner::mmProfitsToCsv(std::string &filename)
 
 void Runner::seedBook()
 {
+	traderId tId = 1000;
 	allTraderIds.push_back(numProviders);
-	providers.emplace(numProviders, std::make_shared<Provider>(1, numProviders, 1, pDelta));
+	providers.emplace(tId, std::make_shared<Provider>(1, tId, 1, pDelta));
 	std::uniform_int_distribution<int> distUintBid(997995, 999996);
 	std::uniform_int_distribution<int> distUintAsk(1000005, 1002001);
-	auto b = providers[numProviders]->localBook.emplace(1, Order{ numProviders, 1, 0, 'A', 1, Side::BUY, static_cast<unsigned>(5 * (distUintBid(engine) / 5)) }).first->second;
-	auto a = providers[numProviders]->localBook.emplace(2, Order{ numProviders, 2, 0, 'A', 1, Side::SELL, static_cast<unsigned>(5 * (distUintAsk(engine) / 5)) }).first->second;
+	auto b = providers[tId]->localBook.emplace(1, Order{ tId, 1, 0, 'A', 1, Side::BUY, static_cast<unsigned>(5 * (distUintBid(engine) / 5)) }).first->second;
+	auto a = providers[tId]->localBook.emplace(2, Order{ tId, 2, 0, 'A', 1, Side::SELL, static_cast<unsigned>(5 * (distUintAsk(engine) / 5)) }).first->second;
 	exchange.addHistory(b);
 	exchange.addHistory(a);
 	exchange.addBook(b.id, b.oid, b.side, b.price, b.qty, b.step);
 	exchange.addBook(a.id, a.oid, a.side, a.price, a.qty, a.step);
 }
-/*
+
 void Runner::makeSetup()
 {
-	std::vector<int> pv(numProviders + 1);
-	std::iota(pv.begin(), pv.end(), 0);
 	std::uniform_real_distribution<> distUreal(0, 1);
 	exchange.bookTop2(0);
 	for (auto i = 1; i != prime1; ++i)
 	{
-		shuffle(pv.begin(), pv.end(), engine);
-		for (auto x : pv)
+		shuffle(providerIds.begin(), providerIds.end(), engine);
+		for (auto x : providerIds)
 		{
 			if (!(i % providers[x]->arrInt))
 			{
@@ -227,112 +226,258 @@ void Runner::makeSetup()
 	}
 }
 
-void Runner::doCancels(std::shared_ptr<ZITrader> &p)
+void Runner::runMCS1()
 {
-	for (auto& c : p->cancelCollector)
-	{
-		exchange.process(c);
-		if (!exchange.modifyconfirms.empty())
-			p->confirmCancel(exchange.modifyconfirms.back().restoid);
-	}
-}
-
-void Runner::doTrades()
-{
-	for (auto& c : exchange.tradeconfirms)
-		providerMap[c.restid]->confirmTrade(c);
-}
-
-void Runner::runMCS()
-{
+	int tRoot;
 	std::uniform_real_distribution<> distUreal(0, 1);
 	for (auto i = prime1; i != runSteps; ++i)
 	{
-		shuffle(allTraders.begin(), allTraders.end(), engine);
-		for (auto &t : allTraders)
+		shuffle(allTraderIds.begin(), allTraderIds.end(), engine);
+		for (auto t : allTraderIds)
 		{
-			if (t->traderType == 'P' || t->traderType == 'M')
+			tRoot = t / 1000;
+			switch (tRoot)// make shared pointers to map values?
 			{
-				if (!(i % t->arrInt))
+			case 1:
+				if (!(i % providers[t]->arrInt))
 				{
-					t->processSignal(exchange.tob.back(), i, qProvide, QL.second[i], engine, distUreal);
-					for (auto& q : t->quoteCollector)
-						exchange.process(q);
+					auto o = providers[t]->processSignal(exchange.tob.back(), i, qProvide, QL.second[i], engine, distUreal);
+					exchange.process(o);
 					exchange.bookTop2(i);
 				}
-				t->bulkCancel(i, engine, distUreal);
-				if (!(t->cancelCollector.empty()))
+				providers[t]->bulkCancel(i, engine, distUreal);
+				if (!(providers[t]->cancelCollector.empty()))
 				{
-					doCancels(t);
+					for (auto& c : providers[t]->cancelCollector)
+						exchange.process(c);
 					exchange.bookTop2(i);
 				}
-			}
-			else 
-			{
-				if (!(i % t->arrInt))
+				break;
+			case 3:
+				if (!(i % makers[t]->arrInt))
 				{
-					if (t->traderType == 'T')
-						t->processSignal(i, QL.first[i], engine, distUreal);
-					else // traderType == 'I'
-						t->processSignal(i);
-					exchange.process(t->quoteCollector.back());
-					doTrades();
+					makers[t]->processSignal(exchange.tob.back(), i, qProvide, engine, distUreal);
+					for (auto& o : makers[t]->quoteCollector)
+						exchange.process(o);
 					exchange.bookTop2(i);
 				}
+				makers[t]->bulkCancel(i, engine, distUreal);
+				if (!(makers[t]->cancelCollector.empty()))
+				{
+					for (auto& c : makers[t]->cancelCollector)
+						exchange.process(c);
+					exchange.bookTop2(i);
+				}
+				break;
+			case 2:
+				if (!(i % takers[t]->arrInt))
+				{
+					auto o = takers[t]->processSignal(i, QL.first[i], engine, distUreal);
+					exchange.process(o);
+					for (auto& c : exchange.tradeconfirms)
+					{
+						auto pRoot = c.restid / 1000;
+						if (pRoot == 3)
+							makers[c.restid]->confirmTrade(c);
+						else
+							providers[c.restid]->confirmTrade(c);
+					}
+					exchange.bookTop2(i);
+				}
+				break;
+			default:
+				if (i == informed1->arrInt)
+				{
+					auto o = informed1->processSignal(i);
+					exchange.process(o);
+					for (auto& c : exchange.tradeconfirms)
+					{
+						auto pRoot = c.restid / 1000;
+						if (pRoot == 3)
+							makers[c.restid]->confirmTrade(c);
+						else
+							providers[c.restid]->confirmTrade(c);
+					}
+					exchange.bookTop2(i);
+				}
+				break;
 			}
 		}
 	}
 }
 
-void Runner::runMCSPJ()
+void Runner::runMCS5()
 {
+	int tRoot;
 	std::uniform_real_distribution<> distUreal(0, 1);
 	for (auto i = prime1; i != runSteps; ++i)
 	{
-		shuffle(allTraders.begin(), allTraders.end(), engine);
-		for (auto &t : allTraders)
+		shuffle(allTraderIds.begin(), allTraderIds.end(), engine);
+		for (auto t : allTraderIds)
 		{
-			if (t->traderType == 'P' || t->traderType == 'M')
+			tRoot = t / 1000;
+			switch (tRoot)// make shared pointers to map values?
 			{
-				if (!(i % t->arrInt))
+			case 1:
+				if (!(i % providers5[t]->arrInt))
 				{
-					t->processSignal(exchange.tob.back(), i, qProvide, QL.second[i], engine, distUreal);
-					for (auto& q : t->quoteCollector)
-						exchange.process(q);
+					auto o = providers5[t]->processSignal(exchange.tob.back(), i, qProvide, QL.second[i], engine, distUreal);
+					exchange.process(o);
 					exchange.bookTop2(i);
 				}
-				t->bulkCancel(i, engine, distUreal);
-				if (!(t->cancelCollector.empty()))
+				providers5[t]->bulkCancel(i, engine, distUreal);
+				if (!(providers5[t]->cancelCollector.empty()))
 				{
-					doCancels(t);
+					for (auto& c : providers5[t]->cancelCollector)
+						exchange.process(c);
 					exchange.bookTop2(i);
 				}
+				break;
+			case 3:
+				if (!(i % makers5[t]->arrInt))
+				{
+					makers5[t]->processSignal(exchange.tob.back(), i, qProvide, engine, distUreal);
+					for (auto& o : makers5[t]->quoteCollector)
+						exchange.process(o);
+					exchange.bookTop2(i);
+				}
+				makers5[t]->bulkCancel(i, engine, distUreal);
+				if (!(makers5[t]->cancelCollector.empty()))
+				{
+					for (auto& c : makers5[t]->cancelCollector)
+						exchange.process(c);
+					exchange.bookTop2(i);
+				}
+				break;
+			case 2:
+				if (!(i % takers[t]->arrInt))
+				{
+					auto o = takers[t]->processSignal(i, QL.first[i], engine, distUreal);
+					exchange.process(o);
+					for (auto& c : exchange.tradeconfirms)
+					{
+						auto pRoot = c.restid / 1000;
+						if (pRoot == 3)
+							makers5[c.restid]->confirmTrade(c);
+						else
+							providers5[c.restid]->confirmTrade(c);
+					}
+					exchange.bookTop2(i);
+				}
+				break;
+			default:
+				if (i == informed1->arrInt)
+				{
+					auto o = informed1->processSignal(i);
+					exchange.process(o);
+					for (auto& c : exchange.tradeconfirms)
+					{
+						auto pRoot = c.restid / 1000;
+						if (pRoot == 3)
+							makers5[c.restid]->confirmTrade(c);
+						else
+							providers5[c.restid]->confirmTrade(c);
+					}
+					exchange.bookTop2(i);
+				}
+				break;
 			}
-			else
+		}
+	}
+}
+
+void Runner::runMCSPJ1()
+{
+	int tRoot;
+	std::uniform_real_distribution<> distUreal(0, 1);
+	for (auto i = prime1; i != runSteps; ++i)
+	{
+		shuffle(allTraderIds.begin(), allTraderIds.end(), engine);
+		for (auto t : allTraderIds)
+		{
+			tRoot = t / 1000;
+			switch (tRoot)// make shared pointers to map values?
 			{
-				if (!(i % t->arrInt))
+			case 1:
+				if (!(i % providers[t]->arrInt))
 				{
-					if (t->traderType == 'T')
-						t->processSignal(i, QL.first[i], engine, distUreal);
-					else // traderType == 'I'
-						t->processSignal(i);
-					exchange.process(t->quoteCollector.back());
-					doTrades();
+					auto o = providers[t]->processSignal(exchange.tob.back(), i, qProvide, QL.second[i], engine, distUreal);
+					exchange.process(o);
 					exchange.bookTop2(i);
 				}
+				providers[t]->bulkCancel(i, engine, distUreal);
+				if (!(providers[t]->cancelCollector.empty()))
+				{
+					for (auto& c : providers[t]->cancelCollector)
+						exchange.process(c);
+					exchange.bookTop2(i);
+				}
+				break;
+			case 3:
+				if (!(i % makers[t]->arrInt))
+				{
+					makers[t]->processSignal(exchange.tob.back(), i, qProvide, engine, distUreal);
+					for (auto& o : makers[t]->quoteCollector)
+						exchange.process(o);
+					exchange.bookTop2(i);
+				}
+				makers[t]->bulkCancel(i, engine, distUreal);
+				if (!(makers[t]->cancelCollector.empty()))
+				{
+					for (auto& c : makers[t]->cancelCollector)
+						exchange.process(c);
+					exchange.bookTop2(i);
+				}
+				break;
+			case 2:
+				if (!(i % takers[t]->arrInt))
+				{
+					auto o = takers[t]->processSignal(i, QL.first[i], engine, distUreal);
+					exchange.process(o);
+					for (auto& c : exchange.tradeconfirms)
+					{
+						auto pRoot = c.restid / 1000;
+						if (pRoot == 3)
+							makers[c.restid]->confirmTrade(c);
+						else if (pRoot == 4)
+							jumper1->confirmTrade(c);
+						else
+							providers[c.restid]->confirmTrade(c);
+					}
+					exchange.bookTop2(i);
+				}
+				break;
+			default:
+				if (i == informed1->arrInt)
+				{
+					auto o = informed1->processSignal(i);
+					exchange.process(o);
+					for (auto& c : exchange.tradeconfirms)
+					{
+						auto pRoot = c.restid / 1000;
+						if (pRoot == 3)
+							makers[c.restid]->confirmTrade(c);
+						else if (pRoot == 4)
+							jumper1->confirmTrade(c);
+						else
+							providers[c.restid]->confirmTrade(c);
+					}
+					exchange.bookTop2(i);
+				}
+				break;
 			}
 			if (distUreal(engine) < jAlpha)
 			{
-				j1->processSignal(exchange.tob.back(), i, QL.second[i], engine, distUreal);
-				if (!(j1->cancelCollector.empty())) // don't need to check this?
+				jumper1->processSignal(exchange.tob.back(), i, QL.first[i], engine, distUreal);
+				if (!(jumper1->cancelCollector.empty())) // don't need to check this?
 				{
-					for (auto& c : j1->cancelCollector)
+					for (auto& c : jumper1->cancelCollector)
 						exchange.process(c);
 				}
-				if (!(j1->quoteCollector.empty())) // don't need to check this?
+				if (!(jumper1->quoteCollector.empty())) // don't need to check this?
 				{
-					for (auto& q : j1->quoteCollector)
-						exchange.process(q);
+					for (auto& o : jumper1->quoteCollector)
+						exchange.process(o);
 				}
 				exchange.bookTop2(i);
 			}
@@ -340,6 +485,105 @@ void Runner::runMCSPJ()
 	}
 }
 
+void Runner::runMCSPJ5()
+{
+	int tRoot;
+	std::uniform_real_distribution<> distUreal(0, 1);
+	for (auto i = prime1; i != runSteps; ++i)
+	{
+		shuffle(allTraderIds.begin(), allTraderIds.end(), engine);
+		for (auto t : allTraderIds)
+		{
+			tRoot = t / 1000;
+			switch (tRoot) // make shared pointers to map values?
+			{
+			case 1:
+				if (!(i % providers5[t]->arrInt))
+				{
+					auto o = providers5[t]->processSignal(exchange.tob.back(), i, qProvide, QL.second[i], engine, distUreal);
+					exchange.process(o);
+					exchange.bookTop2(i);
+				}
+				providers5[t]->bulkCancel(i, engine, distUreal);
+				if (!(providers5[t]->cancelCollector.empty()))
+				{
+					for (auto& c : providers5[t]->cancelCollector)
+						exchange.process(c);
+					exchange.bookTop2(i);
+				}
+				break;
+			case 3:
+				if (!(i % makers5[t]->arrInt))
+				{
+					makers5[t]->processSignal(exchange.tob.back(), i, qProvide, engine, distUreal);
+					for (auto& o : makers5[t]->quoteCollector)
+						exchange.process(o);
+					exchange.bookTop2(i);
+				}
+				makers5[t]->bulkCancel(i, engine, distUreal);
+				if (!(makers5[t]->cancelCollector.empty()))
+				{
+					for (auto& c : makers5[t]->cancelCollector)
+						exchange.process(c);
+					exchange.bookTop2(i);
+				}
+				break;
+			case 2:
+				if (!(i % takers[t]->arrInt))
+				{
+					auto o = takers[t]->processSignal(i, QL.first[i], engine, distUreal);
+					exchange.process(o);
+					for (auto& c : exchange.tradeconfirms)
+					{
+						auto pRoot = c.restid / 1000;
+						if (pRoot == 3)
+							makers5[c.restid]->confirmTrade(c);
+						else if (pRoot == 4)
+							jumper1->confirmTrade(c);
+						else
+							providers5[c.restid]->confirmTrade(c);
+					}
+					exchange.bookTop2(i);
+				}
+				break;
+			default:
+				if (i == informed1->arrInt)
+				{
+					auto o = informed1->processSignal(i);
+					exchange.process(o);
+					for (auto& c : exchange.tradeconfirms)
+					{
+						auto pRoot = c.restid / 1000;
+						if (pRoot == 3)
+							makers5[c.restid]->confirmTrade(c);
+						else if (pRoot == 4)
+							jumper1->confirmTrade(c);
+						else
+							providers5[c.restid]->confirmTrade(c);
+					}
+					exchange.bookTop2(i);
+				}
+				break;
+			}
+			if (distUreal(engine) < jAlpha)
+			{
+				jumper1->processSignal(exchange.tob.back(), i, QL.first[i], engine, distUreal);
+				if (!(jumper1->cancelCollector.empty())) // don't need to check this?
+				{
+					for (auto& c : jumper1->cancelCollector)
+						exchange.process(c);
+				}
+				if (!(jumper1->quoteCollector.empty())) // don't need to check this?
+				{
+					for (auto& o : jumper1->quoteCollector)
+						exchange.process(o);
+				}
+				exchange.bookTop2(i);
+			}
+		}
+	}
+}
+/*
 void Runner::run()
 {
 	exchange = Orderbook();
@@ -351,10 +595,20 @@ void Runner::run()
 	if (maker) { buildMarketMakers(); }
 //	seedBook();
 //	if (provider) { makeSetup(); }
-//	if (jumper)
-//		runMCSPJ();
+//	if (mpi == 1)
+//	{
+//		if (jumper)
+//			runMCSPJ1();
+//		else
+//			runMCS1();
+//	}
 //	else
-//		runMCS();
+//	{
+//		if (jumper)
+//			runMCSPJ5();
+//		else
+//			runMCS5();
+//	}
 //	std::string tcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\trades_1.csv";
 //	exchange.tradesToCsv(tcsv);
 //	std::string qtcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";

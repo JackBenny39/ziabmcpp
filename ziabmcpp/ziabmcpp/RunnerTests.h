@@ -26,9 +26,7 @@ public:
 	void testQTakeToCsv(std::string);
 	void testmmProfitsToCsv(std::string);
 	void testSeedBook();
-//	void testMakeSetup();
-//	void testDoCancels();
-//	void testDoTrades();
+	void testMakeSetup();
 //	void testRun();
 
 	Prc mpi;

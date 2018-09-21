@@ -351,7 +351,7 @@ void TraderTests::testMarketMaker()
 	step1 = 27;
 	tob = { step1, 995, 1, 1010, 1 };
 	m1.localBook.clear();
-	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	m1.processSignal(tob, step1, 0.5, engine, distUreal);
 	std::cout << "\n\nProcess signal: \n";
 	std::cout << "Quote Collector: \n";
 	for (auto& x : m1.quoteCollector)
@@ -370,7 +370,7 @@ void TraderTests::testMarketMaker()
 
 	step1 = 35;
 	tob = { step1, 995, 1, 1010, 1 };
-	m1.processSignal(tob, step1, 0.5, -100, engine, distUreal);
+	m1.processSignal(tob, step1, 0.5, engine, distUreal);
 	std::cout << "\n\nProcess signal: \n";
 	std::cout << "Quote Collector: \n";
 	for (auto& x : m1.quoteCollector)

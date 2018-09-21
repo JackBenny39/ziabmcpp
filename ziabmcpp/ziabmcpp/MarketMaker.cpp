@@ -48,7 +48,7 @@ void MarketMaker::bulkCancel(Step step, std::mt19937 &engine, std::uniform_real_
 	}
 }
 
-void MarketMaker::processSignal(TopOfBook &tob, Step step, double qProvide, double lambdaT, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
+void MarketMaker::processSignal(TopOfBook &tob, Step step, double qProvide, std::mt19937 &engine, std::uniform_real_distribution<> &dist)
 {
 	Prc maxBid, minAsk;
 	quoteCollector.clear();

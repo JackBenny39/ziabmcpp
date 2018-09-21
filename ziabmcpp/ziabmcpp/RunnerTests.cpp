@@ -299,7 +299,7 @@ void RunnerTests::testSeedBook()
 	}
 	std::cout << std::endl;
 }
-/*
+
 void RunnerTests::testMakeSetup()
 {
 	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
@@ -310,20 +310,22 @@ void RunnerTests::testMakeSetup()
 		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
 		qTake, lambda0, whiteNoise, cLambda, engine, seed);
 
-	market1.seedBook();
 	if (provider) { market1.buildProviders(); }
+	market1.seedBook();
 	for (auto &x : market1.providers)
-		std::cout << "Trader Type: " << x->traderType << "; Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "; Max Q: " << x->orderSize << "\n";
+		std::cout << "Trader Type: " << x.second->traderType << "; Trader ID: " << x.second->tId << "; Arrival Interval: " 
+			<< x.second->arrInt << "; Max Q: " << x.second->orderSize << "\n";
 	market1.makeSetup();
 	// Tests include trader.processSignal tests and orderbook.process & addBook2 tests
 	// Interrogate the trader's localBook if arrival interval is less than prime1
 	std::cout << "\n\n Check Provider's localBook if arrival interval less than prime1\n";
+	auto t0 = high_resolution_clock::now();
 	for (auto &x : market1.providers)
 	{
-		if (x->arrInt < prime1)
+		if (x.second->arrInt < prime1)
 		{
-			std::cout << "\n***Trader ID: " << x->tId << "; Arrival Interval: " << x->arrInt << "\n";
-			for (auto &b : x->localBook)
+			std::cout << "\n***Trader ID: " << x.second->tId << "; Arrival Interval: " << x.second->arrInt << "\n";
+			for (auto &b : x.second->localBook)
 			{
 				std::cout << "TraderId: " << b.second.id
 					<< " Order Id: " << b.second.oid
@@ -335,6 +337,31 @@ void RunnerTests::testMakeSetup()
 			}
 		}
 	}
+	auto t1 = high_resolution_clock::now();
+	std::cout << "Direct map access: " << duration_cast<microseconds>(t1 - t0).count() << " us\n";
+/*
+	auto t2 = high_resolution_clock::now();
+	for (auto &x : market1.providers)
+	{
+		std::shared_ptr<Provider> pptr = x.second;
+		if (pptr->arrInt < prime1)
+		{
+			std::cout << "\n***Trader ID: " << pptr->tId << "; Arrival Interval: " << pptr->arrInt << "\n";
+			for (auto &b : pptr->localBook)
+			{
+				std::cout << "TraderId: " << b.second.id
+					<< " Order Id: " << b.second.oid
+					<< " Order Type: " << b.second.otype
+					<< " Order Price: " << b.second.price
+					<< " Order Qty: " << b.second.qty
+					<< " Order Side: " << (b.second.side == Side::BUY ? 'B' : 'S')
+					<< " Order Step: " << b.second.step << "\n";
+			}
+		}
+	}
+	auto t3 = high_resolution_clock::now();
+	std::cout << "Pointer access: " << duration_cast<microseconds>(t3 - t2).count() << " us\n";
+*/
 	// Check the exchange top of book
 	std::cout << "\n\n Check exchange top of book\n";
 	for (auto &x : market1.exchange.tob)
@@ -343,115 +370,26 @@ void RunnerTests::testMakeSetup()
 			<< "; Best Ask: " << x.bestask << "; Best Ask Size: " << x.bestasksz << "\n";
 	}
 	// Check the bid book
-	std::cout << "\n\n Check exchange bid book\n";
-	std::cout << "Bids:\n";
-	for (auto &x : market1.exchange.bids)
-	{
-		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
-		for (auto &y : x.second.quotes)
-			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
-	}
+//	std::cout << "\n\n Check exchange bid book\n";
+//	std::cout << "Bids:\n";
+//	for (auto &x : market1.exchange.bids)
+//	{
+//		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+//		for (auto &y : x.second.quotes)
+//			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+//	}
 	// Check the ask book
-	std::cout << "\n\n Check exchange ask book\n";
-	std::cout << "Asks:\n";
-	for (auto &x : market1.exchange.asks)
-	{
-		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
-		for (auto &y : x.second.quotes)
-			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
-	}
+//	std::cout << "\n\n Check exchange ask book\n";
+//	std::cout << "Asks:\n";
+//	for (auto &x : market1.exchange.asks)
+//	{
+//		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
+//		for (auto &y : x.second.quotes)
+//			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
+//	}
 	std::cout << std::endl;
 }
-
-void RunnerTests::testDoCancels()
-{
-	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
-		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
-		taker, numTakers, takerMaxQ, tMu,
-		informed, informedRun, informedQ, iMu, informedSide,
-		jumper, jAlpha,
-		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
-		qTake, lambda0, whiteNoise, cLambda, engine, seed);
-
-	market1.seedBook();
-	if (provider) { market1.buildProviders(); }
-	market1.makeSetup();
-
-	// print Provider 1032 localbook
-	std::cout << "Provider 1032 local book\n";
-	for (auto& x : market1.providers[20]->localBook)
-		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Price: " << x.second.price << "\n";
-
-	// print the orderbook
-	std::cout << "Exchange bid book\n";
-	std::cout << "Bids:\n";
-	for (auto &x : market1.exchange.bids)
-	{
-		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
-		for (auto &y : x.second.quotes)
-			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
-	}
-	std::cout << "\n\n Exchange ask book\n";
-	std::cout << "Asks:\n";
-	for (auto &x : market1.exchange.asks)
-	{
-		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
-		for (auto &y : x.second.quotes)
-			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
-	}
-	// Provider 1032 is responsible for a bid @ 998548 - Provider 1032 is in bucket[20]
-	market1.providers[20]->cancelCollector.emplace_back(market1.providers[20]->makeCancelQuote(market1.providers[20]->localBook[2], 22));
-	market1.doCancels(market1.providers[20]);
-	std::cout << "Exchange bid book after (998548 is missing)\n";
-	std::cout << "Bids:\n";
-	for (auto &x : market1.exchange.bids)
-	{
-		std::cout << "Price: " << x.first << ", Qty: " << x.second.qty << "\n";
-		for (auto &y : x.second.quotes)
-			std::cout << "Trader Id: " << y.id << ", Order Id: " << y.oid << ", Qty: " << y.qty << "\n";
-	}
-	std::cout << "Provider 1032 local book (order # 2 @ 998548 is missing)\n";
-	for (auto& x : market1.providers[20]->localBook)
-		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Price: " << x.second.price << "\n";
-	std::cout << std::endl;
-}
-
-void RunnerTests::testDoTrades()
-{
-	Runner market1 = Runner(mpi, prime1, runSteps, writeInterval,
-		provider, numProviders, providerMaxQ, pAlpha, pDelta, qProvide,
-		taker, numTakers, takerMaxQ, tMu,
-		informed, informedRun, informedQ, iMu, informedSide,
-		jumper, jAlpha,
-		maker, numMMs, mmMaxQ, mmQuotes, mmRange, mmDelta,
-		qTake, lambda0, whiteNoise, cLambda, engine, seed);
-
-	market1.seedBook();
-	if (provider) { market1.buildProviders(); }
-	market1.makeSetup();
-
-	// print Provider 1032 localbook
-	std::cout << "Provider 1032 local book\n";
-	for (auto& x : market1.providers[20]->localBook)
-		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Step: " << x.second.step 
-		<< "; Quantity: " << x.second.qty << "; Side: " << (x.second.side == Side::BUY ? 'B' : 'S') << "; Price: " << x.second.price << "\n";
-
-	// What if tradeconfirms is empty?
-	market1.doTrades();
-	std::cout << "Trade confirms is empty?: " << market1.exchange.tradeconfirms.size() << "\n";
-
-	market1.exchange.confirmTrade(1032, 2, 12, 1, Side::BUY, 998548);
-	// Exchange tradeconfirms has 1 trade confirm object
-	std::cout << "\nExchange tradeconfirm size should be 1: " << market1.exchange.tradeconfirms.size() << "\n";
-	
-	market1.doTrades();
-	std::cout << "\nProvider 1032 local book (order # 2 @ 998548 is missing)\n";
-	for (auto& x : market1.providers[20]->localBook)
-		std::cout << "Trader Id: " << x.second.id << "; Order Id: " << x.second.oid << "; Step: " << x.second.step
-		<< "; Quantity: " << x.second.qty << "; Side: " << (x.second.side == Side::BUY ? 'B' : 'S') << "; Price: " << x.second.price << "\n";
-	std::cout << std::endl;
-}
-
+/*
 void RunnerTests::testRun()
 {
 	auto t0 = high_resolution_clock::now();
