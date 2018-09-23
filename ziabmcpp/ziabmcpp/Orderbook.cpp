@@ -76,6 +76,7 @@ auto Orderbook::ask() { return asks.empty() ? std::make_tuple(Prc(0), Qty(0)) : 
 
 void Orderbook::process(Order &q)
 {
+	addHistory(q);
 	if (q.otype == 'A')
 	{
 		if (q.side == Side::BUY)

@@ -194,8 +194,7 @@ void Runner::mmProfitsToCsv(std::string &filename)
 
 void Runner::seedBook()
 {
-	traderId tId = 1000;
-	allTraderIds.push_back(numProviders);
+	traderId tId = 1000 + numProviders;
 	providers.emplace(tId, std::make_shared<Provider>(1, tId, 1, pDelta));
 	std::uniform_int_distribution<int> distUintBid(997995, 999996);
 	std::uniform_int_distribution<int> distUintAsk(1000005, 1002001);
@@ -583,7 +582,6 @@ void Runner::runMCSPJ5()
 		}
 	}
 }
-/*
 void Runner::run()
 {
 	exchange = Orderbook();
@@ -593,14 +591,14 @@ void Runner::run()
 	if (informed) { buildInformed(); }
 	if (jumper) { buildPennyJumper(); }
 	if (maker) { buildMarketMakers(); }
-//	seedBook();
-//	if (provider) { makeSetup(); }
+	seedBook();
+	if (provider) { makeSetup(); }
 //	if (mpi == 1)
 //	{
 //		if (jumper)
 //			runMCSPJ1();
 //		else
-//			runMCS1();
+	runMCS1();
 //	}
 //	else
 //	{
@@ -609,11 +607,4 @@ void Runner::run()
 //		else
 //			runMCS5();
 //	}
-//	std::string tcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\trades_1.csv";
-//	exchange.tradesToCsv(tcsv);
-//	std::string qtcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\qtake_1.csv";
-//	qTakeToCsv(qtcsv);
-//	std::string mmcsv = "C:\\Users\\user\\Documents\\Agent-Based Models\\csv files\\mm_1.csv";
-//	mmProfitsToCsv(mmcsv);
 }
-*/

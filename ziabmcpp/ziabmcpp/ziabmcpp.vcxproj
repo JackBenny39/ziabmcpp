@@ -151,29 +151,25 @@
     <ClInclude Include="MarketMaker.h" />
     <ClInclude Include="MarketMaker5.h" />
     <ClInclude Include="Orderbook.h" />
-    <ClInclude Include="OrderbookTests.h" />
     <ClInclude Include="PennyJumper.h" />
     <ClInclude Include="Provider.h" />
     <ClInclude Include="Provider5.h" />
     <ClInclude Include="Runner.h" />
-    <ClInclude Include="RunnerTests.h" />
     <ClInclude Include="Sharedstx.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Taker.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TraderTests.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Informed.cpp" />
     <ClCompile Include="MarketMaker.cpp" />
     <ClCompile Include="MarketMaker5.cpp" />
     <ClCompile Include="Orderbook.cpp" />
-    <ClCompile Include="OrderbookTests.cpp" />
     <ClCompile Include="PennyJumper.cpp" />
     <ClCompile Include="Provider.cpp" />
     <ClCompile Include="Provider5.cpp" />
     <ClCompile Include="Runner.cpp" />
-    <ClCompile Include="RunnerTests.cpp" />
+    <ClCompile Include="RunWrapper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -181,8 +177,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Taker.cpp" />
-    <ClCompile Include="TraderTests.cpp" />
-    <ClCompile Include="ziabmcpp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -40,9 +40,6 @@ public:
 
 	std::mt19937 engine;
 	std::vector<int> defaultVec;
-//	std::exponential_distribution<double> distExpP;
-//	std::uniform_int_distribution<> distUint;
-//	std::uniform_real_distribution<> distUreal;
 
 	std::vector<traderId> allTraderIds;
 	std::vector<traderId> providerIds;
@@ -70,7 +67,7 @@ public:
 	void runMCS5();
 	void runMCSPJ1();
 	void runMCSPJ5();
-//	void run();
+	void run();
 
 	Prc mpi;
 	Step prime1, runSteps, writeInterval, informedRun;
